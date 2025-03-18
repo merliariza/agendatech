@@ -2,7 +2,7 @@ class LoginModal extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: "open" }).innerHTML = `
-            <link href="../css/styleLogin.css" rel="stylesheet" />
+            <link href="css/styleLogin.css" rel="stylesheet" />
             <div class="modal-overlay">
                 <div class="modal">
                     <button class="close-btn">&times;</button>
@@ -14,7 +14,7 @@ class LoginModal extends HTMLElement {
                         <div class="password-container">
                             <input type="password" id="password" class="input-field" placeholder="Contraseña" required>
                             <span class="eye-icon">
-                            <img src="./src/img/Eye.png">
+                                <img src="src/img/Eye.png">
                             </span>
                         </div>
                         
