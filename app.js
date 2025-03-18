@@ -1,2 +1,3 @@
-import './js/menuComponent.js';
-import './js/loginComponent.js';
+import './components/menuComponent.js';
+import './components/loginComponent.js';
+import './components/signupComponent.js';

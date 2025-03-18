@@ -3,7 +3,7 @@ class LoginModal extends HTMLElement {
         super();
         this.attachShadow({ mode: "open" }).innerHTML = `
             <link href="css/styleLogin.css" rel="stylesheet" />
-            <div class="modal-overlay">
+            <div class="modal-overlay hidden">
                 <div class="modal">
                     <button class="close-btn">&times;</button>
                     <form>
@@ -27,7 +27,7 @@ class LoginModal extends HTMLElement {
 
                         <div class="links">
                             <a href="#">Olvidé mi contraseña</a>
-                            <a href="#">Registrarme</a>
+                            <a href="#" id="openSignupModal">Registrarme</a>
                         </div>
                     </form>
                 </div>
@@ -42,20 +42,32 @@ class LoginModal extends HTMLElement {
             alert("Inicio de sesión exitoso (simulado)");
             this.close();
         });
+
+        this.shadowRoot.querySelector("#openSignupModal").addEventListener("click", (e) => {
+            e.preventDefault();
+            this.close(); 
+            console.log("Cerrando Login y abriendo Registro");
+            setTimeout(() => document.dispatchEvent(new Event("open-signup-modal")), 300);
+        });
     }
 
     open() {
+        this.overlay.classList.remove("hidden");
         this.overlay.classList.add("show");
         document.body.classList.add("modal-open");
     }
 
     close() {
         this.overlay.classList.remove("show");
+        this.overlay.classList.add("hidden");
         document.body.classList.remove("modal-open");
     }
 
     connectedCallback() {
-        document.addEventListener("open-login-modal", () => this.open());
+        document.addEventListener("open-login-modal", () => {
+            console.log("Evento open-login-modal recibido");
+            this.open();
+        });
     }
 }
 
@@ -63,5 +75,6 @@ customElements.define("login-modal", LoginModal);
 
 document.getElementById("loginButton")?.addEventListener("click", (e) => {
     e.preventDefault();
+    console.log("Disparando evento open-login-modal");
     document.dispatchEvent(new Event("open-login-modal"));
 });
