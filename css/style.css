@@ -1,5 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+* {
+    font-family: "Lexend", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 15px !important;
+}
+
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background: #f3f4fd;
@@ -25,7 +34,7 @@ body.menu-active::before {
     align-items: center;
     justify-content: center;
     padding: 10px;
-    height: 50px;
+    height: 60px;
     position: relative;
 }
 
@@ -163,6 +172,7 @@ body.menu-active #menu-toggle {
         display: flex;
         justify-content: center;
         margin: 0;
+        font-size: 40px !important;
     }
 
     #menu ul li {
@@ -198,7 +208,7 @@ body.menu-active #menu-toggle {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: "Lexend", sans-serif;
 }
 
 /* Modal Overlay */
@@ -230,7 +240,7 @@ body.menu-active #menu-toggle {
     padding: 20px;
     border-radius: 10px;
     width: 90%;
-    max-width: 400px;
+    max-width: 500px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     position: relative;
     text-align: center;
