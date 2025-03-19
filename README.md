@@ -4,7 +4,7 @@
 
 ## Descripción
 
-  Este proyecto presenta una soluciòn integral para un salón de belleza, esté permite a los uusuarios reservar citas, comprar productos y monitorear envios; con el fin de no solo mejorar la experiencia del cliente, sino también aumentar la eficiencia operativa y la satisfacción del personal.
+  Este proyecto presenta una solución integral para un salón de belleza, esté permite a los usuarios reservar citas, comprar productos y monitorear envios; con el fin de no solo mejorar la experiencia del cliente, sino también aumentar la eficiencia operativa y la satisfacción del personal.
 
 ## Características
 

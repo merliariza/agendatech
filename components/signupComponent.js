@@ -2,7 +2,7 @@ class SignupModal extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: "open" }).innerHTML = `
-            <link href="css/styleLogin.css" rel="stylesheet" />
+            <link href="css/styleSignup.css" rel="stylesheet" />
             <div class="modal-overlay hidden">
                 <div class="modal">
                     <button class="close-btn">&times;</button>
@@ -11,12 +11,7 @@ class SignupModal extends HTMLElement {
                         <input type="text" id="fullname" class="input-field" placeholder="Nombre Completo" required>
 
                         <label for="birthdate">Fecha de Nacimiento</label>
-                        <div class="birthdate-container">
-                            <input type="date" id="birthdate" class="input-field" required>
-                            <span class="icon-container" aria-hidden="true">
-                                <img src="src/img/Calendar.png" alt="Calendario">
-                            </span>
-                        </div>
+                        <input type="date" id="birthdate" class="input-field" required>
 
                         <label for="docnumber">Número de Documento</label>
                         <input type="text" id="docnumber" class="input-field" placeholder="Número de Documento" required>
