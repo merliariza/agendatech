@@ -191,3 +191,147 @@ body.menu-active #menu-toggle {
         transition: opacity 0.5s ease-in-out;
     }
 }
+
+/*--------------------*/
+/* General Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    display: none;
+}
+
+.modal-overlay.show {
+    visibility: visible;
+    opacity: 1;
+    display: flex;
+}
+
+/* Modal */
+.modal {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    text-align: center;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.input-field, select {
+    width: 100%;
+    padding: 10px;
+    border: 3px solid #BB8543;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Password Container */
+.password-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.password-container .eye-icon {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Buttons */
+.signup-btn,
+.codePassword-btn,
+.login-btn {
+    background: #BB8543;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.login-btn:hover {
+    background: #A06A38;
+}
+
+/* Links */
+.links {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.links a {
+    display: block;
+    color: #BB8543;
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* Remember Container */
+.remember-container {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    font-size: 14px;
+    color: #9A9A9A;
+    margin-bottom: 15px;
+}
+
+.remember-container input {
+    margin-right: 5px;
+}
+
+/* Images */
+img {
+    width: 50%;
+}

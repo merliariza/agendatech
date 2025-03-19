@@ -2,7 +2,7 @@ class SignupModal extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: "open" }).innerHTML = `
-            <link href="css/styleSignup.css" rel="stylesheet" />
+            <link href="css/style.css" rel="stylesheet" />
             <div class="modal-overlay hidden">
                 <div class="modal">
                     <button class="close-btn">&times;</button>

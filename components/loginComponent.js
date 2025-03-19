@@ -2,7 +2,7 @@ class LoginModal extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: "open" }).innerHTML = `
-            <link href="css/styleLogin.css" rel="stylesheet" />
+            <link href="css/style.css" rel="stylesheet" />
             <div class="modal-overlay hidden">
                 <div class="modal">
                     <button class="close-btn">&times;</button>
@@ -26,7 +26,7 @@ class LoginModal extends HTMLElement {
                         <button type="submit" class="login-btn">Acceder</button>
 
                         <div class="links">
-                            <a href="#">Olvidé mi contraseña</a>
+                            <a href="#" id="passwordModal">Olvidé mi contraseña</a>
                             <a href="#" id="openSignupModal">Registrarme</a>
                         </div>
                     </form>
@@ -48,6 +48,13 @@ class LoginModal extends HTMLElement {
             this.close(); 
             console.log("Cerrando Login y abriendo Registro");
             setTimeout(() => document.dispatchEvent(new Event("open-signup-modal")), 300);
+        });
+
+        this.shadowRoot.querySelector("#passwordModal").addEventListener("click", (e) => {
+            e.preventDefault();
+            this.close(); 
+            console.log("Cerrando Login y abriendo olvidé mi contraseña");
+            setTimeout(() => document.dispatchEvent(new Event("open-password-modal")), 300);
         });
     }
 
