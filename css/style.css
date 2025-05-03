@@ -261,11 +261,12 @@ body.menu-active #menu-toggle {
 form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
 }
 
 label {
     font-weight: bold;
+    text-align: left;
 }
 
 .input-field, select {
@@ -276,19 +277,83 @@ label {
     font-size: 14px;
 }
 
-/* Password Container */
-.password-container {
+/* --- input-group responsive design --- */
+.input-group {
     display: flex;
-    align-items: center;
-    position: relative;
+    gap: 15px; 
+    width: 100%;
+    margin-bottom: 0;
 }
 
-.password-container .eye-icon {
+.input-group > div {
+    flex: 1;
+    min-width: 0; 
+}
+
+.input-group label {
+    font-weight: bold;
+    color: #9A9A9A;
+    display: block;
+}
+
+.input-group .input-field,
+.input-group .doctype {
+    width: 100%;
+    padding: 10px;
+    border: 3px solid #BB8543; 
+    border-radius: 5px;
+    font-size: 14px;
+    background: white;
+}
+.input-field:focus,
+.doctype:focus,
+input[type="date"]:focus {
+    border-color: #BB8543; 
+    outline: none; 
+}
+
+.input-field,
+.doctype,
+input[type="date"] {
+    color: #9A9A9A; 
+}
+
+input[type="checkbox"] {
+    accent-color: #BB8543;
+  }
+
+/* Estyles for select (Tipo de Documento) */
+.input-group .doctype {
+    appearance: none;
+    background: white ;
+    background-position: right 10px center;
+    padding-right: 30px;
+    color: #9A9A9A;
+}
+
+/* Password Container */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding-right: 2.5em; 
+  }
+  
+  .toggle-password {
     position: absolute;
     right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.5em;
+    height: 1.5em;
     cursor: pointer;
-    font-size: 14px;
-}
+    opacity: 0.7;
+  }
+  
 
 /* Buttons */
 .signup-btn,
@@ -344,4 +409,31 @@ label {
 /* Images */
 img {
     width: 50%;
+}
+
+
+.modal {
+    max-width: 100%; 
+    overflow-y: auto;  /* Scroll vertical cuando el contenido excede */
+    overflow-x: hidden; /* Evita scroll horizontal no deseado */
+    width: auto;
+    max-height: 92vh; /* Limita la altura pero no tanto como 100vh */
+    position: relative; /* Mantiene el flujo normal */
+    top: auto;
+    bottom: auto;
+}
+
+/* Mantén exactamente el mismo form que tenías */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 300px;
+    min-height: 100px;
+    padding: 10px;
+}
+
+.input-field, select, .input-group > div {
+    max-width: 100%; 
+    box-sizing: border-box;
 }

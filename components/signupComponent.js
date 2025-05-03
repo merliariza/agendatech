@@ -2,7 +2,8 @@ class SignupModal extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: "open" }).innerHTML = `
-            <link href="css/style.css" rel="stylesheet" />
+            
+        <link href="css/style.css" rel="stylesheet" />
             <div class="modal-overlay hidden">
                 <div class="modal">
                     <button class="close-btn">&times;</button>
@@ -13,9 +14,13 @@ class SignupModal extends HTMLElement {
                         <label for="birthdate">Fecha de Nacimiento</label>
                         <input type="date" id="birthdate" class="input-field" required>
 
+                        <div class="input-group">
+                        <div>
                         <label for="docnumber">Número de Documento</label>
                         <input type="text" id="docnumber" class="input-field" placeholder="Número de Documento" required>
+                        </div>
 
+                        <div>
                         <label for="doctype">Tipo de Documento</label>
                         <select class="doctype" id="doctype" required>
                           <option value="" disabled selected>Selecciona un tipo</option>
@@ -23,15 +28,23 @@ class SignupModal extends HTMLElement {
                           <option value="cedula">Cédula</option>
                           <option value="pasaporte">Pasaporte</option>
                         </select>
+                        </div>
+                        </div>
 
                         <label for="signupEmail">Correo Electrónico</label>
                         <input type="email" id="signupEmail" class="input-field" placeholder="Correo Electrónico" required>
-
+                        
+                        <div class="input-group">
+                        <div>
                         <label for="signupPassword">Contraseña</label>
                         <input type="password" id="signupPassword" class="input-field" placeholder="Contraseña" required>
+                        </div>
 
+                        <div>
                         <label for="confirmPassword">Confirmar Contraseña</label>
                         <input type="password" id="confirmPassword" class="input-field" placeholder="Confirmar Contraseña" required>
+                        </div>
+                        </div>
 
                         <button type="submit" class="signup-btn">Registrarme</button>
 

@@ -12,12 +12,10 @@ class LoginModal extends HTMLElement {
                         
                         <label for="password">Contraseña</label>
                         <div class="password-container">
-                            <input type="password" id="password" class="input-field" placeholder="Contraseña" required>
-                            <span class="eye-icon">
-                                <img src="src/img/Eye.png">
-                            </span>
+                        <input type="password" id="password" class="input-field" placeholder="Contraseña" required>
+                        <img src="src/img/EyeOff.png" class="toggle-password" data-target="password" alt="Toggle Password">
                         </div>
-                        
+
                         <div class="remember-container">
                             <input type="checkbox" id="remember">
                             <label for="remember">Recuérdame</label>
@@ -56,6 +54,16 @@ class LoginModal extends HTMLElement {
             console.log("Cerrando Login y abriendo olvidé mi contraseña");
             setTimeout(() => document.dispatchEvent(new Event("open-password-modal")), 300);
         });
+
+        this.shadowRoot.querySelector(".toggle-password").addEventListener("click", (e) => {
+            const img = e.currentTarget;
+            const targetId = img.getAttribute("data-target");
+            const input = this.shadowRoot.getElementById(targetId);
+            const isHidden = input.type === "password";
+            input.type = isHidden ? "text" : "password";
+            img.src = isHidden ? "src/img/Eye.png" : "src/img/EyeOff.png";
+        });
+        
     }
 
     open() {
