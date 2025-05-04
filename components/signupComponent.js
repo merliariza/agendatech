@@ -37,12 +37,18 @@ class SignupModal extends HTMLElement {
                         <div class="input-group">
                         <div>
                         <label for="signupPassword">Contraseña</label>
+                        <div class="password-container">
                         <input type="password" id="signupPassword" class="input-field" placeholder="Contraseña" required>
+                        <img src="src/img/EyeOff.png" class="toggle-password" data-target="signupPassword" alt="Toggle Password">
+                        </div>
                         </div>
 
                         <div>
                         <label for="confirmPassword">Confirmar Contraseña</label>
+                         <div class="password-container">
                         <input type="password" id="confirmPassword" class="input-field" placeholder="Confirmar Contraseña" required>
+                        <img src="src/img/EyeOff.png" class="toggle-password" data-target="confirmPassword" alt="Toggle Password">
+                        </div>
                         </div>
                         </div>
 
@@ -71,6 +77,17 @@ class SignupModal extends HTMLElement {
             console.log("Cerrando Registro y abriendo Login");
             setTimeout(() => document.dispatchEvent(new Event("open-login-modal")), 300);
         });
+
+        this.shadowRoot.querySelectorAll(".toggle-password").forEach((img) => {
+            img.addEventListener("click", (e) => {
+                const targetId = img.getAttribute("data-target");
+                const input = this.shadowRoot.getElementById(targetId);
+                const isHidden = input.type === "password";
+                input.type = isHidden ? "text" : "password";
+                img.src = isHidden ? "src/img/Eye.png" : "src/img/EyeOff.png";
+            });
+        });
+        
     }
 
     open() {
