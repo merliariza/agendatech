@@ -2,7 +2,7 @@ class LoginAdminModal extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: "open" }).innerHTML = `
-            <link href="/css/style.css" rel="stylesheet" />
+            <link href="../css/style.css" rel="stylesheet" />
 
             <div class="admin-form-container">
                 <div class="form-container">
@@ -13,7 +13,7 @@ class LoginAdminModal extends HTMLElement {
                         <label for="password">Contraseña</label>
                         <div class="password-container">
                             <input type="password" id="password" class="input-field" placeholder="Contraseña" required>
-                            <img src="/src/img/EyeOff.png" class="toggle-password" data-target="password" alt="Toggle Password">
+                            <img src="../src/img/EyeOff.png" class="toggle-password" data-target="password" alt="Toggle Password">
                         </div>
 
                         <div class="remember-container">
@@ -38,7 +38,7 @@ class LoginAdminModal extends HTMLElement {
             const input = this.shadowRoot.getElementById(targetId);
             const isHidden = input.type === "password";
             input.type = isHidden ? "text" : "password";
-            img.src = isHidden ? "/src/img/Eye.png" : "/src/img/EyeOff.png";
+            img.src = isHidden ? "../src/img/Eye.png" : "../src/img/EyeOff.png";
         });
     }
 
