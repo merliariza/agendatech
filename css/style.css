@@ -7,7 +7,7 @@
     font-style: normal;
     font-size: 15px !important;
 }
-
+  
 body {
     margin: 0;
     padding: 0;
@@ -262,6 +262,9 @@ form {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    min-width: 300px;
+    min-height: 100px;
+    padding: 10px;
 }
 
 label {
@@ -288,6 +291,11 @@ label {
 .input-group > div {
     flex: 1;
     min-width: 0; 
+}
+
+.input-field, select, .input-group > div {
+    max-width: 100%; 
+    box-sizing: border-box;
 }
 
 .input-group label {
@@ -321,15 +329,6 @@ input[type="date"] {
 input[type="checkbox"] {
     accent-color: #BB8543;
   }
-
-/* Estyles for select (Tipo de Documento) */
-.input-group .doctype {
-    appearance: none;
-    background: white ;
-    background-position: right 10px center;
-    padding-right: 30px;
-    color: #9A9A9A;
-}
 
 /* Password Container */
 .password-container {
@@ -414,26 +413,33 @@ img {
 
 .modal {
     max-width: 100%; 
-    overflow-y: auto;  /* Scroll vertical cuando el contenido excede */
-    overflow-x: hidden; /* Evita scroll horizontal no deseado */
+    overflow-y: auto;  
+    overflow-x: hidden; 
     width: auto;
-    max-height: 92vh; /* Limita la altura pero no tanto como 100vh */
-    position: relative; /* Mantiene el flujo normal */
+    max-height: 92vh; 
+    position: relative; 
     top: auto;
     bottom: auto;
 }
 
-/* Mantén exactamente el mismo form que tenías */
-form {
+  .admin-form-container {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
-    min-width: 300px;
-    min-height: 100px;
-    padding: 10px;
-}
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: #f3f4fd;
+  }
 
-.input-field, select, .input-group > div {
-    max-width: 100%; 
+  .form-container {
+    background: white;
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
     box-sizing: border-box;
+  }
+
+.bloquear-scroll {
+    overflow: hidden;
+    height: 100vh;
 }

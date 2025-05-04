@@ -77,6 +77,7 @@ CREATE TABLE Person (
     phone VARCHAR(20) NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     user_id INT NULL,
+    photo_url TEXT,
     FOREIGN KEY (address_id) REFERENCES Address(address_id),
     FOREIGN KEY (user_id) REFERENCES User_Account(user_id)
 );
@@ -130,29 +131,15 @@ CREATE TABLE Employee (
     person_id INT,
     position_id INT,
     branch_id INT,
-    corporate_email VARCHAR(100) NOT NULL,
-    hire_date DATE NOT NULL,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (person_id) REFERENCES Person(person_id),
     FOREIGN KEY (position_id) REFERENCES Position(position_id),
     FOREIGN KEY (branch_id) REFERENCES Branch(branch_id)
 );
 
--- Specialization Table
-CREATE TABLE Specialization (
-    specialization_id SERIAL PRIMARY KEY,
-    specialization_name VARCHAR(20) NOT NULL,
-    specialization_description VARCHAR(255) NULL,
-    employee_id INT,
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
-);
-
--- Customer Table (now references Person)
+-- Customer Table 
 CREATE TABLE Customer (
     customer_id SERIAL PRIMARY KEY,
     person_id INT,
-    registration_date TIMESTAMP NOT NULL,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (person_id) REFERENCES Person(person_id)
 );
 
@@ -189,7 +176,6 @@ CREATE TABLE Appointment (
     branch_id INT,
     status_id INT,
     appointment_datetime TIMESTAMP NOT NULL,
-    request_datetime TIMESTAMP NOT NULL,
     cancellation_reason VARCHAR(255) NULL,
     FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
     FOREIGN KEY (branch_id) REFERENCES Branch(branch_id),
@@ -203,7 +189,6 @@ CREATE TABLE AppointmentDetail (
     service_id INT,
     employee_id INT,
     applied_price DECIMAL(10,2) NOT NULL,
-    actual_duration INT NULL,
     FOREIGN KEY (appointment_id) REFERENCES Appointment(appointment_id),
     FOREIGN KEY (service_id) REFERENCES Service(service_id),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
@@ -223,20 +208,11 @@ CREATE TABLE Brand (
     brand_description VARCHAR(255) NULL
 );
 
--- UnitOfMeasure Table
-CREATE TABLE UnitOfMeasure (
-    unit_id SERIAL PRIMARY KEY,
-    unit_name VARCHAR(50) NOT NULL,
-    unit_abbreviation VARCHAR(10) NOT NULL,
-    unit_description VARCHAR(255) NULL
-);
-
 -- Product Table
 CREATE TABLE Product (
     product_id SERIAL PRIMARY KEY,
     product_category_id INT,
     brand_id INT,
-    unit_id INT,
     product_code VARCHAR(20) NOT NULL,
     product_name VARCHAR(100) NOT NULL,
     product_description TEXT NULL,
@@ -245,7 +221,15 @@ CREATE TABLE Product (
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (product_category_id) REFERENCES ProductCategory(product_category_id),
     FOREIGN KEY (brand_id) REFERENCES Brand(brand_id),
-    FOREIGN KEY (unit_id) REFERENCES UnitOfMeasure(unit_id)
+);
+
+-- ProductImage Table
+CREATE TABLE ProductImage (
+    image_id SERIAL PRIMARY KEY,
+    product_id INT NOT NULL,
+    image_url TEXT NOT NULL,   
+    is_main BOOLEAN DEFAULT FALSE, 
+    FOREIGN KEY (product_id) REFERENCES Product(product_id)
 );
 
 -- Inventory Table
@@ -253,10 +237,7 @@ CREATE TABLE Inventory (
     inventory_id SERIAL PRIMARY KEY,
     product_id INT,
     branch_id INT,
-    quantity INT NOT NULL,
-    min_stock INT NOT NULL,
-    max_stock INT NOT NULL,
-    warehouse_location VARCHAR(50) NULL,
+    stock INT NOT NULL,
     last_updated TIMESTAMP NOT NULL,
     FOREIGN KEY (product_id) REFERENCES Product(product_id),
     FOREIGN KEY (branch_id) REFERENCES Branch(branch_id)
@@ -267,65 +248,46 @@ CREATE TABLE Supplier (
     supplier_id SERIAL PRIMARY KEY,
     supplier_name VARCHAR(50) NOT NULL,
     tax_id VARCHAR(20) NOT NULL,
-    website VARCHAR(80) NULL,
-    contact_name VARCHAR(20) NULL,
     contact_phone VARCHAR(20) NULL,
-    contact_email VARCHAR(100) NULL,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     person_id INT,
     FOREIGN KEY (person_id) REFERENCES Person(person_id)
 );
-
--- PurchaseOrder Table
+-- Órdenes de compra
 CREATE TABLE PurchaseOrder (
     purchase_order_id SERIAL PRIMARY KEY,
+    order_date DATE NOT NULL,
+    estimated_delivery_date DATE,
+    order_status VARCHAR(20) NOT NULL,
+    notes TEXT,
     supplier_id INT,
     branch_id INT,
     employee_id INT,
-    order_number VARCHAR(20) NOT NULL,
-    order_date DATE NOT NULL,
-    estimated_delivery_date DATE NULL,
-    subtotal DECIMAL(10,2) NOT NULL,
-    tax_amount DECIMAL(10,2) NOT NULL,
-    total_amount DECIMAL(10,2) NOT NULL,
-    order_status VARCHAR(20) NOT NULL,
-    notes TEXT NULL,
     FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id),
     FOREIGN KEY (branch_id) REFERENCES Branch(branch_id),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
 );
 
--- PurchaseOrderDetail Table
+-- Detalles de órdenes de compra
 CREATE TABLE PurchaseOrderDetail (
     order_detail_id SERIAL PRIMARY KEY,
-    purchase_order_id INT,
-    product_id INT,
     quantity INT NOT NULL,
     unit_price DECIMAL(10,2) NOT NULL,
-    subtotal DECIMAL(10,2) NOT NULL,
-    tax_amount DECIMAL(10,2) NOT NULL,
-    total_amount DECIMAL(10,2) NOT NULL,
-    reception_status VARCHAR(20) NULL,
-    received_quantity INT NULL,
+    purchase_order_id INT,
+    product_id INT,
     FOREIGN KEY (purchase_order_id) REFERENCES PurchaseOrder(purchase_order_id),
     FOREIGN KEY (product_id) REFERENCES Product(product_id)
 );
 
--- Order Table 
+-- Órdenes de clientes
 CREATE TABLE CustomerOrder (
     order_id SERIAL PRIMARY KEY,
+    order_date TIMESTAMP NOT NULL,
+    order_status VARCHAR(20) NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    notes TEXT,
     customer_id INT,
     branch_id INT,
     employee_id INT,
-    order_number VARCHAR(20) NOT NULL,
-    order_date TIMESTAMP NOT NULL,
-    subtotal DECIMAL(10,2) NOT NULL,
-    discount_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
-    tax_amount DECIMAL(10,2) NOT NULL,
-    total_amount DECIMAL(10,2) NOT NULL,
-    order_status VARCHAR(20) NOT NULL,
-    payment_method VARCHAR(50) NOT NULL,
-    notes TEXT NULL,
     address_id INT,
     FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
     FOREIGN KEY (branch_id) REFERENCES Branch(branch_id),
@@ -333,33 +295,26 @@ CREATE TABLE CustomerOrder (
     FOREIGN KEY (address_id) REFERENCES Address(address_id)
 );
 
--- OrderDetail Table
+-- Detalles de órdenes de clientes
 CREATE TABLE OrderDetail (
     order_detail_id SERIAL PRIMARY KEY,
-    order_id INT,
-    product_id INT,
     quantity INT NOT NULL,
     unit_price DECIMAL(10,2) NOT NULL,
-    discount_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
-    subtotal DECIMAL(10,2) NOT NULL,
-    tax_amount DECIMAL(10,2) NOT NULL,
-    total_amount DECIMAL(10,2) NOT NULL,
+    discount_amount DECIMAL(10,2) DEFAULT 0,
+    order_id INT,
+    product_id INT,
     FOREIGN KEY (order_id) REFERENCES CustomerOrder(order_id),
     FOREIGN KEY (product_id) REFERENCES Product(product_id)
 );
 
--- Invoice Table
+-- Facturas
 CREATE TABLE Invoice (
     invoice_id SERIAL PRIMARY KEY,
-    order_id INT,
     invoice_number VARCHAR(20) NOT NULL,
     invoice_date TIMESTAMP NOT NULL,
-    due_date DATE NULL,
-    subtotal DECIMAL(10,2) NOT NULL,
-    discount_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
-    tax_amount DECIMAL(10,2) NOT NULL,
-    total_amount DECIMAL(10,2) NOT NULL,
+    due_date DATE,
     invoice_status VARCHAR(20) NOT NULL,
     payment_method VARCHAR(50) NOT NULL,
+    order_id INT,
     FOREIGN KEY (order_id) REFERENCES CustomerOrder(order_id)
 );
