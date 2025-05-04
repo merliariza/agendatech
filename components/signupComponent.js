@@ -8,27 +8,19 @@ class SignupModal extends HTMLElement {
                 <div class="modal">
                     <button class="close-btn">&times;</button>
                     <form>
-                        <label for="fullname">Nombre Completo</label>
-                        <input type="text" id="fullname" class="input-field" placeholder="Nombre Completo" required>
-
-                        <label for="birthdate">Fecha de Nacimiento</label>
-                        <input type="date" id="birthdate" class="input-field" required>
+                       <label for="username">Usuario</label>
+                        <input type="text" id="username" class="input-field" placeholder="Usuario" required>
 
                         <div class="input-group">
-                        <div>
-                        <label for="docnumber">Número de Documento</label>
-                        <input type="text" id="docnumber" class="input-field" placeholder="Número de Documento" required>
-                        </div>
+                            <div>
+                                <label for="first_name">Nombre</label>
+                                <input type="text" id="first_name" class="input-field" placeholder="Nombre" required>
+                            </div>
 
-                        <div>
-                        <label for="doctype">Tipo de Documento</label>
-                        <select class="doctype" id="doctype" required>
-                          <option value="" disabled selected>Selecciona un tipo</option>
-                          <option value="dni">DNI</option>
-                          <option value="cedula">Cédula</option>
-                          <option value="pasaporte">Pasaporte</option>
-                        </select>
-                        </div>
+                            <div>
+                                <label for="last_name">Apellido</label>
+                                <input type="text" id="last_name" class="input-field" placeholder="Apellido" required>
+                            </div>
                         </div>
 
                         <label for="signupEmail">Correo Electrónico</label>

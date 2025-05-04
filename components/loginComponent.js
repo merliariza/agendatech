@@ -7,8 +7,8 @@ class LoginModal extends HTMLElement {
                 <div class="modal">
                     <button class="close-btn">&times;</button>
                     <form>
-                        <label for="email">Correo Electrónico</label>
-                        <input type="email" id="email" class="input-field" placeholder="Correo Electrónico" required>
+                        <label for="email_or_username">Usuario o Correo Electrónico</label>
+                        <input type="text" id="email_or_username" class="input-field" placeholder="Usuario o Correo Electrónico" required>
                         
                         <label for="password">Contraseña</label>
                         <div class="password-container">
