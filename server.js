@@ -16,6 +16,10 @@ app.use(express.static(path.join(__dirname, "public")));
 const productosRoutes = require("./routes/productos.js");
 app.use("/api/productos", productosRoutes);
 
+const usuariosRoutes = require("./routes/usuarios.js");
+app.use("/api/usuarios", usuariosRoutes);
+
+
 // Prueba rápida
 app.get("/", (req, res) => {
     res.send("API funcionando");

@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db/connection.js");
-const upload = require("../middlewares/upload.js");
 
-// Obtener todos
+// ===============================
+// OBTENER TODOS LOS PRODUCTOS
+// ===============================
 router.get("/", (req, res) => {
     db.query("SELECT * FROM Product", (err, result) => {
         if (err) return res.status(500).json({ error: err });
@@ -11,11 +12,20 @@ router.get("/", (req, res) => {
     });
 });
 
-// Crear producto con imagen
-router.post("/", upload.single("image"), (req, res) => {
-    const { name, description, price, stock, min_stock, category, active } = req.body;
-
-    const image = req.file ? req.file.filename : null;
+// ===============================
+// CREAR PRODUCTO (IMAGEN BASE64)
+// ===============================
+router.post("/", (req, res) => {
+    const {
+        name,
+        description,
+        price,
+        stock,
+        min_stock,
+        category,
+        active,
+        image     // <-- Base64 enviada desde tu frontend
+    } = req.body;
 
     const sql = `
         INSERT INTO Product (name, description, price, stock, min_stock, category, active, image)
@@ -28,22 +38,38 @@ router.post("/", upload.single("image"), (req, res) => {
     });
 });
 
-// Actualizar producto con imagen opcional
-router.put("/:id", upload.single("image"), (req, res) => {
+// ===============================
+// ACTUALIZAR PRODUCTO (BASE64)
+// ===============================
+router.put("/:id", (req, res) => {
     const id = req.params.id;
-    let data = req.body;
 
-    if (req.file) {
-        data.image = req.file.filename;
-    }
+    const {
+        name,
+        description,
+        price,
+        stock,
+        min_stock,
+        category,
+        active,
+        image   // Base64 nueva o la misma que ya tenía
+    } = req.body;
 
-    db.query("UPDATE Product SET ? WHERE id = ?", [data, id], (err) => {
+    const sql = `
+        UPDATE Product
+        SET name = ?, description = ?, price = ?, stock = ?, min_stock = ?, category = ?, active = ?, image = ?
+        WHERE id = ?
+    `;
+
+    db.query(sql, [name, description, price, stock, min_stock, category, active, image, id], (err) => {
         if (err) return res.status(500).json({ error: err });
         res.json({ message: "Producto actualizado" });
     });
 });
 
-// Eliminar
+// ===============================
+// ELIMINAR PRODUCTO
+// ===============================
 router.delete("/:id", (req, res) => {
     db.query("DELETE FROM Product WHERE id = ?", [req.params.id], (err) => {
         if (err) return res.status(500).json({ error: err });

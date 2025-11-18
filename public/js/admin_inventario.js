@@ -121,7 +121,7 @@ function renderProducts() {
 function editProduct(id) {
     const p = products.find(x => x.id === id);
 
-    name.value = p.name;
+    document.getElementById("name").value = p.name;
     description.value = p.description;
     price.value = p.price;
     stock.value = p.stock;
