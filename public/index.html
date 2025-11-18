@@ -34,13 +34,14 @@
       <ul class="list-unstyled d-flex gap-3 mb-0 align-items-center">
         <li><a href="#" class="text-decoration-none">Agéndate</a></li>
         <li><a href="#" class="text-decoration-none">Productos</a></li>
-        <li><a href="#" class="text-decoration-none">Mi cuenta</a></li>
+<li><a href="#" id="btnCuenta" class="text-decoration-none">Mi cuenta</a></li>
         <li><a href="#"><img src="src/img/shoppingCart.png" alt="Carrito" style="height:24px;" /></a></li>
         <li><button id="openLoginBtn" class="btn login-btn-header">Iniciar sesión</button></li>
       </ul>
     </nav>
   </header>
 
+<section id="seccionPrincipal" class="mt-5">
   <!-- CARRUSEL -->
   <div class="custom-carousel-container my-4 container">
     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
@@ -54,8 +55,96 @@
     </div>
   </div>
 
-  <!-- OVERLAY Y FORMULARIO -->
-  <div class="overlay" id="overlay"></div>
+  <!-- ⭐ SERVICIOS DESTACADOS -->
+  <div class="container my-5">
+    <h2 class="text-center mb-4 fw-bold">Servicios más solicitados</h2>
+    <div class="row g-4">
+      <div class="col-md-3 col-6">
+        <div class="card shadow-sm text-center p-3 h-100 servicio-card">
+          <img src="src/img/srv_cabello.png" class="servicio-icon mb-3" alt="">
+          <h5 class="fw-semibold">Corte de cabello</h5>
+          <p class="small">Estilos modernos con asesoría.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="card shadow-sm text-center p-3 h-100 servicio-card">
+          <img src="src/img/srv_unas.png" class="servicio-icon mb-3" alt="">
+          <h5 class="fw-semibold">Uñas acrílicas</h5>
+          <p class="small">Decoración profesional.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="card shadow-sm text-center p-3 h-100 servicio-card">
+          <img src="src/img/srv_spa.png" class="servicio-icon mb-3" alt="">
+          <h5 class="fw-semibold">Limpieza facial</h5>
+          <p class="small">Renueva y revitaliza tu piel.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="card shadow-sm text-center p-3 h-100 servicio-card">
+          <img src="src/img/srv_maquillaje.png" class="servicio-icon mb-3" alt="">
+          <h5 class="fw-semibold">Maquillaje Pro</h5>
+          <p class="small">Ideal para eventos especiales.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🚚 BANNERS DE INFORMACIÓN -->
+  <div class="container my-5">
+    <div class="row text-center g-4">
+      <div class="col-md-4">
+        <div class="info-box p-4 rounded shadow-sm h-100">
+          <h4>🚚 Envíos Rápidos</h4>
+          <p class="mb-0 small">24–48 horas a todo el país</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-box p-4 rounded shadow-sm h-100">
+          <h4>💳 Pagos Seguros</h4>
+          <p class="mb-0 small">Nequi · Daviplata · Tarjeta</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-box p-4 rounded shadow-sm h-100">
+          <h4>🕒 Agenda Fácil</h4>
+          <p class="mb-0 small">Horarios flexibles toda la semana</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 💬 TESTIMONIOS -->
+  <div class="container my-5">
+    <h2 class="text-center mb-4 fw-bold">Lo que dicen nuestros clientes</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="testimonial p-3 rounded shadow-sm h-100">
+          <p class="mb-2">"Excelente atención, quedé encantada con mi corte."</p>
+          <strong>- Karen R.</strong>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial p-3 rounded shadow-sm h-100">
+          <p class="mb-2">"Los productos son de calidad premium."</p>
+          <strong>- Julián M.</strong>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial p-3 rounded shadow-sm h-100">
+          <p class="mb-2">"El maquillaje quedó espectacular para mi evento."</p>
+          <strong>- Vanessa P.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+<!-- ⭐ FIN DE seccionPrincipal -->
+
+<!-- OVERLAY Y FORMULARIO -->
+<div class="overlay" id="overlay"></div>
+<!-- ... resto del código ... -->
   <div class="login-container" id="loginContainer">
     <form id="loginForm">
       <div class="form-header">
@@ -82,5 +171,81 @@
     </form>
   </div>
 
+
+<!--Productos -->
+
+
+<!-- 📌 SECCIÓN PRODUCTOS -->
+<section id="seccionProductos" class="pagina-section hidden productos-container">
+
+    <!-- BUSCADOR -->
+    <div class="search-bar">
+        <input type="text" id="buscarProducto" placeholder="Busca un producto...">
+        <button id="btnBuscar">🔍</button>
+    </div>
+
+    <!-- CATEGORÍAS -->
+    <div class="categorias-bar">
+        <button class="cat-btn active" data-cat="Todos">Todos</button>
+        <button class="cat-btn" data-cat="Cabello">Cabello</button>
+        <button class="cat-btn" data-cat="SkinCare">SkinCare</button>
+        <button class="cat-btn" data-cat="Uñas">Uñas</button>
+        <button class="cat-btn" data-cat="Maquillaje">Maquillaje</button>
+        <button class="cat-btn" data-cat="Otros">Otros</button>
+    </div>
+
+    <!-- TARJETAS -->
+    <div id="productosGrid" class="productos-grid"></div>
+
+</section>
+<section id="detalleProducto" class="hidden detalle-producto-container"></section>
+
+<!-- 📌 SECCIÓN: MI CUENTA -->
+<section id="seccionCuenta" class="hidden pagina-section hidden">
+
+    <div class="cuenta-container">
+
+        <!-- SIDEBAR -->
+        <div class="cuenta-sidebar">
+            <h3 id="nombre-usuario">Bienvenido!</h3>
+
+            <ul class="cuenta-menu">
+                <li class="activo">
+                    <i class="icon-lock"></i>
+                    <span>Cambiar contraseña</span>
+                </li>
+
+                <li id="cerrarSesionBtn">
+                    <i class="icon-exit"></i>
+                    <span>Cerrar sesión</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- CONTENIDO -->
+        <div class="cuenta-content">
+            <h2>Cambiar Contraseña</h2>
+
+            <form id="formCambiarPass">
+                <label>Contraseña Actual</label>
+                <input type="password" id="passActual" placeholder="Contraseña Actual" />
+
+                <label>Nueva Contraseña</label>
+                <input type="password" id="passNueva" placeholder="Nueva Contraseña" />
+
+                <label>Confirmar Contraseña</label>
+                <input type="password" id="passConfirm" placeholder="Confirmar Contraseña" />
+
+                <button type="submit" class="btn-actualizar">Actualizar</button>
+            </form>
+        </div>
+
+    </div>
+
+</section>
+
 </body>
+<script type="module" src="js/user_productos.js"></script>
+<script type="module" src="js/cuenta.js"></script>
+<script type="module" src="js/mostrar_principal.js"></script>
 </html>

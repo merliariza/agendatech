@@ -34,11 +34,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   actualizarBotonSesion();
 
-  openLoginBtn.addEventListener("click", () => {
+  openLoginBtn.addEventListener("click", async () => {
     const usuario = JSON.parse(localStorage.getItem("usuario"));
 
     // Si está logueado → cerrar sesión
     if (usuario) {
+      try {
+        // Llamar al endpoint de logout en el servidor
+        await fetch('http://localhost:3000/api/usuarios/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+      } catch (err) {
+        console.error("Error cerrando sesión en servidor:", err);
+      }
+
+      // Limpiar sesión local
       localStorage.removeItem("usuario");
       alert("Sesión cerrada");
       actualizarBotonSesion();
@@ -108,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ======================================
-  // REGISTRO / LOGIN
+  // REGISTRO / LOGIN - CORREGIDO
   // ======================================
 
   form.addEventListener("submit", async (e) => {
@@ -128,6 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let endpoint = "";
       let body = {};
 
+      // ✅ Configurar endpoint y body según modo
       if (isRegister) {
         endpoint = "/api/usuarios";
         body = {
@@ -143,20 +155,23 @@ document.addEventListener("DOMContentLoaded", () => {
         body = { email, password };
       }
 
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      // ✅ Hacer fetch dinámico con el endpoint correcto
+      const res = await fetch(`http://localhost:3000${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // CRÍTICO para cookies de sesión
         body: JSON.stringify(body)
       });
 
       const data = await res.json();
 
+      // Manejar errores
       if (data.error) {
         alert("Error: " + data.error);
         return;
       }
 
-      // Guardar sesión local
+      // ✅ Guardar sesión local
       localStorage.setItem("usuario", JSON.stringify({
         username: data.username,
         role: data.role
@@ -164,21 +179,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
       alert(
         isRegister
-          ? "Cuenta creada con éxito"
+          ? "Cuenta creada con éxito. Por favor inicia sesión."
           : "Bienvenido " + data.username
       );
 
       cerrarLogin();
       actualizarBotonSesion();
 
-      // Redirección si es administrador
-      if (!isRegister && data.role === "administrador") {
-        window.location.href = "http://127.0.0.1:5502/pages/login.html#";
+      // ✅ Si es registro, cambiar a modo login
+      if (isRegister) {
+        isRegister = false;
+        formTitle.textContent = "Iniciar Sesión";
+        submitBtn.textContent = "Acceder";
+        toggleRegister.textContent = "Registrarme";
+        nameFields.style.display = "none";
         return;
       }
 
+      // ✅ Redirección si es administrador
+      if (data.role === "administrador") {
+        window.location.href = "/pages/admin.html";
+        return;
+      }
+
+      // ✅ Recargar para actualizar el estado de la página
+      location.reload();
+
     } catch (err) {
-      console.error(err);
+      console.error("Error en login/registro:", err);
       alert("Error al conectar con el servidor.");
     }
   });
