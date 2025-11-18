@@ -1,21 +1,30 @@
 const express = require("express");
+const cors = require("cors");
 const path = require("path");
+const db = require("./db/connection.js");
+
 const app = express();
-const port = 3000;
 
-const userRouter = require("./routes/user");
-
+// Middleware
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static("public"));
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api/usuarios", userRouter);
+// Rutas API
+const productosRoutes = require("./routes/productos.js");
+app.use("/api/productos", productosRoutes);
 
+// Prueba rápida
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.send("API funcionando");
 });
 
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+// Servir imágenes
+app.use("/uploads/products", express.static("uploads/products"));
+
+// Servidor
+app.listen(3000, () => {
+    console.log("Servidor corriendo en http://localhost:3000");
 });

@@ -3,13 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="icon" href="" type="image/x-icon">
-    <link rel="stylesheet" href="../css/login.css">
-   <meta name="description" content="">
-    <title>Document</title>
+
+    <!-- Tus estilos -->
+    <link rel="stylesheet" href="../public/css/styles.css">
+
+    <title>Agendatech - Panel</title>
 </head>
 <body>
-    <script src="../js/login.js"></script>
+
+    <!-- HEADER (se mantiene siempre visible) -->
+    <header class="site-header">
+        <a href="#" class="site-logo">
+            <img src="../public/src/img/womanLogo.png" class="logo-img" />
+            <img src="../public/src/img/bellezaLogo.png" class="slogan-img" />
+        </a>
+        <button id="menu-toggle">☰</button>
+        <nav id="menu" class="menu">
+            <ul>
+                <li><a href="#" id="btnAgendamientos">Agendamientos</a></li>
+                <li><a href="#" id="btnInventario">Inventario</a></li>
+                <li><a href="#" id="btnVentas">Ventas</a></li>
+                <li><a href="#" id="btnCuenta">Mi Cuenta</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 📌 SECCIÓN: AGENDAMIENTOS -->
+<!-- SECCIÓN: AGENDAMIENTOS (inserta dentro del body de tu SPA) -->
+<section id="seccionAgendamientos" class="pagina-section">
+    <div class="agendamiento-grid">
+
+        <!-- CALENDARIO -->
+        <div class="calendar-card card">
+            <div class="calendar-header">
+                <button id="prevMonth" class="nav-month">&lt;</button>
+                <div class="month-year" id="monthYear"></div>
+                <button id="nextMonth" class="nav-month">&gt;</button>
+            </div>
+
+            <div class="weekdays">
+                <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
+            </div>
+
+            <div id="calendarDays" class="calendar-days"></div>
+        </div>
+
+        <!-- PANEL DETALLES / RESERVAR -->
+        <aside class="details-card card">
+            <div class="service-pill" id="selectedServicePill">Seleccione un servicio</div>
+
+            <div class="appointment-details">
+                <div class="detail-row">
+                    <i class="icon-clock">🕒</i>
+                    <div id="selectedDateText">Ninguna fecha seleccionada</div>
+                </div>
+
+                <div class="detail-row">
+                    <i class="icon-place">📍</i>
+                    <div>Calle 20 #27-51<br>San Alonso, Bucaramanga</div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- FORM PARA AGENDAR -->
+            <form id="bookingForm" class="booking-form">
+                <label>Cliente (email)</label>
+                <input id="customerEmail" type="email" placeholder="tu@correo.com" required>
+
+                <label>Nombre</label>
+                <input id="customerName" type="text" placeholder="Nombre completo" required>
+
+                <label>Servicio</label>
+                <select id="serviceSelect" required></select>
+
+                <label>Empleado</label>
+                <select id="employeeSelect" required></select>
+
+                <label>Hora</label>
+                <select id="timeSelect" required></select>
+
+                <label>Método de pago</label>
+                <select id="paymentMethod">
+                    <option value="efectivo">Efectivo</option>
+                    <option value="tarjeta">Tarjeta</option>
+                    <option value="transferencia">Transferencia</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="otro">Otro</option>
+                </select>
+
+                <label>Notas</label>
+                <textarea id="notes" placeholder="Detalles, alergias, etc."></textarea>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Confirmar Cita</button>
+                    <button type="button" id="resetBooking" class="btn-secondary">Limpiar</button>
+                </div>
+            </form>
+
+            <div id="bookingFeedback" class="booking-feedback"></div>
+        </aside>
+
+        <!-- LISTA DE CITAS -->
+        <div class="appointments-list card">
+            <h3>Mis Citas</h3>
+            <div id="appointmentsContainer"></div>
+        </div>
+    </div>
+</section>
+
+
+    <!-- 📌 SECCIÓN: INVENTARIO -->
+    <section id="seccionInventario" class="pagina-section hidden inventario-container">
+
+        <h2 class="titulo">Gestión de Inventario</h2>
+
+        <!-- FORMULARIO CRUD -->
+        <form id="productForm" class="form-card">
+            <div class="form-header">
+                <h3 id="formTitle">Agregar Producto</h3>
+            </div>
+
+            <label>Nombre del Producto</label>
+            <input type="text" id="name" required>
+
+            <label>Descripción</label>
+            <textarea id="description" required></textarea>
+
+            <label>Precio</label>
+            <input type="number" id="price" step="0.01" required>
+
+            <label>Stock</label>
+            <input type="number" id="stock" required>
+
+            <label>Stock Mínimo</label>
+            <input type="number" id="min_stock" required>
+
+            <label>Categoría</label>
+            <select id="category">
+                <option value="Cabello">Cabello</option>
+                <option value="Uñas">Uñas</option>
+                <option value="Cejas y Pestañas">Cejas y Pestañas</option>
+                <option value="Maquillaje">Maquillaje</option>
+                <option value="SkinCare">SkinCare</option>
+                <option value="Otros">Otros</option>
+            </select>
+
+            <label>Activo</label>
+            <select id="active">
+                <option value="1">Sí</option>
+                <option value="0">No</option>
+            </select>
+
+            <label>Imagen del producto</label>
+            <input type="file" id="productImage" accept="image/*">
+
+            <img id="previewImage" class="preview hidden">
+
+            <input type="hidden" id="product_id">
+
+            <button class="btn-primary" type="submit">Guardar</button>
+            <button class="btn-secondary hidden" id="cancelEdit" type="button">Cancelar</button>
+        </form>
+
+        <h3>Productos Registrados</h3>
+        <table class="table-products">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Min</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody"></tbody>
+        </table>
+
+    </section>
+
+    <!-- 📌 SECCIÓN: VENTAS -->
+    <section id="seccionVentas" class="pagina-section hidden">
+        <div class="chart-box">
+        <canvas id="ventasServicios"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <canvas id="ventasProductos"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <canvas id="categoriasChart"></canvas>
+        </div>
+    </section>
+
+    <!-- 📌 SECCIÓN: MI CUENTA -->
+<!-- 📌 SECCIÓN: MI CUENTA -->
+<section id="seccionCuenta" class="pagina-section hidden">
+
+    <div class="cuenta-container">
+
+        <!-- SIDEBAR -->
+        <div class="cuenta-sidebar">
+            <div class="cuenta-avatar">
+                <img src="../assets/user-icon.png" alt="Usuario">
+            </div>
+
+            <h3 id="nombre-usuario">Bienvenido!</h3>
+
+            <ul class="cuenta-menu">
+                <li class="activo">
+                    <i class="icon-lock"></i>
+                    <span>Cambiar contraseña</span>
+                </li>
+
+                <li id="cerrarSesionBtn">
+                    <i class="icon-exit"></i>
+                    <span>Cerrar sesión</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- CONTENIDO -->
+        <div class="cuenta-content">
+            <h2>Cambiar Contraseña</h2>
+
+            <form id="formCambiarPass">
+                <label>Contraseña Actual</label>
+                <input type="password" id="passActual" placeholder="Contraseña Actual" />
+
+                <label>Nueva Contraseña</label>
+                <input type="password" id="passNueva" placeholder="Nueva Contraseña" />
+
+                <label>Confirmar Contraseña</label>
+                <input type="password" id="passConfirm" placeholder="Confirmar Contraseña" />
+
+                <button type="submit" class="btn-actualizar">Actualizar</button>
+            </form>
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+
+<script src="../public/js/admin_agendamiento.js"></script>
+    <script src="../public/js/admin_inventario.js"></script>
+    <script src="../public/js/admin_menu.js"></script>
+ <script src="../public/js/admin_logout.js"></script>
 </body>
 </html>
