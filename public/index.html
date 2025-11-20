@@ -35,7 +35,8 @@
         <li><a href="#" class="text-decoration-none">Agéndate</a></li>
         <li><a href="#" class="text-decoration-none">Productos</a></li>
 <li><a href="#" id="btnCuenta" class="text-decoration-none">Mi cuenta</a></li>
-        <li><a href="#"><img src="src/img/shoppingCart.png" alt="Carrito" style="height:24px;" /></a></li>
+        <li><a href="#" id="btnCarrito"><img src="src/img/shoppingCart.png" class="icono-carrito" alt="Carrito" style="height:24px;" /></a></li>
+
         <li><button id="openLoginBtn" class="btn login-btn-header">Iniciar sesión</button></li>
       </ul>
     </nav>
@@ -244,8 +245,81 @@
 
 </section>
 
+<!-- 📌 SECCIÓN CARRITO -->
+<section id="seccionCarrito" class="pagina-section hidden container my-5">
+
+  <!-- TÍTULO -->
+  <div class="d-flex align-items-center gap-2 mb-4">
+    <button id="volverProductos" class="btn btn-link p-0 fs-4">←</button>
+    <h2 class="m-0 fw-bold">Carrito</h2>
+  </div>
+
+  <!-- LISTA DE PRODUCTOS -->
+  <div id="carritoLista" class="cart-items-container">
+
+    <!-- ITEM DEL CARRITO (se genera dinámico desde JS)
+    <div class="cart-item d-flex align-items-center justify-content-between p-3 mb-3 shadow-sm rounded">
+      
+      <div class="d-flex align-items-center gap-3">
+        <img src="src/img/producto1.png" class="cart-img">
+        <div>
+          <h5 class="m-0 fw-semibold">Mascarilla Facial</h5>
+          <p class="m-0 text-muted">$15.000</p>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <button class="qty-btn disminuir">-</button>
+        <span class="fw-semibold">1</span>
+        <button class="qty-btn aumentar">+</button>
+      </div>
+
+    </div>
+    -->
+
+  </div>
+
+  <!-- RESUMEN DE PAGO -->
+  <div class="pago-resumen shadow-sm rounded p-4 mt-4">
+
+    <div class="d-flex justify-content-between mb-2">
+      <span class="text-muted">Subtotal</span>
+      <strong id="subtotalCarrito">$0</strong>
+    </div>
+
+    <div class="d-flex justify-content-between mb-2">
+      <span class="text-muted">Envío</span>
+      <strong id="envioCarrito">$0</strong>
+    </div>
+
+    <div class="d-flex justify-content-between mb-2">
+      <span class="text-muted">Impuestos</span>
+      <strong id="impuestosCarrito">$0</strong>
+    </div>
+
+    <hr>
+
+    <div class="d-flex justify-content-between fs-5 fw-bold mb-3">
+      <span>Total</span>
+      <span id="totalCarrito">$0</span>
+    </div>
+
+    <button id="btnPagar" class="btn btn-lg w-100 pagar-btn">Pagar</button>
+
+  </div>
+
+  <!-- INFO DE SEGURIDAD -->
+  <p class="text-muted text-center mt-3 small">
+    Esta pasarela de pagos utiliza conexiones seguras (SSL) y cumple con los estándares de seguridad.
+    Tu información nunca será almacenada ni compartida.
+  </p>
+
+</section>
+
+
 </body>
 <script type="module" src="js/user_productos.js"></script>
+<script type="module" src="js/carrito.js"></script>
 <script type="module" src="js/cuenta.js"></script>
 <script type="module" src="js/mostrar_principal.js"></script>
 </html>

@@ -6,13 +6,17 @@ const seccionPrincipal = document.getElementById("seccionPrincipal");
 const seccionProductos = document.getElementById("seccionProductos");
 const seccionCuenta = document.getElementById("seccionCuenta");
 const detalleProducto = document.getElementById("detalleProducto");
+const seccionCarrito = document.getElementById("seccionCarrito");
 
-// Botones del menú - Selección más simple y directa
+// Botones del menú
 const navLinks = document.querySelectorAll('nav ul li a');
-const btnAgendate = navLinks[0]; // Primer link "Agéndate"
-const btnProductos = navLinks[1]; // Segundo link "Productos"
+const btnAgendate = navLinks[0];
+const btnProductos = navLinks[1];
 const btnCuenta = document.getElementById("btnCuenta");
 const btnLogo = document.querySelector(".site-logo");
+
+// Botón / ícono del carrito
+const btnCarrito = document.getElementById("btnCarrito");
 
 // -------- utilitario: ocultar todo --------
 function ocultarTodo() {
@@ -20,6 +24,7 @@ function ocultarTodo() {
     if (seccionProductos) seccionProductos.classList.add("hidden");
     if (seccionCuenta) seccionCuenta.classList.add("hidden");
     if (detalleProducto) detalleProducto.classList.add("hidden");
+    if (seccionCarrito) seccionCarrito.classList.add("hidden"); // ← CORREGIDO
 }
 
 // -------- mostrar página principal --------
@@ -43,9 +48,17 @@ export function mostrarCuenta() {
     window.scrollTo(0, 0);
 }
 
+// -------- mostrar carrito --------
+export function mostrarCarrito() {
+    ocultarTodo();
+    if (seccionCarrito) seccionCarrito.classList.remove("hidden");
+    window.scrollTo(0, 0);
+}
+
 // ============================
 // EVENTOS DEL MENÚ
 // ============================
+
 if (btnLogo) {
     btnLogo.addEventListener("click", (e) => {
         e.preventDefault();
@@ -71,6 +84,14 @@ if (btnCuenta) {
     btnCuenta.addEventListener("click", (e) => {
         e.preventDefault();
         mostrarCuenta();
+    });
+}
+
+// -------- evento botón carrito --------
+if (btnCarrito) {
+    btnCarrito.addEventListener("click", (e) => {
+        e.preventDefault();
+        mostrarCarrito();
     });
 }
 

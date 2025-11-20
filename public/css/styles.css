@@ -859,3 +859,110 @@ body.menu-active::before {
   background: #fff;
   border: 1px solid #eee;
 }
+
+/* --- CARRITO --- */
+.cart-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cart-item {
+  background: #fff;
+  border-radius: 12px;
+}
+
+.cart-img {
+  width: 65px;
+  height: 65px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f1f1f1;
+  border-radius: 50%;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-btn:hover {
+  background: #e0e0e0;
+}
+
+.pago-resumen {
+  background: #f9f7f5;
+  border-radius: 15px;
+}
+
+.pagar-btn {
+  background: #b98a54;
+  color: white;
+  border-radius: 10px;
+}
+
+.pagar-btn:hover {
+  background: #a57a48;
+}
+
+
+/* ========== CARRITO ========== */
+.cart-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.cart-item {
+    background: #fff;
+    transition: transform 0.2s;
+}
+
+.cart-item:hover {
+    transform: translateX(5px);
+}
+
+.qty-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.qty-btn:hover {
+    background: #f8f9fa;
+    border-color: #d4a373;
+}
+
+.pagar-btn {
+    background: linear-gradient(135deg, #ea7166 0%, #d4a373 100%);
+    color: white;
+    border: none;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.pagar-btn:hover {
+    transform: scale(1.02);
+}
+
+.pagar-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.pago-resumen {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+

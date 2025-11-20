@@ -4,13 +4,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const seccionAgendamientos = document.getElementById("seccionAgendamientos");
     const seccionInventario = document.getElementById("seccionInventario");
     const seccionVentas = document.getElementById("seccionVentas");
-    const seccionCuenta = document.getElementById("seccionCuenta");
 
     function ocultarTodo() {
         seccionAgendamientos.classList.add("hidden");
         seccionInventario.classList.add("hidden");
         seccionVentas.classList.add("hidden");
-        seccionCuenta.classList.add("hidden");
     }
 
     // BOTONES MENU
@@ -27,11 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("btnVentas").addEventListener("click", () => {
         ocultarTodo();
         seccionVentas.classList.remove("hidden");
-    });
-
-    document.getElementById("btnCuenta").addEventListener("click", () => {
-        ocultarTodo();
-        seccionCuenta.classList.remove("hidden");
     });
 
     // MENU RESPONSIVE

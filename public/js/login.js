@@ -1,3 +1,5 @@
+import { migrarCarritoAlLogin, cerrarSesionCarrito } from "./carrito.js";
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const loginContainer = document.getElementById("loginContainer");
@@ -18,11 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let isRegister = false;
 
   // ======================================
-  // CAMBIAR BOTÓN A "INICIAR / CERRAR SESIÓN"
+  // ACTUALIZAR BOTÓN SESIÓN
   // ======================================
-
   function actualizarBotonSesion() {
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const usuario = JSON.parse(sessionStorage.getItem("usuario"));
     if (usuario) {
       openLoginBtn.textContent = "Cerrar sesión";
       openLoginBtn.classList.add("logout");
@@ -34,37 +35,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   actualizarBotonSesion();
 
+  // ======================================
+  // BOTÓN: ABRIR LOGIN / CERRAR SESIÓN
+  // ======================================
   openLoginBtn.addEventListener("click", async () => {
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const usuario = JSON.parse(sessionStorage.getItem("usuario"));
 
-    // Si está logueado → cerrar sesión
     if (usuario) {
+      // Cerrar sesión
+      if (!confirm("¿Cerrar sesión?")) return;
+
       try {
-        // Llamar al endpoint de logout en el servidor
         await fetch('http://localhost:3000/api/usuarios/logout', {
           method: 'POST',
           credentials: 'include'
         });
       } catch (err) {
-        console.error("Error cerrando sesión en servidor:", err);
+        console.error("Error cerrando sesión:", err);
       }
 
-      // Limpiar sesión local
-      localStorage.removeItem("usuario");
-      alert("Sesión cerrada");
+      sessionStorage.removeItem("usuario");
+      cerrarSesionCarrito(); // Limpiar carrito
+      
+      alert("✅ Sesión cerrada");
       actualizarBotonSesion();
       location.reload();
       return;
     }
 
-    // Si no está logueado → mostrar modal
+    // Abrir modal de login
     abrirLogin();
   });
 
   // ======================================
-  // MODAL LOGIN / REGISTRO
+  // MODAL
   // ======================================
-
   function abrirLogin() {
     loginContainer.classList.add("show");
     overlay.classList.add("show");
@@ -85,9 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay.addEventListener("click", cerrarLogin);
 
   // ======================================
-  // MOSTRAR / OCULTAR CONTRASEÑA
+  // MOSTRAR/OCULTAR CONTRASEÑA
   // ======================================
-
   toggleBtn.addEventListener("click", () => {
     const isHidden = passInput.type === "password";
     passInput.type = isHidden ? "text" : "password";
@@ -97,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ======================================
   // CAMBIAR ENTRE LOGIN Y REGISTRO
   // ======================================
-
   toggleRegister.addEventListener("click", () => {
     isRegister = !isRegister;
 
@@ -119,9 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ======================================
-  // REGISTRO / LOGIN - CORREGIDO
+  // REGISTRO / LOGIN
   // ======================================
-
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -131,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const surname = lastName.value.trim();
 
     if (!email || !password || (isRegister && (!name || !surname))) {
-      alert("Completa todos los campos.");
+      alert("⚠️ Completa todos los campos");
       return;
     }
 
@@ -139,8 +141,8 @@ document.addEventListener("DOMContentLoaded", () => {
       let endpoint = "";
       let body = {};
 
-      // ✅ Configurar endpoint y body según modo
       if (isRegister) {
+        // REGISTRO
         endpoint = "/api/usuarios";
         body = {
           name,
@@ -151,83 +153,102 @@ document.addEventListener("DOMContentLoaded", () => {
           role: "cliente"
         };
       } else {
+        // LOGIN
         endpoint = "/api/usuarios/login";
         body = { email, password };
       }
 
-      // ✅ Hacer fetch dinámico con el endpoint correcto
       const res = await fetch(`http://localhost:3000${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // CRÍTICO para cookies de sesión
+        credentials: 'include',
         body: JSON.stringify(body)
       });
 
       const data = await res.json();
 
-      // Manejar errores
       if (data.error) {
-        alert("Error: " + data.error);
+        alert("❌ Error: " + data.error);
         return;
       }
 
-      // ✅ Guardar sesión local
-      localStorage.setItem("usuario", JSON.stringify({
-        username: data.username,
-        role: data.role
-      }));
-
-      alert(
-        isRegister
-          ? "Cuenta creada con éxito. Por favor inicia sesión."
-          : "Bienvenido " + data.username
-      );
-
-      cerrarLogin();
-      actualizarBotonSesion();
-
-      // ✅ Si es registro, cambiar a modo login
+      // ======================================
+      // REGISTRO EXITOSO
+      // ======================================
       if (isRegister) {
+        alert("✅ Cuenta creada. Ahora inicia sesión.");
+        
+        // Cambiar a modo login
         isRegister = false;
         formTitle.textContent = "Iniciar Sesión";
         submitBtn.textContent = "Acceder";
         toggleRegister.textContent = "Registrarme";
         nameFields.style.display = "none";
+        form.reset();
         return;
       }
 
-      // ✅ Redirección si es administrador
-      if (data.role === "administrador") {
-        window.location.href = "/pages/admin.html";
+      // ======================================
+      // LOGIN EXITOSO
+      // ======================================
+      
+      // 🔥 IMPORTANTE: Guardar usuario con person_id
+      const usuarioData = {
+        id: data.person_id,           // ← ID de Person (customer_id)
+        username: data.username,
+        email: data.email || email,
+        role: data.role
+      };
+
+      sessionStorage.setItem("usuario", JSON.stringify(usuarioData));
+
+      console.log("✅ Usuario guardado:", usuarioData);
+
+      // Migrar carrito local a DB
+      await migrarCarritoAlLogin(usuarioData);
+
+      alert(`✅ Bienvenido ${data.username}`);
+      cerrarLogin();
+      actualizarBotonSesion();
+
+      // Redirigir si es admin
+      if (data.role?.toLowerCase() === "administrador") {
+        window.location.href = "http://127.0.0.1:5502/public/pages/admin.html";
         return;
       }
 
-      // ✅ Recargar para actualizar el estado de la página
+      // Recargar página
       location.reload();
 
     } catch (err) {
       console.error("Error en login/registro:", err);
-      alert("Error al conectar con el servidor.");
+      alert("❌ Error al conectar con el servidor");
     }
   });
 
   // ======================================
-  // PROTEGER MENÚ PARA SOLO USUARIOS LOGUEADOS
+  // PROTEGER MENÚ
   // ======================================
-
-  const protecciones = document.querySelectorAll(
-    'nav ul li a:not(.login-btn-header)'
+  const linksProtegidos = document.querySelectorAll(
+    'nav ul li a:not(#openLoginBtn)'
   );
 
   function verificarAcceso(e) {
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+    
+    const texto = e.target.textContent.trim();
+    
+    // Permitir acceso a "Productos" sin login
+    if (texto === "Productos") return;
+    
     if (!usuario) {
       e.preventDefault();
+      alert("⚠️ Debes iniciar sesión");
       abrirLogin();
     }
   }
 
-  protecciones.forEach(link => {
+  linksProtegidos.forEach(link => {
     link.addEventListener("click", verificarAcceso);
   });
 

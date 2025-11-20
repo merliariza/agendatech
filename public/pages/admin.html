@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Tus estilos -->
-    <link rel="stylesheet" href="../public/css/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
 
     <title>Agendatech - Panel</title>
 </head>
@@ -14,8 +14,8 @@
     <!-- HEADER (se mantiene siempre visible) -->
     <header class="site-header">
         <a href="#" class="site-logo">
-            <img src="../public/src/img/womanLogo.png" class="logo-img" />
-            <img src="../public/src/img/bellezaLogo.png" class="slogan-img" />
+            <img src="../src/img/womanLogo.png" class="logo-img" />
+            <img src="../src/img/bellezaLogo.png" class="slogan-img" />
         </a>
         <button id="menu-toggle">☰</button>
         <nav id="menu" class="menu">
@@ -23,7 +23,10 @@
                 <li><a href="#" id="btnAgendamientos">Agendamientos</a></li>
                 <li><a href="#" id="btnInventario">Inventario</a></li>
                 <li><a href="#" id="btnVentas">Ventas</a></li>
-                <li><a href="#" id="btnCuenta">Mi Cuenta</a></li>
+                <li id="cerrarSesionBtn">
+                    <i class="icon-exit"></i>
+                    <span>Cerrar sesión</span>
+                </li>
             </ul>
         </nav>
     </header>
@@ -199,59 +202,14 @@
         </div>
     </section>
 
-    <!-- 📌 SECCIÓN: MI CUENTA -->
-<!-- 📌 SECCIÓN: MI CUENTA -->
-<section id="seccionCuenta" class="pagina-section hidden">
-
-    <div class="cuenta-container">
-
-        <!-- SIDEBAR -->
-        <div class="cuenta-sidebar">
-            <h3 id="nombre-usuario">Bienvenido!</h3>
-
-            <ul class="cuenta-menu">
-                <li class="activo">
-                    <i class="icon-lock"></i>
-                    <span>Cambiar contraseña</span>
-                </li>
-
-                <li id="cerrarSesionBtn">
-                    <i class="icon-exit"></i>
-                    <span>Cerrar sesión</span>
-                </li>
-            </ul>
-        </div>
-
-        <!-- CONTENIDO -->
-        <div class="cuenta-content">
-            <h2>Cambiar Contraseña</h2>
-
-            <form id="formCambiarPass">
-                <label>Contraseña Actual</label>
-                <input type="password" id="passActual" placeholder="Contraseña Actual" />
-
-                <label>Nueva Contraseña</label>
-                <input type="password" id="passNueva" placeholder="Nueva Contraseña" />
-
-                <label>Confirmar Contraseña</label>
-                <input type="password" id="passConfirm" placeholder="Confirmar Contraseña" />
-
-                <button type="submit" class="btn-actualizar">Actualizar</button>
-            </form>
-        </div>
-
-    </div>
-
-</section>
 
 
 
 
-
-<script src="../public/js/admin_agendamiento.js"></script>
-    <script src="../public/js/admin_inventario.js"></script>
-    <script src="../public/js/admin_menu.js"></script>
- <script src="../public/js/admin_logout.js"></script>
-  <script src="../public/js/cuenta.js"></script>
+<script src="../js/admin_agendamiento.js"></script>
+    <script src="../js/admin_inventario.js"></script>
+    <script src="../js/admin_menu.js"></script>
+ <script src="../js/admin_logout.js"></script>
+  <script src="../js/cuenta.js"></script>
 </body>
 </html>
