@@ -1,13 +1,5 @@
-/* ========= AGENDAMIENTOS - JS (CORREGIDO) =========
-   - Evita bug de zona horaria usando fechas ISO con hora 12:00 (mediodía).
-   - Marcar día seleccionado correctamente al navegar meses.
-   - Filtrar horas disponibles por empleado (no mostrar las ya reservadas).
-   - Mejor manejo de selects y renderizados.
-*/
-
 document.addEventListener("DOMContentLoaded", function () {
 
-    // SIMULACIÓN DE DATOS: servicios y empleados (normalmente vienen de BD)
     const services = [
         { id: 1, name: "Cabello (Corte + Peinado)", description: "Corte y peinado profesional", price: 35000, duration_minutes: 60 },
         { id: 2, name: "Uñas (Manicure)", description: "Manicure clásico", price: 25000, duration_minutes: 45 },
@@ -21,12 +13,10 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: 103, name: "Lucía" }
     ];
 
-    // Estado local
-    let appointments = []; // simulación de tabla Appointment
-    let selectedDate = null; // formato YYYY-MM-DD
+    let appointments = []; 
+    let selectedDate = null; 
     let currentYear, currentMonth;
 
-    // DOM references
     const monthYear = document.getElementById("monthYear");
     const calendarDays = document.getElementById("calendarDays");
     const prevMonth = document.getElementById("prevMonth");
@@ -43,35 +33,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const bookingFeedback = document.getElementById("bookingFeedback");
     const appointmentsContainer = document.getElementById("appointmentsContainer");
 
-    // ---------- HELPERS PARA FECHAS (evitan timezone bug) ----------
-    // Construye una cadena ISO segura (mediodía) para evitar desfases de zona horaria.
     function buildDateISONoTZ(year, monthZeroBased, day) {
         const mm = String(monthZeroBased + 1).padStart(2, "0");
         const dd = String(day).padStart(2, "0");
-        // ponemos 12:00:00 para evitar que el Date interprete el día anterior por zonas horarias
         return `${year}-${mm}-${dd}T12:00:00`;
     }
 
-    // Devuelve YYYY-MM-DD a partir de year, month (0-11), day
     function formatDateYYYYMMDD(y, mZeroBased, d) {
         const mm = String(mZeroBased + 1).padStart(2, "0");
         const dd = String(d).padStart(2, "0");
         return `${y}-${mm}-${dd}`;
     }
 
-    // Convierte YYYY-MM-DD a texto largo en español usando mediodía para evitar zona horaria
     function formatDateLong(dateStrYYYYMMDD) {
         const d = new Date(dateStrYYYYMMDD + "T12:00:00");
         return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    // Comparador simple de YYYY-MM-DD
     function isSameDateISO(a, b) {
         if (!a || !b) return false;
         return a === b;
     }
 
-    // ---------- INICIALIZACIÓN DE SELECTS ----------
     function initData() {
         serviceSelect.innerHTML = "";
         services.forEach(s => serviceSelect.innerHTML += `<option value="${s.id}">${s.name} — $${s.price}</option>`);
@@ -80,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function () {
         employees.forEach(e => employeeSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`);
     }
 
-    // ---------- CALENDARIO ----------
     function initCalendar() {
         const today = new Date();
         currentYear = today.getFullYear();
@@ -89,16 +71,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderCalendar(year, month) {
-        // month is 0-11
         monthYear.textContent = `${new Intl.DateTimeFormat('es-ES', { month: 'long' }).format(new Date(year, month))} ${year}`;
         calendarDays.innerHTML = "";
 
         const firstDay = new Date(year, month, 1);
-        // Ajustamos para que lunes sea el primer día (0)
         const startWeekDay = (firstDay.getDay() + 6) % 7;
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        // placeholders del mes anterior (inactivos)
         for (let i = 0; i < startWeekDay; i++) {
             const empty = document.createElement("div");
             empty.className = "calendar-day inactive";
@@ -111,43 +90,36 @@ document.addEventListener("DOMContentLoaded", function () {
             cell.textContent = day;
             cell.setAttribute("data-day", String(day));
             cell.setAttribute("data-year", String(year));
-            cell.setAttribute("data-month", String(month)); // 0-11
+            cell.setAttribute("data-month", String(month)); 
 
-            // marcar hoy
             const today = new Date();
             if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
                 cell.classList.add("today");
             }
 
-            // marcar seleccionado si coincide con selectedDate
             const isoForCell = formatDateYYYYMMDD(year, month, day);
             if (isSameDateISO(selectedDate, isoForCell)) {
                 cell.classList.add("selected");
             }
 
-            // click handler estableciendo la fecha con método seguro
             cell.addEventListener("click", (e) => {
                 if (cell.classList.contains("inactive")) return;
                 const y = parseInt(cell.getAttribute("data-year"));
                 const m = parseInt(cell.getAttribute("data-month"));
                 const d = parseInt(cell.getAttribute("data-day"));
 
-                // Construir YYYY-MM-DD seguro
-                const safeISO = buildDateISONoTZ(y, m, d); // e.g. 2025-11-15T12:00:00
+                const safeISO = buildDateISONoTZ(y, m, d); 
                 const safeYMD = safeISO.split("T")[0];
 
                 selectedDate = safeYMD;
 
-                // actualizar visual
                 Array.from(calendarDays.children).forEach(c => c.classList.remove("selected"));
                 cell.classList.add("selected");
 
                 selectedDateText.innerHTML = formatDateLong(selectedDate);
 
-                // recalcular horas disponibles (según empleado seleccionado)
                 populateTimeOptionsForDate(selectedDate);
 
-                // actualizar lista de citas y demás vistas
                 renderAppointments();
             });
 
@@ -167,28 +139,23 @@ document.addEventListener("DOMContentLoaded", function () {
         renderCalendar(currentYear, currentMonth);
     });
 
-    // ---------- HORARIOS DISPONIBLES ----------
-    // Ahora la función tiene en cuenta el empleado seleccionado. Si no hay empleado, muestra todas las horas.
-    function populateTimeOptionsForDate(dateStr) {
+  function populateTimeOptionsForDate(dateStr) {
         timeSelect.innerHTML = "";
         const startHour = 8;
         const endHour = 18;
         const selectedEmployeeId = parseInt(employeeSelect.value) || null;
 
-        // Citas no canceladas para esa fecha
         const bookedForDate = appointments.filter(a => a.appointment_date === dateStr && a.status !== 'cancelada');
 
         for (let h = startHour; h <= endHour; h++) {
             const hh = String(h).padStart(2, "0");
             const timeStr = `${hh}:00`;
 
-            // si hay empleado seleccionado, verificar conflicto con ese empleado
             let isBooked = false;
             if (selectedEmployeeId) {
                 isBooked = bookedForDate.some(a => a.employee_id === selectedEmployeeId && a.appointment_time.startsWith(timeStr));
             } else {
-                // si no hay empleado seleccionado, marcamos como disponible solo si no existe cita para cualquier empleado
-                isBooked = bookedForDate.some(a => a.appointment_time.startsWith(timeStr));
+               isBooked = bookedForDate.some(a => a.appointment_time.startsWith(timeStr));
             }
 
             const option = document.createElement("option");
@@ -204,7 +171,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ---------- CREAR CITA (simulación) ----------
     bookingForm.addEventListener("submit", function (e) {
         e.preventDefault();
         if (!selectedDate) {
@@ -221,18 +187,15 @@ document.addEventListener("DOMContentLoaded", function () {
         const paymentMethod = document.getElementById("paymentMethod").value;
         const notes = document.getElementById("notes").value.trim();
 
-        // validaciones
         if (!customerEmail || !customerName || !serviceId || !employeeId || !appointmentTime) {
             bookingFeedback.style.color = "crimson";
             bookingFeedback.textContent = "Completa todos los campos requeridos.";
             return;
         }
 
-        // obtener servicio y precio
         const serviceObj = services.find(s => s.id === serviceId);
         const finalPrice = serviceObj ? serviceObj.price : 0;
 
-        // verificar conflicto (mismo employee, misma fecha y hora)
         const conflict = appointments.find(a => a.employee_id === employeeId && a.appointment_date === selectedDate && a.appointment_time.startsWith(appointmentTime) && a.status !== 'cancelada');
         if (conflict) {
             bookingFeedback.style.color = "crimson";
@@ -240,15 +203,14 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // crear cita (simulación - en producción aquí harías POST al backend)
         const appointment = {
             id: Date.now(),
-            customer_id: customerEmail,           // -> en producción usarías person.id
+            customer_id: customerEmail,           
             customer_name: customerName,
             employee_id: employeeId,
             service_id: serviceId,
-            appointment_date: selectedDate,      // YYYY-MM-DD
-            appointment_time: `${appointmentTime}:00`, // HH:MM:SS
+            appointment_date: selectedDate,     
+            appointment_time: `${appointmentTime}:00`,
             status: "pendiente",
             final_price: finalPrice,
             payment_method: paymentMethod,
@@ -265,16 +227,13 @@ document.addEventListener("DOMContentLoaded", function () {
         bookingForm.reset();
         selectedServicePill.textContent = "Seleccione un servicio";
 
-        // limpiar selección de fecha
         selectedDate = null;
         selectedDateText.textContent = "Ninguna fecha seleccionada";
 
-        // actualizar UI
         renderAppointments();
         renderCalendar(currentYear, currentMonth);
     });
 
-    // ---------- RESET FORM ----------
     const resetBtn = document.getElementById("resetBooking");
     if (resetBtn) {
         resetBtn.addEventListener("click", () => {
@@ -283,7 +242,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ---------- RENDER LISTA DE CITAS ----------
     function renderAppointments() {
         appointmentsContainer.innerHTML = "";
         if (!appointments || appointments.length === 0) {
@@ -291,7 +249,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Ordenar por fecha y hora
         const sorted = appointments.slice().sort((a,b) => {
             if (a.appointment_date === b.appointment_date) return a.appointment_time.localeCompare(b.appointment_time);
             return a.appointment_date.localeCompare(b.appointment_date);
@@ -316,13 +273,12 @@ document.addEventListener("DOMContentLoaded", function () {
             btnView.className = "btn-secondary";
             btnView.textContent = "Ver";
             btnView.addEventListener("click", () => {
-                // rellenar formulario con datos de la cita seleccionada
+                
                 document.getElementById("customerEmail").value = a.customer_id;
                 document.getElementById("customerName").value = a.customer_name;
                 serviceSelect.value = a.service_id;
                 employeeSelect.value = a.employee_id;
 
-                // seleccionar la fecha en el calendario (si el mes actual no coincide, navegamos)
                 const [y, m, d] = a.appointment_date.split("-");
                 const yearNum = parseInt(y);
                 const monthNumZeroBased = parseInt(m) - 1;
@@ -332,11 +288,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 currentMonth = monthNumZeroBased;
                 renderCalendar(currentYear, currentMonth);
 
-                // seleccionar la celda que contiene ese día (se marcará por renderCalendar)
                 selectedDate = a.appointment_date;
                 selectedDateText.textContent = formatDateLong(selectedDate);
 
-                // poblar horas (con empleado seleccionado)
                 populateTimeOptionsForDate(selectedDate);
                 setTimeout(() => {
                     Array.from(timeSelect.options).forEach(opt => {
@@ -355,9 +309,7 @@ document.addEventListener("DOMContentLoaded", function () {
             btnCancel.addEventListener("click", () => {
                 if (!confirm("¿Estás segura de cancelar esta cita?")) return;
                 a.status = 'cancelada';
-                // en producción: actualizar en la DB via fetch PUT
                 renderAppointments();
-                // si el usuario está viendo ese día, volver a poblar horas
                 if (selectedDate === a.appointment_date) populateTimeOptionsForDate(selectedDate);
             });
 
@@ -371,20 +323,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ---------- EVENTOS: cambios servicio/empleado -----------
     serviceSelect.addEventListener("change", () => {
         const sid = parseInt(serviceSelect.value);
         const s = services.find(x => x.id === sid);
         selectedServicePill.textContent = s ? `${s.name} — $${s.price}` : "Seleccione un servicio";
-        // Si quieres filtrar empleados por servicio, aquí podrías llamar a una función que actualice employeeSelect
     });
 
     employeeSelect.addEventListener("change", () => {
-        // si ya hay fecha seleccionada, recalcular horas considerando este empleado
         if (selectedDate) populateTimeOptionsForDate(selectedDate);
     });
 
-    // ---------- INICIALIZAR TODO ----------
     initData();
     initCalendar();
     renderAppointments();

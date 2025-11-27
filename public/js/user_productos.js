@@ -10,9 +10,6 @@ const detalleProducto = document.getElementById("detalleProducto");
 let productosPublic = [];
 let categoriaActual = "Todos";
 
-// =============================
-// CARGAR PRODUCTOS
-// =============================
 async function cargarProductosPublic() {
     try {
         const res = await fetch(API_URL);
@@ -27,9 +24,6 @@ async function cargarProductosPublic() {
     }
 }
 
-// =============================
-// PINTAR TARJETAS
-// =============================
 function pintarTarjetas() {
     if (!productosGrid) return;
 
@@ -65,14 +59,12 @@ function pintarTarjetas() {
             <button class="add-cart-btn">🛒 Agregar</button>
         `;
 
-        // Evento para ver detalle (click en la card, pero NO en el botón)
         card.addEventListener("click", (e) => {
             if (!e.target.classList.contains("add-cart-btn")) {
                 mostrarDetalleProducto(p.id);
             }
         });
 
-        // Evento para agregar al carrito (solo el botón)
         const btnAgregar = card.querySelector(".add-cart-btn");
         btnAgregar.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -89,9 +81,6 @@ function pintarTarjetas() {
     });
 }
 
-// =============================
-// MOSTRAR DETALLE
-// =============================
 function mostrarDetalleProducto(id) {
     const p = productosPublic.find(x => x.id == id);
     if (!p) {
@@ -112,19 +101,16 @@ function mostrarDetalleProducto(id) {
         <div class="detalle-wrapper">
             <div class="detalle-grid">
                 
-                <!-- Imagen -->
                 <div class="detalle-img-container">
                     <img src="${p.image}" class="detalle-img" alt="${p.name}">
                 </div>
 
-                <!-- Información -->
                 <div class="detalle-info">
                     <h2 class="detalle-titulo">${p.name}</h2>
                     <h3 class="detalle-precio">$${parseFloat(p.price).toLocaleString('es-CO')}</h3>
 
                     <p class="detalle-desc">${p.description || "Sin descripción disponible"}</p>
 
-                    <!-- Contador -->
                     <div class="contador mb-3">
                         <button class="cont-btn" id="btnRestar">−</button>
                         <span id="cantidadSpan">${cantidadActual}</span>
@@ -138,7 +124,6 @@ function mostrarDetalleProducto(id) {
         </div>
     `;
 
-    // Eventos del detalle
     const btnVolver = document.getElementById("volverProductos");
     const btnRestar = document.getElementById("btnRestar");
     const btnSumar = document.getElementById("btnSumar");
@@ -174,7 +159,6 @@ function mostrarDetalleProducto(id) {
         btnAgregarDetalle.addEventListener("click", () => {
             console.log(`🛒 Agregando ${cantidadActual} unidad(es) de ${p.name}`);
             
-            // Agregar la cantidad seleccionada
             for (let i = 0; i < cantidadActual; i++) {
                 agregarAlCarrito({
                     id: p.id,
@@ -184,7 +168,6 @@ function mostrarDetalleProducto(id) {
                 });
             }
             
-            // Volver a productos después de agregar
             setTimeout(() => {
                 detalleProducto.classList.add("hidden");
                 seccionProductos.classList.remove("hidden");
@@ -193,9 +176,6 @@ function mostrarDetalleProducto(id) {
     }
 }
 
-// =============================
-// EVENTOS - BUSCAR
-// =============================
 if (buscarInput) {
     buscarInput.addEventListener("input", () => {
         console.log("🔍 Buscando:", buscarInput.value);
@@ -203,9 +183,6 @@ if (buscarInput) {
     });
 }
 
-// =============================
-// EVENTOS - CATEGORÍAS
-// =============================
 document.querySelectorAll(".cat-btn").forEach(btn => {
     btn.addEventListener("click", () => {
         document.querySelector(".cat-btn.active")?.classList.remove("active");
@@ -216,13 +193,9 @@ document.querySelectorAll(".cat-btn").forEach(btn => {
     });
 });
 
-// =============================
-// NAVEGACIÓN - MOSTRAR PRODUCTOS
-// =============================
 function mostrarProductos() {
     console.log("📦 Mostrando sección productos");
     
-    // Ocultar todo
     const seccionPrincipal = document.getElementById("seccionPrincipal");
     const seccionCuenta = document.getElementById("seccionCuenta");
     const seccionCarrito = document.getElementById("seccionCarrito");
@@ -232,16 +205,10 @@ function mostrarProductos() {
     if (seccionCarrito) seccionCarrito.classList.add("hidden");
     if (detalleProducto) detalleProducto.classList.add("hidden");
 
-    // Mostrar productos
     if (seccionProductos) seccionProductos.classList.remove("hidden");
     
-    // Recargar productos
     pintarTarjetas();
 }
-
-// =============================
-// EVENTOS DE NAVEGACIÓN
-// =============================
 const linksMenu = document.querySelectorAll("nav ul li a");
 
 linksMenu.forEach(link => {
@@ -255,12 +222,8 @@ linksMenu.forEach(link => {
     });
 });
 
-// Exportar para uso global
 window.mostrarProductos = mostrarProductos;
 window.mostrarDetalleProducto = mostrarDetalleProducto;
 
-// =============================
-// INICIALIZACIÓN
-// =============================
 console.log("🚀 Módulo user_productos.js cargado");
 cargarProductosPublic();

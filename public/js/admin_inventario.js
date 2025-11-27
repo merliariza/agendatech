@@ -8,9 +8,6 @@ const cancelEdit = document.getElementById("cancelEdit");
 let products = [];
 let editing = false;
 
-// =============================
-// CARGAR PRODUCTOS DESDE LA API
-// =============================
 async function loadProducts() {
     const res = await fetch(API_URL);
     products = await res.json();
@@ -19,9 +16,6 @@ async function loadProducts() {
 
 loadProducts();
 
-// =============================
-// PREVISUALIZAR IMAGEN
-// =============================
 document.getElementById("productImage").addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -34,9 +28,6 @@ document.getElementById("productImage").addEventListener("change", (e) => {
     reader.readAsDataURL(file);
 });
 
-// =============================
-// CREAR O EDITAR PRODUCTO 
-// =============================
 productForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -51,7 +42,6 @@ productForm.addEventListener("submit", async (e) => {
         image: previewImage.src || ""
     };
 
-    // EDITAR
     if (editing) {
         const id = document.getElementById("product_id").value;
 
@@ -71,7 +61,6 @@ productForm.addEventListener("submit", async (e) => {
         document.getElementById("formTitle").innerText = "Agregar Producto";
 
     } else {
-        // CREAR
         const res = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -91,9 +80,6 @@ productForm.addEventListener("submit", async (e) => {
     await loadProducts();
 });
 
-// =============================
-// PINTAR TABLA
-// =============================
 function renderProducts() {
     productTableBody.innerHTML = "";
 
@@ -115,9 +101,6 @@ function renderProducts() {
     });
 }
 
-// =============================
-// EDITAR PRODUCTO
-// =============================
 function editProduct(id) {
     const p = products.find(x => x.id === id);
 
@@ -139,9 +122,6 @@ function editProduct(id) {
     document.getElementById("formTitle").innerText = "Editar Producto";
 }
 
-// =============================
-// ELIMINAR PRODUCTO
-// =============================
 async function deleteProduct(id) {
     if (!confirm("¿Eliminar producto?")) return;
 
@@ -152,9 +132,6 @@ async function deleteProduct(id) {
     await loadProducts();
 }
 
-// =============================
-// CANCELAR EDICIÓN
-// =============================
 cancelEdit.addEventListener("click", () => {
     editing = false;
     productForm.reset();
@@ -172,7 +149,7 @@ document.getElementById("productImage").addEventListener("change", (e) => {
 
     const reader = new FileReader();
     reader.onload = () => {
-        previewImage.src = reader.result;  // Base64
+        previewImage.src = reader.result;  
         previewImage.classList.remove("hidden");
     };
     reader.readAsDataURL(file);

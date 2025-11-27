@@ -19,9 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let isRegister = false;
 
-  // ======================================
-  // ACTUALIZAR BOTÓN SESIÓN
-  // ======================================
   function actualizarBotonSesion() {
     const usuario = JSON.parse(sessionStorage.getItem("usuario"));
     if (usuario) {
@@ -35,14 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   actualizarBotonSesion();
 
-  // ======================================
-  // BOTÓN: ABRIR LOGIN / CERRAR SESIÓN
-  // ======================================
   openLoginBtn.addEventListener("click", async () => {
     const usuario = JSON.parse(sessionStorage.getItem("usuario"));
 
     if (usuario) {
-      // Cerrar sesión
       if (!confirm("¿Cerrar sesión?")) return;
 
       try {
@@ -55,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       sessionStorage.removeItem("usuario");
-      cerrarSesionCarrito(); // Limpiar carrito
+      cerrarSesionCarrito(); 
       
       alert("✅ Sesión cerrada");
       actualizarBotonSesion();
@@ -63,13 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Abrir modal de login
     abrirLogin();
   });
 
-  // ======================================
-  // MODAL
-  // ======================================
   function abrirLogin() {
     loginContainer.classList.add("show");
     overlay.classList.add("show");
@@ -89,18 +78,12 @@ document.addEventListener("DOMContentLoaded", () => {
   closeBtn.addEventListener("click", cerrarLogin);
   overlay.addEventListener("click", cerrarLogin);
 
-  // ======================================
-  // MOSTRAR/OCULTAR CONTRASEÑA
-  // ======================================
   toggleBtn.addEventListener("click", () => {
     const isHidden = passInput.type === "password";
     passInput.type = isHidden ? "text" : "password";
     toggleBtn.textContent = isHidden ? "👁️" : "🙈";
   });
 
-  // ======================================
-  // CAMBIAR ENTRE LOGIN Y REGISTRO
-  // ======================================
   toggleRegister.addEventListener("click", () => {
     isRegister = !isRegister;
 
@@ -121,9 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleBtn.textContent = "🙈";
   });
 
-  // ======================================
-  // REGISTRO / LOGIN
-  // ======================================
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -142,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
       let body = {};
 
       if (isRegister) {
-        // REGISTRO
         endpoint = "/api/usuarios";
         body = {
           name,
@@ -153,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
           role: "cliente"
         };
       } else {
-        // LOGIN
         endpoint = "/api/usuarios/login";
         body = { email, password };
       }
@@ -172,13 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ======================================
-      // REGISTRO EXITOSO
-      // ======================================
       if (isRegister) {
         alert("✅ Cuenta creada. Ahora inicia sesión.");
         
-        // Cambiar a modo login
         isRegister = false;
         formTitle.textContent = "Iniciar Sesión";
         submitBtn.textContent = "Acceder";
@@ -188,13 +162,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ======================================
-      // LOGIN EXITOSO
-      // ======================================
-      
-      // 🔥 IMPORTANTE: Guardar usuario con person_id
       const usuarioData = {
-        id: data.person_id,           // ← ID de Person (customer_id)
+        id: data.person_id,           
         username: data.username,
         email: data.email || email,
         role: data.role
@@ -204,20 +173,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       console.log("✅ Usuario guardado:", usuarioData);
 
-      // Migrar carrito local a DB
       await migrarCarritoAlLogin(usuarioData);
 
       alert(`✅ Bienvenido ${data.username}`);
       cerrarLogin();
       actualizarBotonSesion();
 
-      // Redirigir si es admin
       if (data.role?.toLowerCase() === "administrador") {
         window.location.href = "http://127.0.0.1:5502/public/pages/admin.html";
         return;
       }
 
-      // Recargar página
       location.reload();
 
     } catch (err) {
@@ -226,9 +192,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ======================================
-  // PROTEGER MENÚ
-  // ======================================
   const linksProtegidos = document.querySelectorAll(
     'nav ul li a:not(#openLoginBtn)'
   );
@@ -238,7 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const texto = e.target.textContent.trim();
     
-    // Permitir acceso a "Productos" sin login
     if (texto === "Productos") return;
     
     if (!usuario) {

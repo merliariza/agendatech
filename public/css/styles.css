@@ -28,9 +28,6 @@ body {
   height: 60px;
   position: relative;
 }
-/* ------------------------------
-   GENERAL
------------------------------- */
 .header-content {
   display: flex;
   align-items: center;
@@ -56,9 +53,6 @@ body {
   height: auto;
 }
 
-/* -----------------------------------
-   MENÚ DESLIZANTE (MÓVIL)
------------------------------------ */
 #menu {
   background: white;
   position: fixed;
@@ -105,9 +99,6 @@ body {
   padding: 10px;
 }
 
-/* -----------------------------------
-   OVERLAY OSCURO CUANDO MENÚ ABRE
------------------------------------ */
 body.menu-active::before {
   content: "";
   position: fixed;
@@ -120,9 +111,6 @@ body.menu-active::before {
   transition: opacity 0.5s ease-in-out;
 }
 
-/* -----------------------------------
-   BOTÓN HAMBURGUESA
------------------------------------ */
 #menu-toggle {
   color: #bb8543;
   display: flex;
@@ -156,12 +144,8 @@ body.menu-active::before {
 }
 
 
-/* -----------------------------------
-   ESTILOS ESPECÍFICOS PARA CELULAR
------------------------------------ */
 @media (max-width: 767px) {
 
-  /* CORRECCIÓN: menú vertical en móvil */
   #menu ul {
     display: flex;
     flex-direction: column;
@@ -173,12 +157,8 @@ body.menu-active::before {
   }
 }
 
-/* -----------------------------------
-   VERSION ESCRITORIO
------------------------------------ */
 @media (min-width: 768px) {
 
-  /* Menú fijo en escritorio */
   #menu {
     display: flex;
     align-items: center;
@@ -196,7 +176,6 @@ body.menu-active::before {
     display: none;
   }
 
-  /* Menú horizontal */
   #menu ul {
     display: flex;
     flex-direction: row;
@@ -212,14 +191,11 @@ body.menu-active::before {
     padding: 10px 12px;
   }
 
-  /* Overlay especial escritorio (opcional) */
   body.menu-active::before {
     background: rgba(31, 31, 31, 0.7);
   }
 }
 
-
-/* Links */
 .links {
     margin-top: 10px;
     font-size: 14px;
@@ -237,8 +213,6 @@ body.menu-active::before {
     text-decoration: underline;
 }
 
-
-/* Carousel */
   .custom-carousel-container {
     max-width: 950px;
     margin: 0 auto; 
@@ -289,26 +263,21 @@ body.menu-active::before {
         color:#9e9c9b
     }
 
-/* ADMIN STYLES*/
-/* CONTENEDOR *//* SECCIONES GENERALES */
 .pagina-section {
     padding: 30px;
     margin-top: 10px;
 }
 
-/* ADMIN STYLES */
 .inventario-container {
     padding: 30px;
 }
 
-/* TITULOS */
 .titulo {
     color: #b88647;
     font-weight: bold;
     margin-bottom: 20px;
 }
 
-/* FORMULARIO */
 .form-card {
     width: 100%;
     max-width: 480px;
@@ -347,7 +316,6 @@ body.menu-active::before {
     border-color: #b88647;
 }
 
-/* BOTONES */
 .btn-primary {
     background: #b88647;
     border: none;
@@ -368,7 +336,6 @@ body.menu-active::before {
     cursor: pointer;
 }
 
-/* TABLA */
 .table-products {
     width: 100%;
     margin-top: 25px;
@@ -395,16 +362,10 @@ body.menu-active::before {
     border-radius: 10px;
 }
 
-/* OCULTAR SECCIONES */
 .hidden {
     display: none !important;
 }
 
-
-
-/*AGENDAMIENTO*/
-
-/* ===== Agendamientos ===== */
 .agendamiento-grid {
     display: grid;
     grid-template-columns: 560px 360px 320px;
@@ -412,7 +373,6 @@ body.menu-active::before {
     align-items: start;
 }
 
-/* Card general */
 .card {
     background: #fff;
     border-radius: 10px;
@@ -421,7 +381,6 @@ body.menu-active::before {
     border: 1px solid rgba(184,134,71,0.08);
 }
 
-/* Calendario */
 .calendar-card { padding: 18px; }
 .calendar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
 .nav-month { background:#fff; border:1px solid #eee; padding:8px 10px; border-radius:8px; cursor:pointer; }
@@ -440,7 +399,6 @@ body.menu-active::before {
 .calendar-day.today { border:2px solid #b88647; }
 .calendar-day.selected { background:#b88647; color:#fff; }
 
-/* Detalles / Form */
 .details-card { display:flex; flex-direction:column; gap:12px; }
 .service-pill {
     background:#b88647; color:#fff; padding:10px 14px; border-radius:8px; font-weight:700; width:100%; text-align:center;
@@ -450,7 +408,6 @@ body.menu-active::before {
 .detail-row { display:flex; gap:12px; align-items:center; color:#666; margin-bottom:8px; }
 .icon-clock, .icon-place { font-size:20px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#fff; border:1px solid #f0e7de; }
 
-/* Form */
 .booking-form { display:flex; flex-direction:column; gap:8px; }
 .booking-form label { font-weight:700; color:#444; margin-top:6px; }
 .booking-form input, .booking-form select, .booking-form textarea {
@@ -460,17 +417,14 @@ body.menu-active::before {
 .form-actions { display:flex; gap:8px; margin-top:10px; }
 .booking-feedback { margin-top:8px; color:green; font-weight:600; }
 
-/* Appointments list */
 .appointments-list { max-height:600px; overflow:auto; padding-bottom:12px; }
 .appointment-item { display:flex; justify-content:space-between; align-items:center; padding:10px; border-radius:8px; margin-bottom:8px; background:#fbf9f7; border:1px solid #f0e7de; }
 .appointment-meta { color:#555; font-size:14px; }
 .appointment-actions button { margin-left:8px; }
 
-/* Buttons (reusar estilos del proyecto) */
 .btn-primary { background: #b88647; border: none; padding: 10px 12px; border-radius: 8px; color: white; cursor: pointer; font-weight:700; }
 .btn-secondary { background: #999; border: none; padding: 10px 12px; border-radius:8px; color: white; cursor: pointer; }
 
-/* Responsive */
 @media (max-width: 1000px) {
     .agendamiento-grid { grid-template-columns: 1fr; }
 }
@@ -482,14 +436,12 @@ body.menu-active::before {
     gap: 20px;
 }
 
-/* Tablets y desktop */
 @media (min-width: 768px) {
     .calendar-wrapper {
         grid-template-columns: 1fr 1fr;
     }
 }
 
-/* Cards internas */
 .calendar,
 .agenda-card {
     width: 100%;
@@ -506,8 +458,6 @@ body.menu-active::before {
     aspect-ratio: 1;
 }
 
-
-
 .cuenta-container {
     display: flex;
     gap: 25px;
@@ -515,7 +465,6 @@ body.menu-active::before {
     flex-wrap: wrap;
 }
 
-/* SIDEBAR */
 .cuenta-sidebar {
     background: #fff;
     width: 280px;
@@ -565,7 +514,6 @@ body.menu-active::before {
     color: #b88647;
 }
 
-/* CONTENIDO */
 .cuenta-content {
     flex: 1;
     min-width: 350px;
@@ -615,7 +563,6 @@ body.menu-active::before {
     opacity: 0.9;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
     .cuenta-container {
         padding: 15px;
@@ -716,7 +663,6 @@ body.menu-active::before {
     display: none !important;
 }
 
-/* CONTENEDOR PRINCIPAL */
 .detalle-wrapper {
     width: 100%;
     padding: 20px;
@@ -740,7 +686,6 @@ body.menu-active::before {
     border-radius: 20px;
 }
 
-/* TEXTO */
 .detalle-titulo {
     font-size: 32px;
     font-weight: 700;
@@ -759,7 +704,6 @@ body.menu-active::before {
     font-size: 17px;
 }
 
-/* BOTÓN AGREGAR AL CARRITO */
 .btn-add {
     background: #d3aa63;
     color: white;
@@ -779,7 +723,6 @@ body.menu-active::before {
     background: #a37407;
 }
 
-/* CONTADOR */
 .contador {
     margin-top: 15px;
     background: #d3aa63;
@@ -803,7 +746,6 @@ body.menu-active::before {
     cursor: pointer;
 }
 
-/* BOTÓN VOLVER */
 .btn-volver {
     margin-bottom: 20px;
     background: transparent;
@@ -813,7 +755,6 @@ body.menu-active::before {
     color: #d3aa63;
 }
 
-/* RESPONSIVE */
 @media (max-width: 900px) {
     .detalle-grid {
         grid-template-columns: 1fr;
@@ -860,7 +801,6 @@ body.menu-active::before {
   border: 1px solid #eee;
 }
 
-/* --- CARRITO --- */
 .cart-items-container {
   display: flex;
   flex-direction: column;
@@ -910,8 +850,6 @@ body.menu-active::before {
   background: #a57a48;
 }
 
-
-/* ========== CARRITO ========== */
 .cart-img {
     width: 80px;
     height: 80px;

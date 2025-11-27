@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db/connection.js");
 
-// Middleware auth
 const authMiddleware = (req, res, next) => {
     console.log("🔐 Auth check - Session:", req.session);
     console.log("🔐 userId:", req.session?.userId);

@@ -1,20 +1,12 @@
-// ====================================
-// CARRITO COMPLETO - AGENDATECH
-// Soporta localStorage (invitado) + DB (usuario logueado)
-// ====================================
-
 const API_CART = "http://localhost:3000/api/carrito";
 const CART_KEY = "agendatech_carrito_v1";
 
-// Configuración
 const ENVIO = 5000;
-const IVA_PERCENT = 0.19; // 19%
+const IVA_PERCENT = 0.19; 
 
-// Estado del carrito
 let carrito = [];
-let usuarioLogueado = null; // {id, nombre, email}
+let usuarioLogueado = null; 
 
-// Elementos DOM
 const carritoLista = document.getElementById("carritoLista");
 const subtotalCarrito = document.getElementById("subtotalCarrito");
 const impuestosCarrito = document.getElementById("impuestosCarrito");
@@ -22,33 +14,22 @@ const envioCarrito = document.getElementById("envioCarrito");
 const totalCarrito = document.getElementById("totalCarrito");
 const btnPagar = document.getElementById("btnPagar");
 
-// ====================================
-// INICIALIZACIÓN
-// ====================================
 export function inicializarCarrito(usuario = null) {
     usuarioLogueado = usuario;
     
     if (usuarioLogueado?.id) {
-        // Usuario logueado: cargar desde DB
         cargarCarritoDB();
     } else {
-        // Invitado: usar localStorage
         cargarCarritoLocal();
     }
 }
 
-// ====================================
-// CARGAR CARRITO (LOCAL)
-// ====================================
 function cargarCarritoLocal() {
     const data = localStorage.getItem(CART_KEY);
     carrito = data ? JSON.parse(data) : [];
     renderCarrito();
 }
 
-// ====================================
-// CARGAR CARRITO (DB)
-// ====================================
 async function cargarCarritoDB() {
     if (!usuarioLogueado?.id) return;
     
@@ -58,7 +39,6 @@ async function cargarCarritoDB() {
         
         const items = await res.json();
         
-        // Mapear a formato interno
         carrito = items.map(item => ({
             cart_item_id: item.cart_item_id,
             id: item.product_id,
@@ -71,28 +51,18 @@ async function cargarCarritoDB() {
         renderCarrito();
     } catch (err) {
         console.error("Error cargando carrito:", err);
-        // Fallback a localStorage
         cargarCarritoLocal();
     }
 }
 
-// ====================================
-// GUARDAR CARRITO
-// ====================================
 function guardarCarrito() {
     if (usuarioLogueado?.id) {
-        // No guardamos en localStorage si está logueado
-        // La DB ya tiene los datos actualizados
         return;
     }
     
-    // Invitado: guardar en localStorage
     localStorage.setItem(CART_KEY, JSON.stringify(carrito));
 }
 
-// ====================================
-// RENDERIZAR CARRITO
-// ====================================
 export function renderCarrito() {
     if (!carritoLista) return;
     
@@ -142,9 +112,6 @@ export function renderCarrito() {
     calcularTotales();
 }
 
-// ====================================
-// CALCULAR TOTALES
-// ====================================
 function calcularTotales() {
     const subtotal = carrito.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
     const impuestos = subtotal * IVA_PERCENT;
@@ -160,23 +127,17 @@ function actualizarTotales(subtotal, impuestos, envio, total = 0) {
     if (envioCarrito) envioCarrito.textContent = envio > 0 ? `$${envio.toLocaleString('es-CO')}` : "Gratis";
     if (totalCarrito) totalCarrito.textContent = `$${total.toLocaleString('es-CO')}`;
     
-    // Deshabilitar botón pagar si carrito vacío
     if (btnPagar) {
         btnPagar.disabled = carrito.length === 0;
     }
 }
 
-// ====================================
-// AGREGAR AL CARRITO
-// ====================================
 export async function agregarAlCarrito(producto) {
-    // Validar producto
     if (!producto || !producto.id || !producto.precio) {
         alert("❌ Error: producto inválido");
         return;
     }
 
-    // Verificar si ya existe
     const existente = carrito.find(p => p.id === producto.id);
 
     if (existente) {
@@ -191,7 +152,6 @@ export async function agregarAlCarrito(producto) {
         });
     }
 
-    // Guardar según modo
     if (usuarioLogueado?.id) {
         await agregarACarritoDB(producto.id, producto.precio);
     } else {
@@ -200,13 +160,9 @@ export async function agregarAlCarrito(producto) {
 
     renderCarrito();
     
-    // Feedback visual
     mostrarNotificacion("✅ Producto agregado al carrito");
 }
 
-// ====================================
-// AGREGAR A CARRITO DB
-// ====================================
 async function agregarACarritoDB(product_id, unit_price) {
     if (!usuarioLogueado?.id) return;
     
@@ -225,27 +181,21 @@ async function agregarACarritoDB(product_id, unit_price) {
         if (!res.ok) throw new Error("Error agregando a DB");
     } catch (err) {
         console.error("Error DB:", err);
-        // Fallback: guardar local
         guardarCarrito();
     }
 }
 
-// ====================================
-// CAMBIAR CANTIDAD
-// ====================================
 window.cambiarCantidad = async function(index, delta) {
     if (index < 0 || index >= carrito.length) return;
     
     const producto = carrito[index];
     producto.cantidad += delta;
 
-    // Si cantidad llega a 0, eliminar
     if (producto.cantidad <= 0) {
         await eliminarProducto(index);
         return;
     }
 
-    // Actualizar en DB si está logueado
     if (usuarioLogueado?.id && producto.cart_item_id) {
         await actualizarCantidadDB(producto.cart_item_id, producto.cantidad);
     } else {
@@ -255,9 +205,6 @@ window.cambiarCantidad = async function(index, delta) {
     renderCarrito();
 };
 
-// ====================================
-// ACTUALIZAR CANTIDAD EN DB
-// ====================================
 async function actualizarCantidadDB(cart_item_id, quantity) {
     try {
         const res = await fetch(`${API_CART}/quantity`, {
@@ -272,9 +219,6 @@ async function actualizarCantidadDB(cart_item_id, quantity) {
     }
 }
 
-// ====================================
-// ELIMINAR PRODUCTO
-// ====================================
 window.eliminarProducto = async function(index) {
     if (index < 0 || index >= carrito.length) return;
     
@@ -282,12 +226,10 @@ window.eliminarProducto = async function(index) {
     
     const producto = carrito[index];
     
-    // Eliminar de DB si está logueado
     if (usuarioLogueado?.id && producto.cart_item_id) {
         await eliminarDeDB(producto.cart_item_id);
     }
     
-    // Eliminar del array
     carrito.splice(index, 1);
     
     guardarCarrito();
@@ -296,9 +238,6 @@ window.eliminarProducto = async function(index) {
     mostrarNotificacion("🗑️ Producto eliminado");
 };
 
-// ====================================
-// ELIMINAR DE DB
-// ====================================
 async function eliminarDeDB(cart_item_id) {
     try {
         const res = await fetch(`${API_CART}/item/${cart_item_id}`, {
@@ -311,15 +250,11 @@ async function eliminarDeDB(cart_item_id) {
     }
 }
 
-// ====================================
-// VACIAR CARRITO
-// ====================================
 export async function vaciarCarrito() {
     if (carrito.length === 0) return;
     
     if (!confirm("¿Vaciar todo el carrito?")) return;
     
-    // Vaciar en DB si está logueado
     if (usuarioLogueado?.id) {
         await vaciarCarritoDB();
     }
@@ -341,9 +276,6 @@ async function vaciarCarritoDB() {
     }
 }
 
-// ====================================
-// CHECKOUT / PAGAR
-// ====================================
 if (btnPagar) {
     btnPagar.addEventListener("click", async () => {
         if (carrito.length === 0) {
@@ -353,11 +285,9 @@ if (btnPagar) {
 
         if (!usuarioLogueado?.id) {
             alert("⚠️ Debes iniciar sesión para continuar con el pago");
-            // Aquí podrías abrir el modal de login
             return;
         }
 
-        // Preparar checkout con Mercado Pago
         await procesarCheckout();
     });
 }
@@ -386,7 +316,6 @@ async function procesarCheckout() {
 
         const data = await res.json();
         
-        // Redirigir a Mercado Pago
         if (data.init_point) {
             window.location.href = data.init_point;
         } else {
@@ -399,9 +328,6 @@ async function procesarCheckout() {
     }
 }
 
-// ====================================
-// MIGRAR CARRITO LOCAL A DB
-// ====================================
 export async function migrarCarritoAlLogin(usuario) {
     if (!usuario?.id) return;
     
@@ -413,24 +339,18 @@ export async function migrarCarritoAlLogin(usuario) {
         return;
     }
 
-    // Migrar cada producto al carrito DB
     for (const producto of carritoLocal) {
         await agregarACarritoDB(producto.id, producto.precio);
     }
 
-    // Limpiar localStorage
     localStorage.removeItem(CART_KEY);
     
-    // Actualizar usuario y recargar carrito
     usuarioLogueado = usuario;
     await cargarCarritoDB();
     
     mostrarNotificacion("✅ Carrito sincronizado");
 }
 
-// ====================================
-// CERRAR SESIÓN
-// ====================================
 export function cerrarSesionCarrito() {
     usuarioLogueado = null;
     carrito = [];
@@ -438,9 +358,6 @@ export function cerrarSesionCarrito() {
     renderCarrito();
 }
 
-// ====================================
-// OBTENER INFO CARRITO
-// ====================================
 export function obtenerResumenCarrito() {
     const subtotal = carrito.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
     const impuestos = subtotal * IVA_PERCENT;
@@ -456,11 +373,7 @@ export function obtenerResumenCarrito() {
     };
 }
 
-// ====================================
-// NOTIFICACIONES
-// ====================================
 function mostrarNotificacion(mensaje) {
-    // Crear notificación temporal
     const notif = document.createElement("div");
     notif.className = "cart-notification";
     notif.textContent = mensaje;
@@ -485,7 +398,6 @@ function mostrarNotificacion(mensaje) {
     }, 2500);
 }
 
-// Estilos para animaciones (agregar al CSS)
 const style = document.createElement("style");
 style.textContent = `
     @keyframes slideIn {
@@ -499,9 +411,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ====================================
-// FUNCIÓN AUXILIAR PARA IR A PRODUCTOS
-// ====================================
 window.irAProductos = function() {
     const seccionProductos = document.getElementById("seccionProductos");
     const seccionCarrito = document.getElementById("seccionCarrito");
@@ -510,11 +419,7 @@ window.irAProductos = function() {
     if (seccionProductos) seccionProductos.classList.remove("hidden");
 };
 
-// ====================================
-// INICIALIZACIÓN AUTOMÁTICA
-// ====================================
 document.addEventListener("DOMContentLoaded", () => {
-    // Intentar cargar usuario desde sessionStorage
     const userData = sessionStorage.getItem("usuario");
     const usuario = userData ? JSON.parse(userData) : null;
     

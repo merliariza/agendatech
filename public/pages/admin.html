@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Tus estilos -->
     <link rel="stylesheet" href="../css/styles.css">
 
     <title>Agendatech - Panel</title>
 </head>
 <body>
 
-    <!-- HEADER (se mantiene siempre visible) -->
+    <!-- HEADER -->
     <header class="site-header">
         <a href="#" class="site-logo">
             <img src="../src/img/womanLogo.png" class="logo-img" />
@@ -31,12 +29,10 @@
         </nav>
     </header>
 
-    <!-- 📌 SECCIÓN: AGENDAMIENTOS -->
-<!-- SECCIÓN: AGENDAMIENTOS (inserta dentro del body de tu SPA) -->
+    <!-- AGENDAMIENTOS -->
 <section id="seccionAgendamientos" class="pagina-section">
     <div class="agendamiento-grid">
 
-        <!-- CALENDARIO -->
         <div class="calendar-card card">
             <div class="calendar-header">
                 <button id="prevMonth" class="nav-month">&lt;</button>
@@ -51,7 +47,6 @@
             <div id="calendarDays" class="calendar-days"></div>
         </div>
 
-        <!-- PANEL DETALLES / RESERVAR -->
         <aside class="details-card card">
             <div class="service-pill" id="selectedServicePill">Seleccione un servicio</div>
 
@@ -69,7 +64,6 @@
 
             <hr>
 
-            <!-- FORM PARA AGENDAR -->
             <form id="bookingForm" class="booking-form">
                 <label>Cliente (email)</label>
                 <input id="customerEmail" type="email" placeholder="tu@correo.com" required>
@@ -107,7 +101,6 @@
             <div id="bookingFeedback" class="booking-feedback"></div>
         </aside>
 
-        <!-- LISTA DE CITAS -->
         <div class="appointments-list card">
             <h3>Mis Citas</h3>
             <div id="appointmentsContainer"></div>
@@ -116,12 +109,11 @@
 </section>
 
 
-    <!-- 📌 SECCIÓN: INVENTARIO -->
+    <!-- INVENTARIO -->
     <section id="seccionInventario" class="pagina-section hidden inventario-container">
 
         <h2 class="titulo">Gestión de Inventario</h2>
 
-        <!-- FORMULARIO CRUD -->
         <form id="productForm" class="form-card">
             <div class="form-header">
                 <h3 id="formTitle">Agregar Producto</h3>
@@ -187,7 +179,7 @@
 
     </section>
 
-    <!-- 📌 SECCIÓN: VENTAS -->
+    <!-- VENTAS -->
     <section id="seccionVentas" class="pagina-section hidden">
         <div class="chart-box">
         <canvas id="ventasServicios"></canvas>

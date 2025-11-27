@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db/connection.js");
 
-// Middleware de autenticación
 const authMiddleware = (req, res, next) => {
     if (!req.session || !req.session.userId) {
         return res.status(401).json({ message: "No autenticado" });
@@ -16,7 +15,6 @@ router.post("/", authMiddleware, async (req, res) => {
     const { phone, address, city, region, country } = req.body;
     const userId = req.session.userId;
 
-    // Validación
     if (
         phone === undefined &&
         address === undefined &&
@@ -31,7 +29,6 @@ router.post("/", authMiddleware, async (req, res) => {
     try {
         conn = await db.getConnection();
 
-        // Buscar el person_id
         const [userRows] = await conn.query(
             "SELECT person_id FROM User WHERE id = ?",
             [userId]
@@ -44,7 +41,6 @@ router.post("/", authMiddleware, async (req, res) => {
 
         const personId = userRows[0].person_id;
 
-        // Actualizar Person
         await conn.query(
             `UPDATE Person 
              SET phone = ?, address = ?, city = ?, region = ?, country = ?

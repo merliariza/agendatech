@@ -1,4 +1,3 @@
-// routes/cart.js
 const express = require("express");
 const router = express.Router();
 const db = require("../db/connection");
@@ -9,7 +8,6 @@ mercadopago.configure({
   access_token: process.env.MERCADO_PAGO_ACCESS_TOKEN || ""
 });
 
-// Helper: consulta carrito por customer_id
 function getCartItems(customer_id) {
   return new Promise((resolve, reject) => {
     const sql = `
@@ -26,13 +24,11 @@ function getCartItems(customer_id) {
   });
 }
 
-// LISTAR carrito (por customer_id). Si no hay customer_id -> 400.
 router.get("/:customer_id", async (req, res) => {
   const customer_id = req.params.customer_id;
   if (!customer_id) return res.status(400).json({ error: "Falta customer_id" });
   try {
     const items = await getCartItems(customer_id);
-    // calcular subtotal por item
     const mapped = items.map(it => ({
       cart_item_id: it.cart_item_id,
       product_id: it.product_id,
@@ -49,12 +45,10 @@ router.get("/:customer_id", async (req, res) => {
   }
 });
 
-// AÑADIR al carrito -> Si customer_id existe: guarda en DB (ShoppingCart). Si viene customer_id=null: devuelve 400 (frontend guardará local)
 router.post("/add", (req, res) => {
   const { customer_id, product_id, unit_price, quantity = 1 } = req.body;
   if (!customer_id) return res.status(400).json({ error: "customer_id requerido (si quieres persistir en BD)." });
 
-  // insert or update quantity (unique key on customer_id+product_id)
   const sql = `
     INSERT INTO ShoppingCart (customer_id, product_id, unit_price, quantity)
     VALUES (?, ?, ?, ?)
@@ -69,7 +63,6 @@ router.post("/add", (req, res) => {
   });
 });
 
-// ACTUALIZAR cantidad
 router.put("/quantity", (req, res) => {
   const { cart_item_id, quantity } = req.body;
   if (!cart_item_id || !quantity) return res.status(400).json({ error: "cart_item_id y quantity requeridos" });
@@ -80,7 +73,6 @@ router.put("/quantity", (req, res) => {
   });
 });
 
-// ELIMINAR item (by cart item id)
 router.delete("/item/:id", (req, res) => {
   const id = req.params.id;
   db.query("DELETE FROM ShoppingCart WHERE id = ?", [id], (err) => {
@@ -89,7 +81,6 @@ router.delete("/item/:id", (req, res) => {
   });
 });
 
-// VACÍAR carrito (por customer_id)
 router.delete("/clear/:customer_id", (req, res) => {
   const customer_id = req.params.customer_id;
   db.query("DELETE FROM ShoppingCart WHERE customer_id = ?", [customer_id], (err) => {
@@ -98,8 +89,6 @@ router.delete("/clear/:customer_id", (req, res) => {
   });
 });
 
-// CHECKOUT -> crea preferencia Mercado Pago y devuelve init_point
-// body: { customer_id, success_url, failure_url, shipping, tax_percent }
 router.post("/checkout", async (req, res) => {
   const { customer_id, success_url, failure_url, shipping = 0, tax_percent = 0 } = req.body;
   if (!customer_id) return res.status(400).json({ error: "customer_id requerido para checkout" });
@@ -115,7 +104,6 @@ router.post("/checkout", async (req, res) => {
       unit_price: parseFloat((it.unit_price || it.product_price).toFixed(2)),
     }));
 
-    // podemos añadir shipping como item
     if (shipping > 0) {
       mpItems.push({
         id: "shipping",

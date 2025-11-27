@@ -3,9 +3,6 @@ const router = express.Router();
 const db = require("../db/connection.js");
 const bcrypt = require("bcrypt");
 
-// ================================
-// MIDDLEWARE DE AUTENTICACIÓN
-// ================================
 const authMiddleware = (req, res, next) => {
     if (!req.session || !req.session.userId) {
         return res.status(401).json({ message: "No autenticado" });
@@ -13,9 +10,6 @@ const authMiddleware = (req, res, next) => {
     next();
 };
 
-// ================================
-// LISTAR USUARIOS (GET)
-// ================================
 router.get("/", (req, res) => {
     const sql = `
         SELECT User.id, username, Person.name, Person.surname, Person.email, Person.role
@@ -28,9 +22,6 @@ router.get("/", (req, res) => {
     });
 });
 
-// ================================
-// OBTENER PERFIL DEL USUARIO LOGUEADO
-// ================================
 router.get("/perfil", authMiddleware, (req, res) => {
     const userId = req.session.userId;
     
@@ -65,9 +56,6 @@ router.get("/perfil", authMiddleware, (req, res) => {
     });
 });
 
-// ================================
-// REGISTRAR USUARIO (POST)
-// ================================
 router.post("/", async (req, res) => {
     const { name, surname, email, username, password, role } = req.body;
     
@@ -81,7 +69,6 @@ router.post("/", async (req, res) => {
         if (err) return res.status(500).json({ error: err });
         if (result.length > 0) return res.json({ error: "El correo ya está registrado" });
 
-        // Crear persona
         db.query(
             "INSERT INTO Person (name, surname, email, role) VALUES (?, ?, ?, ?)",
             [name, surname, email, userRole],
@@ -89,10 +76,8 @@ router.post("/", async (req, res) => {
                 if (err) return res.status(500).json({ error: err });
                 const personId = personResult.insertId;
 
-                // Hashear password
                 const hashedPass = await bcrypt.hash(password, 10);
 
-                // Crear usuario
                 db.query(
                     "INSERT INTO User (username, password, person_id) VALUES (?, ?, ?)",
                     [username, hashedPass, personId],
@@ -106,9 +91,6 @@ router.post("/", async (req, res) => {
     });
 });
 
-// ================================
-// LOGIN USUARIO (POST)
-// ================================
 router.post("/login", (req, res) => {
     const { email, password } = req.body;
     
@@ -140,10 +122,8 @@ router.post("/login", (req, res) => {
             return res.json({ error: "Contraseña incorrecta" });
         }
 
-        // ✅ GUARDAR userId en sesión
         req.session.userId = user.id;
 
-        // ✅ CRÍTICO: Asegurar que la sesión se guarde antes de responder
         req.session.save((err) => {
             if (err) {
                 console.error("Error guardando sesión:", err);
@@ -162,9 +142,6 @@ router.post("/login", (req, res) => {
     });
 });
 
-// ================================
-// LOGOUT (POST)
-// ================================
 router.post("/logout", (req, res) => {
     req.session.destroy((err) => {
         if (err) {

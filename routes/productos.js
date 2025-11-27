@@ -2,9 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db/connection.js");
 
-// ===============================
-// OBTENER TODOS LOS PRODUCTOS
-// ===============================
 router.get("/", (req, res) => {
     db.query("SELECT * FROM Product", (err, result) => {
         if (err) return res.status(500).json({ error: err });
@@ -12,9 +9,6 @@ router.get("/", (req, res) => {
     });
 });
 
-// ===============================
-// CREAR PRODUCTO (IMAGEN BASE64)
-// ===============================
 router.post("/", (req, res) => {
     const {
         name,
@@ -24,7 +18,7 @@ router.post("/", (req, res) => {
         min_stock,
         category,
         active,
-        image     // <-- Base64 enviada desde tu frontend
+        image     
     } = req.body;
 
     const sql = `
@@ -38,9 +32,6 @@ router.post("/", (req, res) => {
     });
 });
 
-// ===============================
-// ACTUALIZAR PRODUCTO (BASE64)
-// ===============================
 router.put("/:id", (req, res) => {
     const id = req.params.id;
 
@@ -52,7 +43,7 @@ router.put("/:id", (req, res) => {
         min_stock,
         category,
         active,
-        image   // Base64 nueva o la misma que ya tenía
+        image   
     } = req.body;
 
     const sql = `
@@ -67,9 +58,6 @@ router.put("/:id", (req, res) => {
     });
 });
 
-// ===============================
-// ELIMINAR PRODUCTO
-// ===============================
 router.delete("/:id", (req, res) => {
     db.query("DELETE FROM Product WHERE id = ?", [req.params.id], (err) => {
         if (err) return res.status(500).json({ error: err });

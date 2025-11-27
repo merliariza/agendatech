@@ -1,16 +1,9 @@
-// ============================================
-// DEBUG
-// ============================================
 console.log('📍 URL actual:', window.location.href);
 console.log('📍 Cookies:', document.cookie);
 
-// ============================================
-// VERIFICAR SESIÓN (solo cuando "Mi Cuenta" esté abierta)
-// ============================================
 async function verificarSesion() {
     const seccionCuenta = document.getElementById('seccionCuenta');
 
-    // Solo verificar si la sección está visible
     if (!seccionCuenta || seccionCuenta.classList.contains('hidden')) {
         console.log('📝 No estamos en Mi Cuenta, no verificar sesión');
         return;
@@ -36,13 +29,6 @@ async function verificarSesion() {
     }
 }
 
-// ❌ SE ELIMINA ESTA LÍNEA QUE CREABA EL BUCLE
-// window.addEventListener('DOMContentLoaded', () => setTimeout(verificarSesion, 500));
-
-
-// ============================================
-// CAMBIAR CONTRASEÑA
-// ============================================
 const formCambiarPass = document.getElementById('formCambiarPass');
 
 if (formCambiarPass) {
@@ -100,10 +86,6 @@ if (formCambiarPass) {
     });
 }
 
-
-// ============================================
-// CREAR FORMULARIO DE DATOS PERSONALES
-// ============================================
 const cuentaContent = document.querySelector('.cuenta-content');
 
 if (cuentaContent && !document.getElementById('formDatos')) {
@@ -180,10 +162,6 @@ if (cuentaContent && !document.getElementById('formDatos')) {
     });
 }
 
-
-// ============================================
-// CARGAR DATOS DEL USUARIO
-// ============================================
 async function cargarDatosUsuario() {
     const formDatos = document.getElementById('formDatos');
     if (!formDatos) return;
@@ -214,10 +192,6 @@ async function cargarDatosUsuario() {
     }
 }
 
-
-// ============================================
-// OBSERVER → Detectar cuando aparece el formulario
-// ============================================
 const observer = new MutationObserver(() => {
     const formDatos = document.getElementById('formDatos');
     if (formDatos) {
@@ -230,10 +204,6 @@ if (cuentaContent) {
     observer.observe(cuentaContent, { childList: true, subtree: true });
 }
 
-
-// ============================================
-// CERRAR SESIÓN
-// ============================================
 const cerrarSesionBtn = document.getElementById('cerrarSesionBtn');
 
 if (cerrarSesionBtn) {
@@ -255,10 +225,6 @@ if (cerrarSesionBtn) {
     });
 }
 
-
-// ============================================
-// MOSTRAR NOMBRE + VERIFICACIÓN SOLO CUANDO ABREN "MI CUENTA"
-// ============================================
 window.addEventListener('DOMContentLoaded', () => {
 
     const usuario = JSON.parse(localStorage.getItem('usuario'));
@@ -271,7 +237,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const btnCuenta = document.getElementById('btnCuenta');
     if (btnCuenta) {
         btnCuenta.addEventListener('click', () => {
-            // Verificar sesión SOLO cuando abren “Mi Cuenta”
             setTimeout(verificarSesion, 300);
         });
     }
