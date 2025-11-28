@@ -3,11 +3,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const seccionAgendamientos = document.getElementById("seccionAgendamientos");
     const seccionInventario = document.getElementById("seccionInventario");
     const seccionVentas = document.getElementById("seccionVentas");
+    const seccionUsuarios = document.getElementById("seccionUsuarios");
 
     function ocultarTodo() {
         seccionAgendamientos.classList.add("hidden");
         seccionInventario.classList.add("hidden");
         seccionVentas.classList.add("hidden");
+        seccionUsuarios.classList.add("hidden");
     }
 
     document.getElementById("btnAgendamientos").addEventListener("click", () => {
@@ -25,6 +27,12 @@ document.addEventListener("DOMContentLoaded", function () {
         seccionVentas.classList.remove("hidden");
     });
 
+    document.getElementById("btnUsuarios").addEventListener("click", () => {
+        ocultarTodo();
+        seccionUsuarios.classList.remove("hidden");
+        cargarUsuarios(); 
+    });
+    
     const menuToggle = document.getElementById("menu-toggle");
     const menu = document.getElementById("menu");
 

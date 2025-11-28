@@ -904,3 +904,114 @@ body.menu-active::before {
     border: 1px solid #dee2e6;
 }
 
+#seccionUsuarios .container {
+  background: white;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 2px solid #c58f4d36;
+  max-width: 1100px;
+  margin: 30px auto;
+}
+
+#seccionUsuarios h2 {
+  color: #c58f4d;
+  font-size: 26px;
+  margin-bottom: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+#tablaUsuarios {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+#tablaUsuarios thead {
+  background: #c58f4d;
+}
+
+#tablaUsuarios thead th {
+  color: white;
+  padding: 14px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-align: left;
+}
+
+#tablaUsuarios tbody tr {
+  background: #ffffff;
+  border-bottom: 1px solid #e8d6bd;
+  transition: background 0.2s ease;
+}
+
+#tablaUsuarios tbody tr:hover {
+  background: #fff7ec;
+}
+
+#tablaUsuarios td {
+  padding: 14px 12px;
+  color: #444;
+  font-size: 14px;
+}
+
+#tablaUsuarios select {
+  padding: 6px 10px;
+  border: 1.5px solid #c58f4d;
+  border-radius: 8px;
+  background: #fffaf4;
+  color: #444;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btnDelete {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btnDelete:hover {
+  background: #c9302c;
+  transform: scale(1.05);
+}
+@media (max-width: 768px) {
+  #tablaUsuarios thead {
+    display: none;
+  }
+
+  #tablaUsuarios tbody tr {
+    display: block;
+    margin-bottom: 16px;
+    padding: 14px;
+    border: 2px solid #e8d6bd;
+    border-radius: 12px;
+  }
+
+  #tablaUsuarios tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 6px;
+    font-size: 14px;
+  }
+
+  #tablaUsuarios tbody td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #c58f4d;
+  }
+
+  .btnDelete {
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+  }
+}

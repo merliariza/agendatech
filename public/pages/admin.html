@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/styles.css">
-
     <title>Agendatech - Panel</title>
 </head>
 <body>
@@ -21,6 +20,7 @@
                 <li><a href="#" id="btnAgendamientos">Agendamientos</a></li>
                 <li><a href="#" id="btnInventario">Inventario</a></li>
                 <li><a href="#" id="btnVentas">Ventas</a></li>
+                <li><a href="#" id="btnUsuarios">Usuarios</a></li>
                 <li id="cerrarSesionBtn">
                     <i class="icon-exit"></i>
                     <span>Cerrar sesión</span>
@@ -108,100 +108,118 @@
     </div>
 </section>
 
-
     <!-- INVENTARIO -->
-    <section id="seccionInventario" class="pagina-section hidden inventario-container">
+<section id="seccionInventario" class="pagina-section hidden inventario-container">
 
-        <h2 class="titulo">Gestión de Inventario</h2>
+    <h2 class="titulo">Gestión de Inventario</h2>
 
-        <form id="productForm" class="form-card">
-            <div class="form-header">
-                <h3 id="formTitle">Agregar Producto</h3>
-            </div>
+    <form id="productForm" class="form-card">
+        <div class="form-header">
+            <h3 id="formTitle">Agregar Producto</h3>
+        </div>
 
-            <label>Nombre del Producto</label>
-            <input type="text" id="name" required>
+        <label>Nombre del Producto</label>
+        <input type="text" id="name" required>
 
-            <label>Descripción</label>
-            <textarea id="description" required></textarea>
+        <label>Descripción</label>
+        <textarea id="description" required></textarea>
 
-            <label>Precio</label>
-            <input type="number" id="price" step="0.01" required>
+        <label>Precio</label>
+        <input type="number" id="price" step="0.01" required>
 
-            <label>Stock</label>
-            <input type="number" id="stock" required>
+        <label>Stock</label>
+        <input type="number" id="stock" required>
 
-            <label>Stock Mínimo</label>
-            <input type="number" id="min_stock" required>
+        <label>Stock Mínimo</label>
+        <input type="number" id="min_stock" required>
 
-            <label>Categoría</label>
-            <select id="category">
-                <option value="Cabello">Cabello</option>
-                <option value="Uñas">Uñas</option>
-                <option value="Maquillaje">Maquillaje</option>
-                <option value="SkinCare">SkinCare</option>
-                <option value="Otros">Otros</option>
-            </select>
+        <label>Categoría</label>
+        <select id="category">
+            <option value="Cabello">Cabello</option>
+            <option value="Uñas">Uñas</option>
+            <option value="Maquillaje">Maquillaje</option>
+            <option value="SkinCare">SkinCare</option>
+            <option value="Otros">Otros</option>
+        </select>
 
-            <label>Activo</label>
-            <select id="active">
-                <option value="1">Sí</option>
-                <option value="0">No</option>
-            </select>
+        <label>Activo</label>
+        <select id="active">
+            <option value="1">Sí</option>
+            <option value="0">No</option>
+        </select>
 
-            <label>Imagen del producto</label>
-            <input type="file" id="productImage" accept="image/*">
+        <label>Imagen del producto</label>
+        <input type="file" id="productImage" accept="image/*">
 
-            <img id="previewImage" class="preview hidden">
+        <img id="previewImage" class="preview hidden">
 
-            <input type="hidden" id="product_id">
+        <input type="hidden" id="product_id">
 
-            <button class="btn-primary" type="submit">Guardar</button>
-            <button class="btn-secondary hidden" id="cancelEdit" type="button">Cancelar</button>
-        </form>
+        <button class="btn-primary" type="submit">Guardar</button>
+        <button class="btn-secondary hidden" id="cancelEdit" type="button">Cancelar</button>
+    </form>
 
-        <h3>Productos Registrados</h3>
-        <table class="table-products">
-            <thead>
-                <tr>
-                    <th>Imagen</th>
-                    <th>Nombre</th>
-                    <th>Categoría</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
-                    <th>Min</th>
-                    <th>Activo</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="productTableBody"></tbody>
-        </table>
+    <h3>Productos Registrados</h3>
+    <table class="table-products">
+        <thead>
+            <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Min</th>
+                <th>Activo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="productTableBody"></tbody>
+    </table>
 
-    </section>
+</section>
 
     <!-- VENTAS -->
-    <section id="seccionVentas" class="pagina-section hidden">
-        <div class="chart-box">
+<section id="seccionVentas" class="pagina-section hidden">
+    <div class="chart-box">
         <canvas id="ventasServicios"></canvas>
-        </div>
+    </div>
 
-        <div class="chart-box">
-            <canvas id="ventasProductos"></canvas>
-        </div>
+    <div class="chart-box">
+        <canvas id="ventasProductos"></canvas>
+    </div>
 
-        <div class="chart-box">
-            <canvas id="categoriasChart"></canvas>
-        </div>
-    </section>
+    <div class="chart-box">
+        <canvas id="categoriasChart"></canvas>
+    </div>
+</section>
 
+    <!-- USUARIOS -->
+<section id="seccionUsuarios" class="pagina-section hidden">
+    <div class="container mt-4">
+        <h2>Administrar usuarios</h2>
 
+        <table class="table table-bordered mt-3" id="tablaUsuarios">
+        <thead class="table-dark">
+            <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Rol</th>
+            <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        </table>
+    </div>
+</section>
 
-
-
+<!-- Scripts -->
 <script src="../js/admin_agendamiento.js"></script>
-    <script src="../js/admin_inventario.js"></script>
-    <script src="../js/admin_menu.js"></script>
- <script src="../js/admin_logout.js"></script>
-  <script src="../js/cuenta.js"></script>
+<script src="../js/admin_inventario.js"></script>
+<script src="../js/admin_menu.js"></script>
+<script src="../js/admin_logout.js"></script>
+<script src="../js/cuenta.js"></script>
+<script src="../js/admin_usuarios.js"></script>
+
 </body>
 </html>

@@ -1,63 +1,49 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db/connection.js");
+const bcrypt = require("bcryptjs");
 
-const authMiddleware = (req, res, next) => {
-    console.log("🔐 Auth check - Session:", req.session);
-    console.log("🔐 userId:", req.session?.userId);
-    
-    if (!req.session || !req.session.userId) {
-        console.log("❌ No autenticado");
-        return res.status(401).json({ message: "No autenticado" });
-    }
-    
-    console.log("✅ Usuario autenticado, ID:", req.session.userId);
-    next();
-};
+router.post("/", async (req, res) => {
+    console.log("📥 Body:", req.body);
 
-router.post("/", authMiddleware, async (req, res) => {
-    console.log("📥 Request body:", req.body);
-    
-    const { phone, address, city, region, country } = req.body;
+    const { actual, nueva } = req.body;
     const userId = req.session.userId;
 
-    if (!phone && !address && !city && !region && !country) {
-        console.log("❌ No se enviaron datos");
-        return res.status(400).json({ message: "No se enviaron datos para actualizar" });
+    if (!actual || !nueva) {
+        console.log("❌ Faltan datos");
+        return res.status(400).json({ message: "Faltan datos" });
     }
 
-    let conn;
     try {
-        console.log("🔍 Buscando usuario ID:", userId);
-        conn = await db.promise().getConnection();
-        
-        const [userRows] = await conn.query("SELECT person_id FROM User WHERE id = ?", [userId]);
-        console.log("📊 Resultados query User:", userRows.length);
-        
-        if (!userRows.length) {
-            console.log("❌ Usuario no encontrado");
-            conn.release();
+        const [rows] = await db.promise().query(
+            "SELECT password FROM User WHERE id = ?",
+            [userId]
+        );
+
+        if (!rows.length) {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
-        
-        const personId = userRows[0].person_id;
-        console.log("👤 person_id encontrado:", personId);
 
-        console.log("💾 Actualizando Person con:", { phone, address, city, region, country, personId });
-        
-        await conn.query(
-            "UPDATE Person SET phone = ?, address = ?, city = ?, region = ?, country = ? WHERE id = ?",
-            [phone || null, address || null, city || null, region || null, country || null, personId]
+        const passwordActual = rows[0].password;
+
+        const coincide = await bcrypt.compare(actual, passwordActual);
+        if (!coincide) {
+            return res.status(400).json({ message: "La contraseña actual es incorrecta" });
+        }
+
+        const nuevaHash = await bcrypt.hash(nueva, 10);
+
+        await db.promise().query(
+            "UPDATE User SET password = ? WHERE id = ?",
+            [nuevaHash, userId]
         );
-        
-        conn.release();
-        console.log("✅ Datos actualizados correctamente");
-        res.json({ message: "Datos actualizados correctamente" });
-        
+
+        return res.json({ message: "Contraseña actualizada correctamente" });
+
     } catch (err) {
         console.error("❌ ERROR:", err);
-        if (conn) conn.release();
-        res.status(500).json({ message: "Error del servidor: " + err.message });
+
+        return res.status(500).json({ message: "Error del servidor" });
     }
 });
 

@@ -9,64 +9,49 @@ const authMiddleware = (req, res, next) => {
     next();
 };
 
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", authMiddleware, (req, res) => {
     console.log("📥 Body recibido:", req.body);
 
     const { phone, address, city, region, country } = req.body;
     const userId = req.session.userId;
 
-    if (
-        phone === undefined &&
-        address === undefined &&
-        city === undefined &&
-        region === undefined &&
-        country === undefined
-    ) {
-        return res.status(400).json({ message: "No se enviaron datos para actualizar" });
+    if (!phone || !address || !city || !region || !country) {
+        return res.status(400).json({ 
+            message: "Todos los campos son obligatorios" 
+        });
     }
 
-    let conn;
-    try {
-        conn = await db.getConnection();
+    const queryUser = "SELECT person_id FROM User WHERE id = ?";
 
-        const [userRows] = await conn.query(
-            "SELECT person_id FROM User WHERE id = ?",
-            [userId]
-        );
+    db.query(queryUser, [userId], (err, userRows) => {
+        if (err) {
+            console.error("❌ Error obteniendo usuario:", err);
+            return res.status(500).json({ error: err.message });
+        }
 
         if (!userRows.length) {
-            conn.release();
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
 
         const personId = userRows[0].person_id;
 
-        await conn.query(
-            `UPDATE Person 
-             SET phone = ?, address = ?, city = ?, region = ?, country = ?
-             WHERE id = ?`,
-            [
-                phone || null,
-                address || null,
-                city || null,
-                region || null,
-                country || null,
-                personId
-            ]
-        );
+        const updateQuery = `
+            UPDATE Person
+            SET phone = ?, address = ?, city = ?, region = ?, country = ?
+            WHERE id = ?
+        `;
 
-        conn.release();
+        const params = [ phone, address, city, region, country, personId ];
 
-        res.json({ message: "Datos actualizados correctamente" });
+        db.query(updateQuery, params, (err) => {
+            if (err) {
+                console.error("❌ Error actualizando Persona:", err);
+                return res.status(500).json({ error: err.message });
+            }
 
-    } catch (err) {
-        console.error("❌ Error:", err);
-        if (conn) conn.release();
-        res.status(500).json({ 
-            message: "Error del servidor", 
-            error: err.message 
+            res.json({ message: "Datos actualizados correctamente" });
         });
-    }
+    });
 });
 
 module.exports = router;

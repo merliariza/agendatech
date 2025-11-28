@@ -3,156 +3,127 @@ const router = express.Router();
 const db = require("../db/connection.js");
 const bcrypt = require("bcrypt");
 
-const authMiddleware = (req, res, next) => {
-    if (!req.session || !req.session.userId) {
-        return res.status(401).json({ message: "No autenticado" });
-    }
-    next();
+const auth = (req, res, next) => {
+  if (!req.session.userId)
+    return res.status(401).json({ error: "No autenticado" });
+  next();
 };
 
 router.get("/", (req, res) => {
-    const sql = `
-        SELECT User.id, username, Person.name, Person.surname, Person.email, Person.role
-        FROM User
-        INNER JOIN Person ON User.person_id = Person.id
-    `;
-    db.query(sql, (err, result) => {
-        if (err) return res.status(500).json({ error: err });
-        res.json(result);
-    });
+  const sql = `
+    SELECT User.id, User.username, Person.id AS person_id,
+           Person.name, Person.surname, Person.email, Person.role
+    FROM User
+    INNER JOIN Person ON User.person_id = Person.id
+  `;
+
+  db.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json(data);
+  });
 });
 
-router.get("/perfil", authMiddleware, (req, res) => {
-    const userId = req.session.userId;
-    
-    const sql = `
-        SELECT 
-            User.username,
-            Person.name,
-            Person.surname,
-            Person.email,
-            Person.phone,
-            Person.address,
-            Person.city,
-            Person.region,
-            Person.country,
-            Person.role
-        FROM User
-        INNER JOIN Person ON User.person_id = Person.id
-        WHERE User.id = ?
-    `;
-    
-    db.query(sql, [userId], (err, result) => {
-        if (err) {
-            console.error("Error obteniendo perfil:", err);
-            return res.status(500).json({ error: "Error del servidor" });
-        }
-        
-        if (result.length === 0) {
-            return res.status(404).json({ error: "Usuario no encontrado" });
-        }
-        
-        res.json(result[0]);
-    });
+router.get("/perfil", auth, (req, res) => {
+  const sql = `
+    SELECT User.username, Person.name, Person.surname, Person.email,
+           Person.phone, Person.address, Person.city, Person.region,
+           Person.country, Person.role
+    FROM User
+    INNER JOIN Person ON User.person_id = Person.id
+    WHERE User.id = ?
+  `;
+
+  db.query(sql, [req.session.userId], (err, data) => {
+    if (err) return res.status(500).json({ error: "Error" });
+    if (data.length === 0) return res.status(404).json({ error: "No existe" });
+
+    res.json(data[0]);
+  });
 });
 
 router.post("/", async (req, res) => {
-    const { name, surname, email, username, password, role } = req.body;
-    
-    if (!email || !username || !password || !name || !surname) {
-        return res.status(400).json({ error: "Faltan datos obligatorios" });
-    }
-    
-    const userRole = role || "cliente";
+  const { name, surname, email, username, password } = req.body;
 
-    db.query("SELECT * FROM Person WHERE email = ?", [email], async (err, result) => {
-        if (err) return res.status(500).json({ error: err });
-        if (result.length > 0) return res.json({ error: "El correo ya está registrado" });
+  if (!name || !surname || !email || !username || !password)
+    return res.json({ error: "Faltan datos" });
 
-        db.query(
-            "INSERT INTO Person (name, surname, email, role) VALUES (?, ?, ?, ?)",
-            [name, surname, email, userRole],
-            async (err, personResult) => {
-                if (err) return res.status(500).json({ error: err });
-                const personId = personResult.insertId;
+  db.query(
+    "SELECT * FROM Person WHERE email = ?",
+    [email],
+    async (err, result) => {
+      if (result.length > 0)
+        return res.json({ error: "Correo ya registrado" });
 
-                const hashedPass = await bcrypt.hash(password, 10);
+      const hashed = await bcrypt.hash(password, 10);
 
-                db.query(
-                    "INSERT INTO User (username, password, person_id) VALUES (?, ?, ?)",
-                    [username, hashedPass, personId],
-                    (err) => {
-                        if (err) return res.status(500).json({ error: err });
-                        res.json({ message: "Usuario registrado", username, role: userRole });
-                    }
-                );
+      db.query(
+        "INSERT INTO Person (name, surname, email, role) VALUES (?, ?, ?, 'cliente')",
+        [name, surname, email],
+        (err, personResult) => {
+          if (err) return res.json({ error: err });
+
+          const pid = personResult.insertId;
+
+          db.query(
+            "INSERT INTO User (username, password, person_id) VALUES (?, ?, ?)",
+            [username, hashed, pid],
+            (err) => {
+              if (err) return res.json({ error: err });
+
+              res.json({
+                message: "Usuario registrado",
+                username,
+                role: "cliente",
+              });
             }
-        );
-    });
+          );
+        }
+      );
+    }
+  );
 });
+
 
 router.post("/login", (req, res) => {
-    const { email, password } = req.body;
-    
-    if (!email || !password) {
-        return res.json({ error: "Faltan datos" });
-    }
+  const { email, password } = req.body;
 
-    const sql = `
-        SELECT User.id, username, password, Person.role 
-        FROM User
-        INNER JOIN Person ON User.person_id = Person.id
-        WHERE Person.email = ?
-    `;
-    
-    db.query(sql, [email], async (err, result) => {
-        if (err) {
-            console.error("Error en login:", err);
-            return res.status(500).json({ error: "Error del servidor" });
-        }
-        
-        if (result.length === 0) {
-            return res.json({ error: "Usuario no encontrado" });
-        }
+  const sql = `
+    SELECT User.id, User.username, User.password, 
+           Person.id AS person_id, Person.role, Person.email
+    FROM User
+    INNER JOIN Person ON User.person_id = Person.id
+    WHERE Person.email = ?
+  `;
 
-        const user = result[0];
-        const match = await bcrypt.compare(password, user.password);
-        
-        if (!match) {
-            return res.json({ error: "Contraseña incorrecta" });
-        }
+  db.query(sql, [email], async (err, data) => {
+    if (data.length === 0)
+      return res.json({ error: "Usuario no encontrado" });
 
-        req.session.userId = user.id;
+    const user = data[0];
 
-        req.session.save((err) => {
-            if (err) {
-                console.error("Error guardando sesión:", err);
-                return res.status(500).json({ error: "Error al iniciar sesión" });
-            }
-            
-            console.log("✅ Sesión guardada, userId:", req.session.userId);
-            console.log("✅ SessionID:", req.sessionID);
-            
-            res.json({ 
-                message: "Login exitoso", 
-                username: user.username, 
-                role: user.role 
-            });
-        });
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) return res.json({ error: "Contraseña incorrecta" });
+
+    req.session.userId = user.id;
+
+    req.session.save(() => {
+      res.json({
+        message: "Login exitoso",
+        person_id: user.person_id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      });
     });
+  });
 });
 
+
 router.post("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error("Error destruyendo sesión:", err);
-            return res.status(500).json({ error: "Error cerrando sesión" });
-        }
-        
-        res.clearCookie("connect.sid");
-        console.log("✅ Sesión destruida correctamente");
-        res.json({ message: "Sesión cerrada" });
-    });
+  req.session.destroy(() => {
+    res.clearCookie("connect.sid");
+    res.json({ message: "Sesión cerrada" });
+  });
 });
 
 module.exports = router;
