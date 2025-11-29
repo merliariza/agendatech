@@ -384,7 +384,7 @@ body.menu-active::before {
 
 .calendar-card {
     grid-column: 1 / 2;
-    max-height: 200 px;
+    max-height: 400px;
 }
 
 .details-card {

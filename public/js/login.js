@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
       actualizarBotonSesion();
 
       if (data.role?.toLowerCase() === "administrador") {
-        window.location.href = "http://localhost:5502/public/pages/admin.html";
+        window.location.href = "/pages/admin.html";
         return;
       }
 

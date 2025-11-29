@@ -32,7 +32,7 @@
 
     <nav id="menu" class="menu">
       <ul class="list-unstyled d-flex gap-3 mb-0 align-items-center">
-        <li><a href="#" class="text-decoration-none">Agéndate</a></li>
+        <!--<li><a href="#" id="btnMisCitas" class="text-decoration-none">Agéndate</a></li>-->
         <li><a href="#" class="text-decoration-none">Productos</a></li>
 <li><a href="#" id="btnCuenta" class="text-decoration-none">Mi cuenta</a></li>
         <li><a href="#" id="btnCarrito"><img src="src/img/shoppingCart.png" class="icono-carrito" alt="Carrito" style="height:24px;" /></a></li>
@@ -168,6 +168,74 @@
     </form>
   </div>
 
+<!-- MIS CITAS  
+<section id="seccionCitas" class="hidden pagina-section container my-5">
+  
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold m-0">Mis Citas</h2>
+    <button id="btnNuevaCita" class="btn btn-primary">+ Nueva Cita</button>
+  </div>
+
+  <div id="panelNuevaCita" class="card shadow-sm mb-4" style="display:none;">
+    <div class="card-header bg-primary text-white">
+      <h5 class="m-0">Agendar Nueva Cita</h5>
+    </div>
+    <div class="card-body">
+      
+      <form id="formNuevaCita">
+        
+        <div class="mb-4">
+          <label class="form-label fw-bold">Selecciona una fecha:</label>
+          <div class="calendar-widget">
+            <div class="calendar-header">
+              <button type="button" id="userPrevMonth" class="btn btn-sm btn-outline-secondary">←</button>
+              <span id="userMonthYear" class="fw-bold"></span>
+              <button type="button" id="userNextMonth" class="btn btn-sm btn-outline-secondary">→</button>
+            </div>
+            <div class="calendar-weekdays">
+              <div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div><div>D</div>
+            </div>
+            <div id="userCalendarDays" class="calendar-days"></div>
+          </div>
+          <p class="text-muted small mt-2">Fecha seleccionada: <span id="userSelectedDateText" class="fw-bold">Ninguna</span></p>
+        </div>
+
+        <div class="mb-3">
+          <label for="userEmployeeSelect" class="form-label fw-bold">Especialista:</label>
+          <select id="userEmployeeSelect" class="form-select" required>
+            <option value="">Seleccione un especialista</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="userTimeSelect" class="form-label fw-bold">Hora:</label>
+          <select id="userTimeSelect" class="form-select" required>
+            <option value="">Primero selecciona fecha y especialista</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="userNotes" class="form-label fw-bold">Notas adicionales (opcional):</label>
+          <textarea id="userNotes" class="form-control" rows="3" placeholder="Ej: Alergias, preferencias, etc."></textarea>
+        </div>
+
+        <div id="userBookingFeedback" class="mb-3"></div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-success">Agendar Cita</button>
+          <button type="button" id="btnCancelarNuevaCita" class="btn btn-secondary">Cancelar</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <div id="userAppointmentsList" class="appointments-list">
+    <p class="text-muted text-center">Cargando tus citas...</p>
+  </div>
+
+</section>-->
 
 <!--PRODUCTOS -->
 <section id="seccionProductos" class="pagina-section hidden productos-container">
@@ -205,10 +273,6 @@
                     <span>Actualizar información</span>
                 </li>
 
-                <li id="cerrarSesionBtn">
-                    <i class="icon-exit"></i>
-                    <span>Cerrar sesión</span>
-                </li>
             </ul>
         </div>
 
@@ -285,4 +349,5 @@
 <script type="module" src="js/carrito.js"></script>
 <script type="module" src="js/cuenta.js"></script>
 <script type="module" src="js/mostrar_principal.js"></script>
+<script type="module" src="js/citas.js"></script>
 </html>

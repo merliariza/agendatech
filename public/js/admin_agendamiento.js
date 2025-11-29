@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             await loadAppointments();
+            await loadAllCustomers();
 
             populateSelects();
             
@@ -84,6 +85,46 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     let clientesCache = [];
+    let clientesDatalist = document.createElement('datalist');
+    clientesDatalist.id = 'clientesList';
+    document.body.appendChild(clientesDatalist);
+    customerNameInput.setAttribute('list', 'clientesList');
+    
+    async function loadAllCustomers() {
+        try {
+            const res = await fetch(`${API_BASE}/citas/customers`, {
+                credentials: 'include'
+            });
+            const data = await res.json();
+            
+            if (data.ok && data.customers.length > 0) {
+                clientesCache = data.customers;
+                updateCustomerDatalist();
+            }
+        } catch (error) {
+            console.error("Error cargando clientes:", error);
+        }
+    }
+
+    function updateCustomerDatalist() {
+        clientesDatalist.innerHTML = '';
+        clientesCache.forEach(c => {
+            const option = document.createElement('option');
+            option.value = `${c.name} ${c.surname}`;
+            option.setAttribute('data-email', c.email);
+            clientesDatalist.appendChild(option);
+        });
+    }
+
+    customerNameInput.addEventListener("input", function() {
+        const selectedName = this.value;
+        const cliente = clientesCache.find(c => 
+            `${c.name} ${c.surname}` === selectedName
+        );
+        if (cliente) {
+            customerEmailInput.value = cliente.email;
+        }
+    });
     
     customerEmailInput.addEventListener("input", async function() {
         const query = this.value.trim();
@@ -97,6 +138,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             
             if (data.ok && data.customers.length > 0) {
                 clientesCache = data.customers;
+                updateCustomerDatalist();
                 const exactMatch = data.customers.find(c => c.email.toLowerCase() === query.toLowerCase());
                 if (exactMatch && !customerNameInput.value) {
                     customerNameInput.value = `${exactMatch.name} ${exactMatch.surname}`;
@@ -183,13 +225,21 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     function formatDateLong(dateStrYYYYMMDD) {
-        const d = new Date(dateStrYYYYMMDD + "T12:00:00");
-        return d.toLocaleDateString('es-ES', { 
-            weekday: 'long', 
-            day: 'numeric', 
-            month: 'long', 
-            year: 'numeric' 
-        });
+        if (!dateStrYYYYMMDD || dateStrYYYYMMDD === 'Invalid Date') {
+            return 'Fecha inválida';
+        }
+        try {
+            const parts = dateStrYYYYMMDD.split('-');
+            const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            return d.toLocaleDateString('es-ES', { 
+                weekday: 'long', 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric' 
+            });
+        } catch (error) {
+            return 'Fecha inválida';
+        }
     }
 
     function populateTimeOptionsForDate(dateStr) {
@@ -197,10 +247,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         const startHour = 8;
         const endHour = 18;
         const selectedEmployeeId = parseInt(employeeSelect.value) || null;
+        const editingId = bookingForm.dataset.editingId;
 
         const bookedForDate = appointments.filter(a => 
             a.appointment_date === dateStr && 
-            a.status !== 'cancelada'
+            a.status !== 'cancelada' &&
+            (!editingId || a.id != editingId)
         );
 
         for (let h = startHour; h <= endHour; h++) {
@@ -251,9 +303,25 @@ document.addEventListener("DOMContentLoaded", async function () {
             return;
         }
 
+        const editingId = bookingForm.dataset.editingId;
+
         try {
-            const res = await fetch(`${API_BASE}/citas`, {
-                method: 'POST',
+            const url = editingId ? `${API_BASE}/citas/${editingId}` : `${API_BASE}/citas`;
+            const method = editingId ? 'PUT' : 'POST';
+            
+            console.log('Enviando solicitud:', method, url);
+            console.log('Datos:', {
+                customer_email: customerEmail,
+                customer_name: customerName,
+                employee_id: employeeId,
+                appointment_date: selectedDate,
+                appointment_time: appointmentTime,
+                payment_method: paymentMethod,
+                notes: notes
+            });
+            
+            const res = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({
@@ -267,15 +335,21 @@ document.addEventListener("DOMContentLoaded", async function () {
                 })
             });
 
+            console.log('Respuesta HTTP:', res.status);
             const data = await res.json();
+            console.log('Datos respuesta:', data);
 
             if (data.ok) {
-                showFeedback("¡Cita agendada correctamente!", "success");
+                showFeedback(editingId ? "¡Cita actualizada correctamente!" : "¡Cita agendada correctamente!", "success");
                 bookingForm.reset();
+                delete bookingForm.dataset.editingId;
+                document.querySelector('button[type="submit"]').textContent = "Agendar Cita";
                 await loadAppointments();
-                populateTimeOptionsForDate(selectedDate);
+                if (selectedDate) {
+                    populateTimeOptionsForDate(selectedDate);
+                }
             } else {
-                showFeedback(data.message || "Error al agendar cita", "error");
+                showFeedback(data.message || `Error al ${editingId ? 'actualizar' : 'agendar'} cita`, "error");
             }
         } catch (error) {
             console.error("Error:", error);
@@ -286,6 +360,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("resetBooking")?.addEventListener("click", () => {
         bookingForm.reset();
         bookingFeedback.textContent = "";
+        delete bookingForm.dataset.editingId;
+        document.querySelector('button[type="submit"]').textContent = "Agendar Cita";
     });
 
     function renderAppointments() {
@@ -311,11 +387,53 @@ document.addEventListener("DOMContentLoaded", async function () {
             left.innerHTML = `
                 <div class="appointment-meta">${formatDateLong(a.appointment_date)} • ${a.appointment_time.slice(0,5)} • ${a.employee_name || ''}</div>
                 <div class="appointment-meta">Cliente: ${a.customer_name}</div>
+                <div class="appointment-meta">Email: ${a.customer_email || 'N/A'}</div>
                 <div class="appointment-meta">Estado: <strong>${a.status}</strong></div>
+                ${a.notes ? `<div class="appointment-meta">Notas: ${a.notes}</div>` : ''}
             `;
 
             const right = document.createElement("div");
             right.className = "appointment-actions";
+            right.style.display = "flex";
+            right.style.gap = "8px";
+            right.style.flexWrap = "wrap";
+
+            if (a.status !== 'cancelada') {
+                const btnEdit = document.createElement("button");
+                btnEdit.className = "btn-secondary";
+                btnEdit.textContent = "Editar";
+                
+                btnEdit.addEventListener("click", async () => {
+                    console.log('Editando cita:', a);
+                    
+                    selectedDate = a.appointment_date;
+                    selectedDateText.innerHTML = formatDateLong(a.appointment_date);
+                    
+                    const [year, month, day] = a.appointment_date.split('-').map(Number);
+                    currentYear = year;
+                    currentMonth = month - 1;
+                    renderCalendar(currentYear, currentMonth);
+                    
+                    customerEmailInput.value = a.customer_email || '';
+                    customerNameInput.value = a.customer_name || '';
+                    employeeSelect.value = a.employee_id;
+                    document.getElementById("paymentMethod").value = a.payment_method || 'efectivo';
+                    document.getElementById("notes").value = a.notes || '';
+                    
+                    bookingForm.dataset.editingId = a.id;
+                    
+                    populateTimeOptionsForDate(a.appointment_date);
+                    
+                    setTimeout(() => {
+                        timeSelect.value = a.appointment_time.slice(0,5);
+                        document.querySelector('button[type="submit"]').textContent = "Actualizar Cita";
+                    }, 100);
+                    
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+
+                right.appendChild(btnEdit);
+            }
 
             const btnCancel = document.createElement("button");
             btnCancel.className = "btn-primary";
@@ -326,16 +444,22 @@ document.addEventListener("DOMContentLoaded", async function () {
                 if (!confirm("¿Estás segura de cancelar esta cita?")) return;
                 
                 try {
+                    console.log('Cancelando cita:', a.id);
                     const res = await fetch(`${API_BASE}/citas/${a.id}/cancel`, {
                         method: 'PATCH',
                         credentials: 'include'
                     });
                     
+                    console.log('Respuesta cancelación:', res.status);
                     const data = await res.json();
+                    console.log('Datos cancelación:', data);
+                    
                     if (data.ok) {
                         showFeedback("Cita cancelada", "success");
                         await loadAppointments();
                         if (selectedDate) populateTimeOptionsForDate(selectedDate);
+                    } else {
+                        showFeedback(data.message || "Error al cancelar cita", "error");
                     }
                 } catch (error) {
                     console.error("Error:", error);
@@ -343,7 +467,39 @@ document.addEventListener("DOMContentLoaded", async function () {
                 }
             });
 
+            const btnDelete = document.createElement("button");
+            btnDelete.className = "btnDelete";
+            btnDelete.textContent = "Eliminar";
+            
+            btnDelete.addEventListener("click", async () => {
+                if (!confirm("¿Estás segura de eliminar esta cita permanentemente?")) return;
+                
+                try {
+                    console.log('Eliminando cita:', a.id);
+                    const res = await fetch(`${API_BASE}/citas/${a.id}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    
+                    console.log('Respuesta eliminación:', res.status);
+                    const data = await res.json();
+                    console.log('Datos eliminación:', data);
+                    
+                    if (data.ok) {
+                        showFeedback("Cita eliminada correctamente", "success");
+                        await loadAppointments();
+                        if (selectedDate) populateTimeOptionsForDate(selectedDate);
+                    } else {
+                        showFeedback(data.message || "Error al eliminar cita", "error");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    showFeedback("Error al eliminar cita", "error");
+                }
+            });
+
             right.appendChild(btnCancel);
+            right.appendChild(btnDelete);
             item.appendChild(left);
             item.appendChild(right);
             appointmentsContainer.appendChild(item);
