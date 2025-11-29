@@ -143,7 +143,6 @@ router.post('/', requireAuth, async (req, res) => {
       });
     }
 
-    // Normalizar fecha (extraer solo YYYY-MM-DD si viene con timestamp)
     let formattedDate = appointment_date;
     if (appointment_date.includes('T')) {
       formattedDate = appointment_date.split('T')[0];
@@ -264,7 +263,6 @@ router.put('/:id', requireAuth, async (req, res) => {
   }
 
   try {
-    // Normalizar fecha (extraer solo YYYY-MM-DD si viene con timestamp)
     let formattedDate = appointment_date;
     if (appointment_date && appointment_date.includes('T')) {
       formattedDate = appointment_date.split('T')[0];
