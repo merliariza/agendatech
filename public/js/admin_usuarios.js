@@ -29,7 +29,7 @@ function cargarUsuarios() {
             </select>
           </td>
           <td>
-            <button class="btnDelete" data-id="${u.user_id}">Eliminar</button>
+            <button class="btn-secondary" data-id="${u.user_id}">Eliminar</button>
           </td>
         `;
 

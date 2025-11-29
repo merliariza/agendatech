@@ -1,67 +1,111 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+    const API_BASE = "http://localhost:3000/api";
 
-    const services = [
-        { id: 1, name: "Cabello (Corte + Peinado)", description: "Corte y peinado profesional", price: 35000, duration_minutes: 60 },
-        { id: 2, name: "Uñas (Manicure)", description: "Manicure clásico", price: 25000, duration_minutes: 45 },
-        { id: 3, name: "Cejas y Pestañas", description: "Depilación y diseño", price: 20000, duration_minutes: 40 },
-        { id: 4, name: "Maquillaje", description: "Maquillaje social", price: 45000, duration_minutes: 90 }
-    ];
-
-    const employees = [
-        { id: 101, name: "Andrea" },
-        { id: 102, name: "Camila" },
-        { id: 103, name: "Lucía" }
-    ];
-
-    let appointments = []; 
-    let selectedDate = null; 
+    let employees = [];
+    let appointments = [];
+    let selectedDate = null;
     let currentYear, currentMonth;
 
     const monthYear = document.getElementById("monthYear");
     const calendarDays = document.getElementById("calendarDays");
     const prevMonth = document.getElementById("prevMonth");
     const nextMonth = document.getElementById("nextMonth");
-
-    const selectedServicePill = document.getElementById("selectedServicePill");
     const selectedDateText = document.getElementById("selectedDateText");
-
-    const serviceSelect = document.getElementById("serviceSelect");
     const employeeSelect = document.getElementById("employeeSelect");
     const timeSelect = document.getElementById("timeSelect");
-
     const bookingForm = document.getElementById("bookingForm");
     const bookingFeedback = document.getElementById("bookingFeedback");
     const appointmentsContainer = document.getElementById("appointmentsContainer");
+    const customerEmailInput = document.getElementById("customerEmail");
+    const customerNameInput = document.getElementById("customerName");
 
-    function buildDateISONoTZ(year, monthZeroBased, day) {
-        const mm = String(monthZeroBased + 1).padStart(2, "0");
-        const dd = String(day).padStart(2, "0");
-        return `${year}-${mm}-${dd}T12:00:00`;
+    async function loadInitialData() {
+        try {
+            showFeedback("Cargando datos...", "info");
+           
+            const employeesRes = await fetch(`${API_BASE}/citas/employees`, {
+                credentials: 'include'
+            });
+            
+            if (!employeesRes.ok) {
+                throw new Error(`Error HTTP: ${employeesRes.status}`);
+            }
+            
+            const employeesData = await employeesRes.json();
+            console.log("Empleados cargados:", employeesData);
+            
+            if (employeesData.ok) {
+                employees = employeesData.employees;
+            } else {
+                throw new Error(employeesData.message || "Error al cargar empleados");
+            }
+            
+            if (employees.length === 0) {
+                showFeedback("⚠️ No hay empleados registrados. Contacta al administrador.", "error");
+            }
+
+            await loadAppointments();
+
+            populateSelects();
+            
+            if (employees.length > 0) {
+                bookingFeedback.textContent = "";
+            }
+
+        } catch (error) {
+            console.error("Error cargando datos:", error);
+            showFeedback(`Error: ${error.message}. Verifica la conexión al servidor.`, "error");
+        }
     }
 
-    function formatDateYYYYMMDD(y, mZeroBased, d) {
-        const mm = String(mZeroBased + 1).padStart(2, "0");
-        const dd = String(d).padStart(2, "0");
-        return `${y}-${mm}-${dd}`;
+    async function loadAppointments(date = null) {
+        try {
+            const url = date 
+                ? `${API_BASE}/citas/by-date?date=${date}`
+                : `${API_BASE}/citas`;
+            
+            const res = await fetch(url, { credentials: 'include' });
+            const data = await res.json();
+            
+            if (data.ok) {
+                appointments = data.appointments;
+                renderAppointments();
+            }
+        } catch (error) {
+            console.error("Error cargando citas:", error);
+        }
     }
 
-    function formatDateLong(dateStrYYYYMMDD) {
-        const d = new Date(dateStrYYYYMMDD + "T12:00:00");
-        return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    function populateSelects() {
+        employeeSelect.innerHTML = '<option value="">Seleccione un empleado</option>';
+        employees.forEach(e => {
+            employeeSelect.innerHTML += `<option value="${e.id}">${e.name} ${e.surname}</option>`;
+        });
     }
 
-    function isSameDateISO(a, b) {
-        if (!a || !b) return false;
-        return a === b;
-    }
+    let clientesCache = [];
+    
+    customerEmailInput.addEventListener("input", async function() {
+        const query = this.value.trim();
+        if (query.length < 2) return;
 
-    function initData() {
-        serviceSelect.innerHTML = "";
-        services.forEach(s => serviceSelect.innerHTML += `<option value="${s.id}">${s.name} — $${s.price}</option>`);
-
-        employeeSelect.innerHTML = "";
-        employees.forEach(e => employeeSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`);
-    }
+        try {
+            const res = await fetch(`${API_BASE}/citas/customers?q=${encodeURIComponent(query)}`, {
+                credentials: 'include'
+            });
+            const data = await res.json();
+            
+            if (data.ok && data.customers.length > 0) {
+                clientesCache = data.customers;
+                const exactMatch = data.customers.find(c => c.email.toLowerCase() === query.toLowerCase());
+                if (exactMatch && !customerNameInput.value) {
+                    customerNameInput.value = `${exactMatch.name} ${exactMatch.surname}`;
+                }
+            }
+        } catch (error) {
+            console.error("Error buscando clientes:", error);
+        }
+    });
 
     function initCalendar() {
         const today = new Date();
@@ -88,39 +132,26 @@ document.addEventListener("DOMContentLoaded", function () {
             const cell = document.createElement("div");
             cell.className = "calendar-day";
             cell.textContent = day;
-            cell.setAttribute("data-day", String(day));
-            cell.setAttribute("data-year", String(year));
-            cell.setAttribute("data-month", String(month)); 
 
+            const dateStr = formatDateYYYYMMDD(year, month, day);
             const today = new Date();
+            
             if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
                 cell.classList.add("today");
             }
 
-            const isoForCell = formatDateYYYYMMDD(year, month, day);
-            if (isSameDateISO(selectedDate, isoForCell)) {
+            if (selectedDate === dateStr) {
                 cell.classList.add("selected");
             }
 
-            cell.addEventListener("click", (e) => {
-                if (cell.classList.contains("inactive")) return;
-                const y = parseInt(cell.getAttribute("data-year"));
-                const m = parseInt(cell.getAttribute("data-month"));
-                const d = parseInt(cell.getAttribute("data-day"));
-
-                const safeISO = buildDateISONoTZ(y, m, d); 
-                const safeYMD = safeISO.split("T")[0];
-
-                selectedDate = safeYMD;
-
-                Array.from(calendarDays.children).forEach(c => c.classList.remove("selected"));
+            cell.addEventListener("click", () => {
+                selectedDate = dateStr;
+                selectedDateText.innerHTML = formatDateLong(dateStr);
+                
+                document.querySelectorAll('.calendar-day').forEach(c => c.classList.remove("selected"));
                 cell.classList.add("selected");
-
-                selectedDateText.innerHTML = formatDateLong(selectedDate);
-
-                populateTimeOptionsForDate(selectedDate);
-
-                renderAppointments();
+                
+                populateTimeOptionsForDate(dateStr);
             });
 
             calendarDays.appendChild(cell);
@@ -129,212 +160,224 @@ document.addEventListener("DOMContentLoaded", function () {
 
     prevMonth.addEventListener("click", () => {
         currentMonth--;
-        if (currentMonth < 0) { currentYear--; currentMonth = 11; }
+        if (currentMonth < 0) { 
+            currentYear--; 
+            currentMonth = 11; 
+        }
         renderCalendar(currentYear, currentMonth);
     });
 
     nextMonth.addEventListener("click", () => {
         currentMonth++;
-        if (currentMonth > 11) { currentYear++; currentMonth = 0; }
+        if (currentMonth > 11) { 
+            currentYear++; 
+            currentMonth = 0; 
+        }
         renderCalendar(currentYear, currentMonth);
     });
 
-  function populateTimeOptionsForDate(dateStr) {
+    function formatDateYYYYMMDD(y, mZeroBased, d) {
+        const mm = String(mZeroBased + 1).padStart(2, "0");
+        const dd = String(d).padStart(2, "0");
+        return `${y}-${mm}-${dd}`;
+    }
+
+    function formatDateLong(dateStrYYYYMMDD) {
+        const d = new Date(dateStrYYYYMMDD + "T12:00:00");
+        return d.toLocaleDateString('es-ES', { 
+            weekday: 'long', 
+            day: 'numeric', 
+            month: 'long', 
+            year: 'numeric' 
+        });
+    }
+
+    function populateTimeOptionsForDate(dateStr) {
         timeSelect.innerHTML = "";
         const startHour = 8;
         const endHour = 18;
         const selectedEmployeeId = parseInt(employeeSelect.value) || null;
 
-        const bookedForDate = appointments.filter(a => a.appointment_date === dateStr && a.status !== 'cancelada');
+        const bookedForDate = appointments.filter(a => 
+            a.appointment_date === dateStr && 
+            a.status !== 'cancelada'
+        );
 
         for (let h = startHour; h <= endHour; h++) {
             const hh = String(h).padStart(2, "0");
             const timeStr = `${hh}:00`;
 
             let isBooked = false;
+            
             if (selectedEmployeeId) {
-                isBooked = bookedForDate.some(a => a.employee_id === selectedEmployeeId && a.appointment_time.startsWith(timeStr));
-            } else {
-               isBooked = bookedForDate.some(a => a.appointment_time.startsWith(timeStr));
+                isBooked = bookedForDate.some(a => 
+                    a.employee_id === selectedEmployeeId && 
+                    a.appointment_time.startsWith(timeStr)
+                );
             }
 
             const option = document.createElement("option");
             option.value = timeStr;
-            option.textContent = timeStr;
-
-            if (isBooked) {
-                option.disabled = true;
-                option.textContent = `${timeStr} (ocupado)`;
-            }
+            option.textContent = isBooked ? `${timeStr} (ocupado)` : timeStr;
+            option.disabled = isBooked;
 
             timeSelect.appendChild(option);
         }
     }
 
-    bookingForm.addEventListener("submit", function (e) {
+    employeeSelect.addEventListener("change", () => {
+        if (selectedDate) {
+            populateTimeOptionsForDate(selectedDate);
+        }
+    });
+
+    bookingForm.addEventListener("submit", async function (e) {
         e.preventDefault();
+        
         if (!selectedDate) {
-            bookingFeedback.style.color = "crimson";
-            bookingFeedback.textContent = "Selecciona una fecha en el calendario primero.";
+            showFeedback("Selecciona una fecha en el calendario primero", "error");
             return;
         }
 
-        const customerEmail = document.getElementById("customerEmail").value.trim();
-        const customerName = document.getElementById("customerName").value.trim();
-        const serviceId = parseInt(serviceSelect.value);
+        const customerEmail = customerEmailInput.value.trim();
+        const customerName = customerNameInput.value.trim();
         const employeeId = parseInt(employeeSelect.value);
         const appointmentTime = timeSelect.value;
         const paymentMethod = document.getElementById("paymentMethod").value;
         const notes = document.getElementById("notes").value.trim();
 
-        if (!customerEmail || !customerName || !serviceId || !employeeId || !appointmentTime) {
-            bookingFeedback.style.color = "crimson";
-            bookingFeedback.textContent = "Completa todos los campos requeridos.";
+        if (!customerEmail || !customerName || !employeeId || !appointmentTime) {
+            showFeedback("Completa todos los campos requeridos", "error");
             return;
         }
 
-        const serviceObj = services.find(s => s.id === serviceId);
-        const finalPrice = serviceObj ? serviceObj.price : 0;
+        try {
+            const res = await fetch(`${API_BASE}/citas`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                    customer_email: customerEmail,
+                    customer_name: customerName,
+                    employee_id: employeeId,
+                    appointment_date: selectedDate,
+                    appointment_time: appointmentTime,
+                    payment_method: paymentMethod,
+                    notes: notes
+                })
+            });
 
-        const conflict = appointments.find(a => a.employee_id === employeeId && a.appointment_date === selectedDate && a.appointment_time.startsWith(appointmentTime) && a.status !== 'cancelada');
-        if (conflict) {
-            bookingFeedback.style.color = "crimson";
-            bookingFeedback.textContent = "La hora ya está ocupada para ese empleado. Elige otro horario o empleado.";
-            return;
+            const data = await res.json();
+
+            if (data.ok) {
+                showFeedback("¡Cita agendada correctamente!", "success");
+                bookingForm.reset();
+                await loadAppointments();
+                populateTimeOptionsForDate(selectedDate);
+            } else {
+                showFeedback(data.message || "Error al agendar cita", "error");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            showFeedback("Error de conexión al servidor", "error");
         }
-
-        const appointment = {
-            id: Date.now(),
-            customer_id: customerEmail,           
-            customer_name: customerName,
-            employee_id: employeeId,
-            service_id: serviceId,
-            appointment_date: selectedDate,     
-            appointment_time: `${appointmentTime}:00`,
-            status: "pendiente",
-            final_price: finalPrice,
-            payment_method: paymentMethod,
-            payment_status: "pendiente",
-            amount_paid: 0,
-            notes: notes,
-            created_at: new Date().toISOString()
-        };
-
-        appointments.push(appointment);
-
-        bookingFeedback.style.color = "green";
-        bookingFeedback.textContent = "Cita agendada correctamente.";
-        bookingForm.reset();
-        selectedServicePill.textContent = "Seleccione un servicio";
-
-        selectedDate = null;
-        selectedDateText.textContent = "Ninguna fecha seleccionada";
-
-        renderAppointments();
-        renderCalendar(currentYear, currentMonth);
     });
 
-    const resetBtn = document.getElementById("resetBooking");
-    if (resetBtn) {
-        resetBtn.addEventListener("click", () => {
-            bookingForm.reset();
-            bookingFeedback.textContent = "";
-        });
-    }
+    document.getElementById("resetBooking")?.addEventListener("click", () => {
+        bookingForm.reset();
+        bookingFeedback.textContent = "";
+    });
 
     function renderAppointments() {
         appointmentsContainer.innerHTML = "";
+        
         if (!appointments || appointments.length === 0) {
             appointmentsContainer.innerHTML = `<p style="color:#777">No hay citas agendadas.</p>`;
             return;
         }
 
-        const sorted = appointments.slice().sort((a,b) => {
-            if (a.appointment_date === b.appointment_date) return a.appointment_time.localeCompare(b.appointment_time);
+        const sorted = appointments.slice().sort((a, b) => {
+            if (a.appointment_date === b.appointment_date) {
+                return a.appointment_time.localeCompare(b.appointment_time);
+            }
             return a.appointment_date.localeCompare(b.appointment_date);
         });
 
         sorted.forEach(a => {
-            const serviceObj = services.find(s => s.id === a.service_id);
-            const employeeObj = employees.find(e => e.id === a.employee_id);
-
             const item = document.createElement("div");
             item.className = "appointment-item";
 
             const left = document.createElement("div");
-            left.innerHTML = `<div style="font-weight:700">${serviceObj ? serviceObj.name : 'Servicio'}</div>
-                              <div class="appointment-meta">${formatDateLong(a.appointment_date)} • ${a.appointment_time.slice(0,5)} • ${employeeObj ? employeeObj.name : ''}</div>
-                              <div class="appointment-meta">Estado: <strong>${a.status}</strong></div>`;
+            left.innerHTML = `
+                <div class="appointment-meta">${formatDateLong(a.appointment_date)} • ${a.appointment_time.slice(0,5)} • ${a.employee_name || ''}</div>
+                <div class="appointment-meta">Cliente: ${a.customer_name}</div>
+                <div class="appointment-meta">Estado: <strong>${a.status}</strong></div>
+            `;
 
             const right = document.createElement("div");
             right.className = "appointment-actions";
-
-            const btnView = document.createElement("button");
-            btnView.className = "btn-secondary";
-            btnView.textContent = "Ver";
-            btnView.addEventListener("click", () => {
-                
-                document.getElementById("customerEmail").value = a.customer_id;
-                document.getElementById("customerName").value = a.customer_name;
-                serviceSelect.value = a.service_id;
-                employeeSelect.value = a.employee_id;
-
-                const [y, m, d] = a.appointment_date.split("-");
-                const yearNum = parseInt(y);
-                const monthNumZeroBased = parseInt(m) - 1;
-                const dayNum = parseInt(d);
-
-                currentYear = yearNum;
-                currentMonth = monthNumZeroBased;
-                renderCalendar(currentYear, currentMonth);
-
-                selectedDate = a.appointment_date;
-                selectedDateText.textContent = formatDateLong(selectedDate);
-
-                populateTimeOptionsForDate(selectedDate);
-                setTimeout(() => {
-                    Array.from(timeSelect.options).forEach(opt => {
-                        if (opt.value === a.appointment_time.slice(0,5)) opt.selected = true;
-                    });
-                }, 10);
-
-                selectedServicePill.textContent = serviceObj ? serviceObj.name : "Servicio";
-                bookingFeedback.textContent = `Viendo cita (estado: ${a.status}). Puedes modificar o cancelar.`;
-            });
 
             const btnCancel = document.createElement("button");
             btnCancel.className = "btn-primary";
             btnCancel.textContent = a.status === 'cancelada' ? "Cancelada" : "Cancelar";
             btnCancel.disabled = a.status === 'cancelada';
-            btnCancel.addEventListener("click", () => {
+            
+            btnCancel.addEventListener("click", async () => {
                 if (!confirm("¿Estás segura de cancelar esta cita?")) return;
-                a.status = 'cancelada';
-                renderAppointments();
-                if (selectedDate === a.appointment_date) populateTimeOptionsForDate(selectedDate);
+                
+                try {
+                    const res = await fetch(`${API_BASE}/citas/${a.id}/cancel`, {
+                        method: 'PATCH',
+                        credentials: 'include'
+                    });
+                    
+                    const data = await res.json();
+                    if (data.ok) {
+                        showFeedback("Cita cancelada", "success");
+                        await loadAppointments();
+                        if (selectedDate) populateTimeOptionsForDate(selectedDate);
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    showFeedback("Error al cancelar cita", "error");
+                }
             });
 
-            right.appendChild(btnView);
             right.appendChild(btnCancel);
-
             item.appendChild(left);
             item.appendChild(right);
-
             appointmentsContainer.appendChild(item);
         });
     }
 
-    serviceSelect.addEventListener("change", () => {
-        const sid = parseInt(serviceSelect.value);
-        const s = services.find(x => x.id === sid);
-        selectedServicePill.textContent = s ? `${s.name} — $${s.price}` : "Seleccione un servicio";
-    });
+    function showFeedback(message, type) {
+        bookingFeedback.textContent = message;
+        if (type === "error") {
+            bookingFeedback.style.color = "crimson";
+            bookingFeedback.style.background = "#fee";
+            bookingFeedback.style.padding = "0.75rem";
+            bookingFeedback.style.borderRadius = "6px";
+        } else if (type === "success") {
+            bookingFeedback.style.color = "green";
+            bookingFeedback.style.background = "#efe";
+            bookingFeedback.style.padding = "0.75rem";
+            bookingFeedback.style.borderRadius = "6px";
+        } else {
+            bookingFeedback.style.color = "#666";
+            bookingFeedback.style.background = "#f5f5f5";
+            bookingFeedback.style.padding = "0.75rem";
+            bookingFeedback.style.borderRadius = "6px";
+        }
+        
+        if (type !== "info") {
+            setTimeout(() => {
+                bookingFeedback.textContent = "";
+                bookingFeedback.style.background = "transparent";
+                bookingFeedback.style.padding = "0";
+            }, 5000);
+        }
+    }
 
-    employeeSelect.addEventListener("change", () => {
-        if (selectedDate) populateTimeOptionsForDate(selectedDate);
-    });
-
-    initData();
+    await loadInitialData();
     initCalendar();
-    renderAppointments();
-
 });

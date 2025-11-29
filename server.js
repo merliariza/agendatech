@@ -40,6 +40,7 @@ app.use("/api/productos", require("./routes/productos.js"));
 app.use("/api/actualizar-datos", require("./routes/actualizarDatos.js"));
 app.use("/api/cambiar-password", require("./routes/cambiarContrasena.js"));
 app.use("/api/admin-usuarios", require("./routes/admin_usuarios.js"));
+app.use("/api/citas", require("./routes/appointments.js"));
 
 app.get("/api/check-session", (req, res) => {
   res.json({

@@ -276,6 +276,10 @@ body.menu-active::before {
     color: #b88647;
     font-weight: bold;
     margin-bottom: 20px;
+    margin-top: 20px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 
 .form-card {
@@ -336,6 +340,9 @@ body.menu-active::before {
     cursor: pointer;
 }
 
+.table-products thead {
+  background: #c58f4d;
+}
 .table-products {
     width: 100%;
     margin-top: 25px;
@@ -343,14 +350,16 @@ body.menu-active::before {
 }
 
 .table-products th {
-    background: #f5e4cc;
+    background: #c58f4d;
     padding: 10px;
     font-weight: bold;
+    color: #ffffff;
 }
 
 .table-products td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
+    border-radius: 5%;
 }
 
 .preview {
@@ -368,10 +377,37 @@ body.menu-active::before {
 
 .agendamiento-grid {
     display: grid;
-    grid-template-columns: 560px 360px 320px;
-    gap: 24px;
-    align-items: start;
+    grid-template-columns: 2fr 1fr; 
+    grid-template-rows: auto auto; 
+    gap: 20px;
 }
+
+.calendar-card {
+    grid-column: 1 / 2;
+    max-height: 200 px;
+}
+
+.details-card {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    align-self: start;
+}
+
+.appointments-list {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+}
+
+.calendar-card, .appointments-list, .details-card {
+    width: 100%;
+}
+
+.appointments-list {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+
 
 .card {
     background: #fff;
@@ -388,6 +424,7 @@ body.menu-active::before {
 .weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; color:#777; margin-bottom:8px; text-align:center; font-weight:600; }
 .calendar-days { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
 .calendar-day {
+    display: flex;
     background:#f8f6f4;
     border-radius:8px;
     padding:12px;
@@ -436,11 +473,6 @@ body.menu-active::before {
     gap: 20px;
 }
 
-@media (min-width: 768px) {
-    .calendar-wrapper {
-        grid-template-columns: 1fr 1fr;
-    }
-}
 
 .calendar,
 .agenda-card {

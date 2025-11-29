@@ -46,16 +46,19 @@
 
             <div id="calendarDays" class="calendar-days"></div>
         </div>
-
+        <div class="appointments-list card">
+            <h3>Mis Citas</h3>
+            <div id="appointmentsContainer"></div>
+        </div>
+        
         <aside class="details-card card">
-            <div class="service-pill" id="selectedServicePill">Seleccione un servicio</div>
 
             <div class="appointment-details">
                 <div class="detail-row">
                     <i class="icon-clock">🕒</i>
                     <div id="selectedDateText">Ninguna fecha seleccionada</div>
                 </div>
-
+                
                 <div class="detail-row">
                     <i class="icon-place">📍</i>
                     <div>Calle 20 #27-51<br>San Alonso, Bucaramanga</div>
@@ -70,9 +73,6 @@
 
                 <label>Nombre</label>
                 <input id="customerName" type="text" placeholder="Nombre completo" required>
-
-                <label>Servicio</label>
-                <select id="serviceSelect" required></select>
 
                 <label>Empleado</label>
                 <select id="employeeSelect" required></select>
@@ -97,23 +97,19 @@
                     <button type="button" id="resetBooking" class="btn-secondary">Limpiar</button>
                 </div>
             </form>
-
+            
             <div id="bookingFeedback" class="booking-feedback"></div>
         </aside>
 
-        <div class="appointments-list card">
-            <h3>Mis Citas</h3>
-            <div id="appointmentsContainer"></div>
-        </div>
     </div>
 </section>
 
     <!-- INVENTARIO -->
 <section id="seccionInventario" class="pagina-section hidden inventario-container">
+<div class="container mt-4">
+    <h2 class="titulo text-center">Gestión de Inventario</h2>
 
-    <h2 class="titulo">Gestión de Inventario</h2>
-
-    <form id="productForm" class="form-card">
+    <form id="productForm" class="form-card mt-4">
         <div class="form-header">
             <h3 id="formTitle">Agregar Producto</h3>
         </div>
@@ -159,7 +155,7 @@
         <button class="btn-secondary hidden" id="cancelEdit" type="button">Cancelar</button>
     </form>
 
-    <h3>Productos Registrados</h3>
+    <h3 class="titulo">Productos Registrados</h3>
     <table class="table-products">
         <thead>
             <tr>
@@ -175,7 +171,7 @@
         </thead>
         <tbody id="productTableBody"></tbody>
     </table>
-
+</div>
 </section>
 
     <!-- VENTAS -->
@@ -195,8 +191,8 @@
 
     <!-- USUARIOS -->
 <section id="seccionUsuarios" class="pagina-section hidden">
+    <h2>Administrar usuarios</h2>
     <div class="container mt-4">
-        <h2>Administrar usuarios</h2>
 
         <table class="table table-bordered mt-3" id="tablaUsuarios">
         <thead class="table-dark">

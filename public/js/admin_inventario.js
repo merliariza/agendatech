@@ -94,8 +94,8 @@ function renderProducts() {
             <td>${p.min_stock}</td>
             <td>${p.active ? "Sí" : "No"}</td>
             <td>
-                <button onclick="editProduct(${p.id})">Editar</button>
-                <button onclick="deleteProduct(${p.id})">Eliminar</button>
+                <button class="btn-primary" onclick="editProduct(${p.id})">Editar</button>
+                <button class="btn-secondary" onclick="deleteProduct(${p.id})">Eliminar</button>
             </td>
         </tr>`;
     });
