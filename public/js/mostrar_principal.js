@@ -4,12 +4,10 @@ const seccionCuenta = document.getElementById("seccionCuenta");
 const detalleProducto = document.getElementById("detalleProducto");
 const seccionCarrito = document.getElementById("seccionCarrito");
 
-const navLinks = document.querySelectorAll('nav ul li a');
-const btnAgendate = navLinks[0];
-const btnProductos = navLinks[1];
+const btnAgendate = document.getElementById("btnAgendate"); 
+const btnProductos = document.getElementById("btnProductos");
 const btnCuenta = document.getElementById("btnCuenta");
 const btnLogo = document.querySelector(".site-logo");
-
 const btnCarrito = document.getElementById("btnCarrito");
 
 function ocultarTodo() {
@@ -17,8 +15,9 @@ function ocultarTodo() {
     if (seccionProductos) seccionProductos.classList.add("hidden");
     if (seccionCuenta) seccionCuenta.classList.add("hidden");
     if (detalleProducto) detalleProducto.classList.add("hidden");
-    if (seccionCarrito) seccionCarrito.classList.add("hidden"); 
+    if (seccionCarrito) seccionCarrito.classList.add("hidden");
 }
+
 
 export function mostrarPrincipal() {
     ocultarTodo();
@@ -43,6 +42,7 @@ export function mostrarCarrito() {
     if (seccionCarrito) seccionCarrito.classList.remove("hidden");
     window.scrollTo(0, 0);
 }
+
 
 if (btnLogo) {
     btnLogo.addEventListener("click", (e) => {
@@ -79,6 +79,7 @@ if (btnCarrito) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener("DOMContentLoaded", () => {
     mostrarPrincipal();
 });

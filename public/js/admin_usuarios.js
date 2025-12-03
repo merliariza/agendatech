@@ -1,6 +1,8 @@
-document.addEventListener("DOMContentLoaded", cargarUsuarios);
+console.log("ADMIN USUARIOS JS CARGÓ");
 
 function cargarUsuarios() {
+  console.log("CARGANDO USUARIOS...");
+
   fetch("http://localhost:3000/api/admin-usuarios", {
     credentials: "include"
   })
@@ -13,6 +15,12 @@ function cargarUsuarios() {
       }
 
       const tabla = document.querySelector("#tablaUsuarios tbody");
+
+      if (!tabla) {
+        console.error("⚠ No existe la tabla en el DOM");
+        return;
+      }
+
       tabla.innerHTML = "";
 
       usuarios.forEach(u => {
@@ -29,7 +37,7 @@ function cargarUsuarios() {
             </select>
           </td>
           <td>
-            <button class="btn-secondary" data-id="${u.user_id}">Eliminar</button>
+            <button class="btnDelete btn-secondary" data-id="${u.user_id}">Eliminar</button>
           </td>
         `;
 
