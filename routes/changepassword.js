@@ -4,13 +4,13 @@ const db = require("../db/connection.js");
 const bcrypt = require("bcryptjs");
 
 router.post("/", async (req, res) => {
-    console.log("📥 Body:", req.body);
+    console.log("Body:", req.body);
 
     const { actual, nueva } = req.body;
     const userId = req.session.userId;
 
     if (!actual || !nueva) {
-        console.log("❌ Faltan datos");
+        console.log("Faltan datos");
         return res.status(400).json({ message: "Faltan datos" });
     }
 
@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
         );
 
         if (!rows.length) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
+            return res.status(404).json({ message: "user no encontrado" });
         }
 
         const passwordActual = rows[0].password;

@@ -1,4 +1,4 @@
-import { migrarCarritoAlLogin, cerrarSesionCarrito } from "./carrito.js";
+import { migrarcartAlLogin, logoutcart } from "./user_cart.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let isRegister = false;
 
   function actualizarBotonSesion() {
-    const usuario = JSON.parse(sessionStorage.getItem("usuario"));
-    if (usuario) {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user) {
       openLoginBtn.textContent = "Cerrar sesión";
       openLoginBtn.classList.add("logout");
     } else {
@@ -33,13 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
   actualizarBotonSesion();
 
   openLoginBtn.addEventListener("click", async () => {
-    const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
 
-    if (usuario) {
+    if (user) {
       if (!confirm("¿Cerrar sesión?")) return;
 
       try {
-        await fetch('http://localhost:3000/api/usuarios/logout', {
+        await fetch('http://localhost:3000/api/users/logout', {
           method: 'POST',
           credentials: 'include'
         });
@@ -47,8 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Error cerrando sesión:", err);
       }
 
-      sessionStorage.removeItem("usuario");
-      cerrarSesionCarrito(); 
+      sessionStorage.removeItem("user");
+      logoutcart(); 
       
       alert("✅ Sesión cerrada");
       actualizarBotonSesion();
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let body = {};
 
       if (isRegister) {
-        endpoint = "/api/usuarios";
+        endpoint = "/api/users";
         body = {
           name,
           surname,
@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
           role: "cliente"
         };
       } else {
-        endpoint = "/api/usuarios/login";
+        endpoint = "/api/users/login";
         body = { email, password };
       }
 
@@ -162,25 +162,31 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const usuarioData = {
+      const userData = {
         id: data.person_id,           
         username: data.username,
         email: data.email || email,
         role: data.role
       };
 
-      sessionStorage.setItem("usuario", JSON.stringify(usuarioData));
+      sessionStorage.setItem("user", JSON.stringify(userData));
 
-      console.log("✅ Usuario guardado:", usuarioData);
+      console.log("user guardado:", userData);
 
-      await migrarCarritoAlLogin(usuarioData);
+      await migrarcartAlLogin(userData);
 
-      alert(`✅ Bienvenido ${data.username}`);
+      alert(`Bienvenido ${data.username}`);
       cerrarLogin();
       actualizarBotonSesion();
 
+      // --- REDIRECCIONES SEGÚN ROL ---
       if (data.role?.toLowerCase() === "administrador") {
         window.location.href = "/pages/admin.html";
+        return;
+      }
+
+      if (data.role?.toLowerCase() === "empleado") {
+        window.location.href = "/pages/employee.html";
         return;
       }
 
@@ -197,13 +203,13 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   function verificarAcceso(e) {
-    const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
     
     const texto = e.target.textContent.trim();
     
     if (texto === "Productos") return;
     
-    if (!usuario) {
+    if (!user) {
       e.preventDefault();
       alert("⚠️ Debes iniciar sesión");
       abrirLogin();

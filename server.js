@@ -21,6 +21,7 @@ app.use(
   })
 );
 
+
 app.use(
   cors({
     origin: ["http://127.0.0.1:5502", "http://localhost:5502"],
@@ -34,13 +35,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads/products", express.static("uploads/products"));
 
-app.use("/api/usuarios", require("./routes/usuarios.js"));
+app.use("/api/users", require("./routes/users.js"));
 app.use("/api/admin", require("./routes/admin.js"));
-app.use("/api/productos", require("./routes/productos.js"));
-app.use("/api/actualizar-datos", require("./routes/actualizarDatos.js"));
-app.use("/api/cambiar-password", require("./routes/cambiarContrasena.js"));
-app.use("/api/admin-usuarios", require("./routes/admin_usuarios.js"));
-app.use("/api/citas", require("./routes/appointments.js"));
+app.use("/api/products", require("./routes/products.js"));
+app.use("/api/update-data", require("./routes/updatedata.js"));
+app.use("/api/change-password", require("./routes/changepassword.js"));
+app.use("/api/admin-users", require("./routes/adminusers.js"));
+app.use("/api/appointments", require("./routes/appointments.js"));
 
 app.get("/api/check-session", (req, res) => {
   res.json({

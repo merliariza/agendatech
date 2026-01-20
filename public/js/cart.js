@@ -45,7 +45,7 @@ async function loadCart(){
         return;
       }
     } catch (e) {
-      console.warn("No se pudo obtener carrito server:", e);
+      console.warn("No se pudo obtener cart server:", e);
     }
   }
   items = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -146,7 +146,7 @@ async function removeItem(item){
 }
 
 async function onCheckout(){
-  if (!items.length) return alert("Carrito vacío.");
+  if (!items.length) return alert("carrito vacío.");
 
   if (!userId) {
     const mpItems = items.map(it => ({
@@ -176,11 +176,11 @@ async function onCheckout(){
       window.location.href = data.init_point;
     } else {
       console.error(data);
-      alert("Error creando preferencia de pago.");
+      alert("Error creando preferencia de payment.");
     }
   } catch (e) {
     console.error(e);
-    alert("Error procesando pago.");
+    alert("Error procesando payment.");
   }
 }
 

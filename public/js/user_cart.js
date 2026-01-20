@@ -1,45 +1,45 @@
-const API_CART = "http://localhost:3000/api/carrito";
-const CART_KEY = "agendatech_carrito_v1";
+const API_CART = "http://localhost:3000/api/cart";
+const CART_KEY = "agendatech_cart_v1";
 
 const ENVIO = 5000;
 const IVA_PERCENT = 0.19; 
 
-let carrito = [];
-let usuarioLogueado = null; 
+let cart = [];
+let userLogueado = null; 
 
-const carritoLista = document.getElementById("carritoLista");
-const subtotalCarrito = document.getElementById("subtotalCarrito");
-const impuestosCarrito = document.getElementById("impuestosCarrito");
-const envioCarrito = document.getElementById("envioCarrito");
-const totalCarrito = document.getElementById("totalCarrito");
-const btnPagar = document.getElementById("btnPagar");
+const cartlist = document.getElementById("cartlist");
+const subtotalcart = document.getElementById("subtotalcart");
+const impuestoscart = document.getElementById("impuestoscart");
+const enviocart = document.getElementById("enviocart");
+const totalcart = document.getElementById("totalcart");
+const btnpay = document.getElementById("btnpay");
 
-export function inicializarCarrito(usuario = null) {
-    usuarioLogueado = usuario;
+export function inicializarcart(user = null) {
+    userLogueado = user;
     
-    if (usuarioLogueado?.id) {
-        cargarCarritoDB();
+    if (userLogueado?.id) {
+        cargarcartDB();
     } else {
-        cargarCarritoLocal();
+        cargarcartLocal();
     }
 }
 
-function cargarCarritoLocal() {
+function cargarcartLocal() {
     const data = localStorage.getItem(CART_KEY);
-    carrito = data ? JSON.parse(data) : [];
-    renderCarrito();
+    cart = data ? JSON.parse(data) : [];
+    rendercart();
 }
 
-async function cargarCarritoDB() {
-    if (!usuarioLogueado?.id) return;
+async function cargarcartDB() {
+    if (!userLogueado?.id) return;
     
     try {
-        const res = await fetch(`${API_CART}/${usuarioLogueado.id}`);
-        if (!res.ok) throw new Error("Error cargando carrito");
+        const res = await fetch(`${API_CART}/${userLogueado.id}`);
+        if (!res.ok) throw new Error("Error cargando cart");
         
         const items = await res.json();
         
-        carrito = items.map(item => ({
+        cart = items.map(item => ({
             cart_item_id: item.cart_item_id,
             id: item.product_id,
             nombre: item.name,
@@ -48,30 +48,30 @@ async function cargarCarritoDB() {
             cantidad: item.quantity
         }));
         
-        renderCarrito();
+        rendercart();
     } catch (err) {
-        console.error("Error cargando carrito:", err);
-        cargarCarritoLocal();
+        console.error("Error cargando cart:", err);
+        cargarcartLocal();
     }
 }
 
-function guardarCarrito() {
-    if (usuarioLogueado?.id) {
+function guardarcart() {
+    if (userLogueado?.id) {
         return;
     }
     
-    localStorage.setItem(CART_KEY, JSON.stringify(carrito));
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
-export function renderCarrito() {
-    if (!carritoLista) return;
+export function rendercart() {
+    if (!cartlist) return;
     
-    carritoLista.innerHTML = "";
+    cartlist.innerHTML = "";
     
-    if (carrito.length === 0) {
-        carritoLista.innerHTML = `
+    if (cart.length === 0) {
+        cartlist.innerHTML = `
             <div class="text-center py-5">
-                <img src="src/img/empty-cart.png" alt="Carrito vacío" style="width:120px;opacity:0.5;" onerror="this.style.display='none'">
+                <img src="src/img/empty-cart.png" alt="carrito vacío" style="width:120px;opacity:0.5;" onerror="this.style.display='none'">
                 <p class="text-muted mt-3">Tu carrito está vacío</p>
                 <a href="#" class="btn btn-primary mt-2" onclick="irAProductos()">Ver Productos</a>
             </div>
@@ -80,10 +80,10 @@ export function renderCarrito() {
         return;
     }
 
-    carrito.forEach((producto, index) => {
+    cart.forEach((producto, index) => {
         const subtotalItem = producto.precio * producto.cantidad;
         
-        carritoLista.innerHTML += `
+        cartlist.innerHTML += `
             <div class="cart-item d-flex align-items-center justify-content-between p-3 mb-3 shadow-sm rounded" data-index="${index}">
                 
                 <div class="d-flex align-items-center gap-3">
@@ -113,7 +113,7 @@ export function renderCarrito() {
 }
 
 function calcularTotales() {
-    const subtotal = carrito.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
+    const subtotal = cart.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
     const impuestos = subtotal * IVA_PERCENT;
     const envio = subtotal > 0 ? ENVIO : 0;
     const total = subtotal + impuestos + envio;
@@ -122,28 +122,28 @@ function calcularTotales() {
 }
 
 function actualizarTotales(subtotal, impuestos, envio, total = 0) {
-    if (subtotalCarrito) subtotalCarrito.textContent = `$${subtotal.toLocaleString('es-CO')}`;
-    if (impuestosCarrito) impuestosCarrito.textContent = `$${impuestos.toLocaleString('es-CO')}`;
-    if (envioCarrito) envioCarrito.textContent = envio > 0 ? `$${envio.toLocaleString('es-CO')}` : "Gratis";
-    if (totalCarrito) totalCarrito.textContent = `$${total.toLocaleString('es-CO')}`;
+    if (subtotalcart) subtotalcart.textContent = `$${subtotal.toLocaleString('es-CO')}`;
+    if (impuestoscart) impuestoscart.textContent = `$${impuestos.toLocaleString('es-CO')}`;
+    if (enviocart) enviocart.textContent = envio > 0 ? `$${envio.toLocaleString('es-CO')}` : "Gratis";
+    if (totalcart) totalcart.textContent = `$${total.toLocaleString('es-CO')}`;
     
-    if (btnPagar) {
-        btnPagar.disabled = carrito.length === 0;
+    if (btnpay) {
+        btnpay.disabled = cart.length === 0;
     }
 }
 
-export async function agregarAlCarrito(producto) {
+export async function agregarAlcart(producto) {
     if (!producto || !producto.id || !producto.precio) {
         alert("❌ Error: producto inválido");
         return;
     }
 
-    const existente = carrito.find(p => p.id === producto.id);
+    const existente = cart.find(p => p.id === producto.id);
 
     if (existente) {
         existente.cantidad++;
     } else {
-        carrito.push({
+        cart.push({
             id: producto.id,
             nombre: producto.nombre || producto.name,
             imagen: producto.imagen || producto.image,
@@ -152,26 +152,26 @@ export async function agregarAlCarrito(producto) {
         });
     }
 
-    if (usuarioLogueado?.id) {
-        await agregarACarritoDB(producto.id, producto.precio);
+    if (userLogueado?.id) {
+        await agregarAcartDB(producto.id, producto.precio);
     } else {
-        guardarCarrito();
+        guardarcart();
     }
 
-    renderCarrito();
+    rendercart();
     
-    mostrarNotificacion("✅ Producto agregado al carrito");
+    mostrarNotificacion("✅ Producto agregado al cart");
 }
 
-async function agregarACarritoDB(product_id, unit_price) {
-    if (!usuarioLogueado?.id) return;
+async function agregarAcartDB(product_id, unit_price) {
+    if (!userLogueado?.id) return;
     
     try {
         const res = await fetch(`${API_CART}/add`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                customer_id: usuarioLogueado.id,
+                customer_id: userLogueado.id,
                 product_id,
                 unit_price,
                 quantity: 1
@@ -181,14 +181,14 @@ async function agregarACarritoDB(product_id, unit_price) {
         if (!res.ok) throw new Error("Error agregando a DB");
     } catch (err) {
         console.error("Error DB:", err);
-        guardarCarrito();
+        guardarcart();
     }
 }
 
 window.cambiarCantidad = async function(index, delta) {
-    if (index < 0 || index >= carrito.length) return;
+    if (index < 0 || index >= cart.length) return;
     
-    const producto = carrito[index];
+    const producto = cart[index];
     producto.cantidad += delta;
 
     if (producto.cantidad <= 0) {
@@ -196,13 +196,13 @@ window.cambiarCantidad = async function(index, delta) {
         return;
     }
 
-    if (usuarioLogueado?.id && producto.cart_item_id) {
+    if (userLogueado?.id && producto.cart_item_id) {
         await actualizarCantidadDB(producto.cart_item_id, producto.cantidad);
     } else {
-        guardarCarrito();
+        guardarcart();
     }
 
-    renderCarrito();
+    rendercart();
 };
 
 async function actualizarCantidadDB(cart_item_id, quantity) {
@@ -220,20 +220,20 @@ async function actualizarCantidadDB(cart_item_id, quantity) {
 }
 
 window.eliminarProducto = async function(index) {
-    if (index < 0 || index >= carrito.length) return;
+    if (index < 0 || index >= cart.length) return;
     
-    if (!confirm("¿Eliminar este producto del carrito?")) return;
+    if (!confirm("¿Eliminar este producto del cart?")) return;
     
-    const producto = carrito[index];
+    const producto = cart[index];
     
-    if (usuarioLogueado?.id && producto.cart_item_id) {
+    if (userLogueado?.id && producto.cart_item_id) {
         await eliminarDeDB(producto.cart_item_id);
     }
     
-    carrito.splice(index, 1);
+    cart.splice(index, 1);
     
-    guardarCarrito();
-    renderCarrito();
+    guardarcart();
+    rendercart();
     
     mostrarNotificacion("🗑️ Producto eliminado");
 };
@@ -250,41 +250,41 @@ async function eliminarDeDB(cart_item_id) {
     }
 }
 
-export async function vaciarCarrito() {
-    if (carrito.length === 0) return;
+export async function vaciarcart() {
+    if (cart.length === 0) return;
     
-    if (!confirm("¿Vaciar todo el carrito?")) return;
+    if (!confirm("¿Vaciar todo el cart?")) return;
     
-    if (usuarioLogueado?.id) {
-        await vaciarCarritoDB();
+    if (userLogueado?.id) {
+        await vaciarcartDB();
     }
     
-    carrito = [];
-    guardarCarrito();
-    renderCarrito();
+    cart = [];
+    guardarcart();
+    rendercart();
     
-    mostrarNotificacion("🗑️ Carrito vaciado");
+    mostrarNotificacion("🗑️ cart vaciado");
 }
 
-async function vaciarCarritoDB() {
+async function vaciarcartDB() {
     try {
-        await fetch(`${API_CART}/clear/${usuarioLogueado.id}`, {
+        await fetch(`${API_CART}/clear/${userLogueado.id}`, {
             method: "DELETE"
         });
     } catch (err) {
-        console.error("Error vaciando carrito DB:", err);
+        console.error("Error vaciando cart DB:", err);
     }
 }
 
-if (btnPagar) {
-    btnPagar.addEventListener("click", async () => {
-        if (carrito.length === 0) {
+if (btnpay) {
+    btnpay.addEventListener("click", async () => {
+        if (cart.length === 0) {
             alert("❌ El carrito está vacío");
             return;
         }
 
-        if (!usuarioLogueado?.id) {
-            alert("⚠️ Debes iniciar sesión para continuar con el pago");
+        if (!userLogueado?.id) {
+            alert("⚠️ Debes iniciar sesión para continuar con el payment");
             return;
         }
 
@@ -293,18 +293,18 @@ if (btnPagar) {
 }
 
 async function procesarCheckout() {
-    const subtotal = carrito.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
+    const subtotal = cart.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
     const impuestos = subtotal * IVA_PERCENT;
     const total = subtotal + impuestos + ENVIO;
 
-    console.log("Procesando pago por:", total);
+    console.log("Procesando payment por:", total);
 
     try {
         const res = await fetch(`${API_CART}/checkout`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                customer_id: usuarioLogueado.id,
+                customer_id: userLogueado.id,
                 success_url: `${window.location.origin}/checkout-success.html`,
                 failure_url: `${window.location.origin}/checkout-failure.html`,
                 shipping: ENVIO,
@@ -319,7 +319,7 @@ async function procesarCheckout() {
         if (data.init_point) {
             window.location.href = data.init_point;
         } else {
-            throw new Error("No se recibió URL de pago");
+            throw new Error("No se recibió URL de payment");
         }
 
     } catch (err) {
@@ -328,44 +328,44 @@ async function procesarCheckout() {
     }
 }
 
-export async function migrarCarritoAlLogin(usuario) {
-    if (!usuario?.id) return;
+export async function migrarcartAlLogin(user) {
+    if (!user?.id) return;
     
-    const carritoLocal = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+    const cartLocal = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
     
-    if (carritoLocal.length === 0) {
-        usuarioLogueado = usuario;
-        await cargarCarritoDB();
+    if (cartLocal.length === 0) {
+        userLogueado = user;
+        await cargarcartDB();
         return;
     }
 
-    for (const producto of carritoLocal) {
-        await agregarACarritoDB(producto.id, producto.precio);
+    for (const producto of cartLocal) {
+        await agregarAcartDB(producto.id, producto.precio);
     }
 
     localStorage.removeItem(CART_KEY);
     
-    usuarioLogueado = usuario;
-    await cargarCarritoDB();
+    userLogueado = user;
+    await cargarcartDB();
     
-    mostrarNotificacion("✅ Carrito sincronizado");
+    mostrarNotificacion("cart sincronizado");
 }
 
-export function cerrarSesionCarrito() {
-    usuarioLogueado = null;
-    carrito = [];
+export function logoutcart() {
+    userLogueado = null;
+    cart = [];
     localStorage.removeItem(CART_KEY);
-    renderCarrito();
+    rendercart();
 }
 
-export function obtenerResumenCarrito() {
-    const subtotal = carrito.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
+export function obtenerResumencart() {
+    const subtotal = cart.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
     const impuestos = subtotal * IVA_PERCENT;
     const total = subtotal + impuestos + ENVIO;
     
     return {
-        items: carrito.length,
-        cantidad: carrito.reduce((sum, p) => sum + p.cantidad, 0),
+        items: cart.length,
+        cantidad: cart.reduce((sum, p) => sum + p.cantidad, 0),
         subtotal,
         impuestos,
         envio: ENVIO,
@@ -412,16 +412,16 @@ style.textContent = `
 document.head.appendChild(style);
 
 window.irAProductos = function() {
-    const seccionProductos = document.getElementById("seccionProductos");
-    const seccionCarrito = document.getElementById("seccionCarrito");
+    const sectionProductos = document.getElementById("sectionProductos");
+    const sectioncart = document.getElementById("sectioncart");
     
-    if (seccionCarrito) seccionCarrito.classList.add("hidden");
-    if (seccionProductos) seccionProductos.classList.remove("hidden");
+    if (sectioncart) sectioncart.classList.add("hidden");
+    if (sectionProductos) sectionProductos.classList.remove("hidden");
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    const userData = sessionStorage.getItem("usuario");
-    const usuario = userData ? JSON.parse(userData) : null;
+    const userData = sessionStorage.getItem("user");
+    const user = userData ? JSON.parse(userData) : null;
     
-    inicializarCarrito(usuario);
+    inicializarcart(user);
 });

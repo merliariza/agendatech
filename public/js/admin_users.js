@@ -1,20 +1,20 @@
-console.log("ADMIN USUARIOS JS CARGÓ");
+console.log("ADMIN userS JS CARGÓ");
 
-function cargarUsuarios() {
-  console.log("CARGANDO USUARIOS...");
+function cargarusers() {
+  console.log("CARGANDO userS...");
 
-  fetch("http://localhost:3000/api/admin-usuarios", {
+  fetch("http://localhost:3000/api/admin-users", {
     credentials: "include"
   })
     .then(res => res.json())
-    .then(usuarios => {
+    .then(users => {
 
-      if (!Array.isArray(usuarios)) {
-        console.error("⚠ Error del servidor:", usuarios);
+      if (!Array.isArray(users)) {
+        console.error("⚠ Error del servidor:", users);
         return;
       }
 
-      const tabla = document.querySelector("#tablaUsuarios tbody");
+      const tabla = document.querySelector("#tablausers tbody");
 
       if (!tabla) {
         console.error("⚠ No existe la tabla en el DOM");
@@ -23,7 +23,7 @@ function cargarUsuarios() {
 
       tabla.innerHTML = "";
 
-      usuarios.forEach(u => {
+      users.forEach(u => {
         const fila = document.createElement("tr");
 
         fila.innerHTML = `
@@ -34,6 +34,7 @@ function cargarUsuarios() {
             <select data-id="${u.user_id}" class="cambiarRol">
               <option value="cliente" ${u.role === "cliente" ? "selected" : ""}>Cliente</option>
               <option value="administrador" ${u.role === "administrador" ? "selected" : ""}>Administrador</option>
+              <option value="empleado" ${u.role === "empleado" ? "selected" : ""}>Empleado</option>
             </select>
           </td>
           <td>
@@ -50,7 +51,7 @@ function cargarUsuarios() {
 
 function agregarEventos() {
   document.querySelectorAll(".btnDelete").forEach(btn => {
-    btn.addEventListener("click", eliminarUsuario);
+    btn.addEventListener("click", eliminaruser);
   });
 
   document.querySelectorAll(".cambiarRol").forEach(sel => {
@@ -58,24 +59,24 @@ function agregarEventos() {
   });
 }
 
-function eliminarUsuario(e) {
+function eliminaruser(e) {
   const id = e.target.dataset.id;
 
-  if (!confirm("¿Seguro que desea eliminar este usuario?")) return;
+  if (!confirm("¿Seguro que desea eliminar este user?")) return;
 
-  fetch(`http://localhost:3000/api/admin-usuarios/${id}`, {
+  fetch(`http://localhost:3000/api/admin-users/${id}`, {
     method: "DELETE",
     credentials: "include"
   })
     .then(res => res.json())
-    .then(() => cargarUsuarios());
+    .then(() => cargarusers());
 }
 
 function cambiarRol(e) {
   const id = e.target.dataset.id;
   const role = e.target.value;
 
-  fetch(`http://localhost:3000/api/admin-usuarios/rol/${id}`, {
+  fetch(`http://localhost:3000/api/admin-users/rol/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     credentials: "include",

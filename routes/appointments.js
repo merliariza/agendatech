@@ -24,7 +24,7 @@ router.get('/employees', requireAuth, async (req, res) => {
     const rows = await query(`
       SELECT id, name, surname, email 
       FROM Person 
-      WHERE role = 'administrador' 
+      WHERE role = 'empleado' 
       ORDER BY name ASC
     `);
     res.json({ ok: true, employees: rows });
@@ -466,7 +466,7 @@ router.patch('/:id/cancel', requireAuth, async (req, res) => {
   }
 });
 
-// Obtener citas del usuario actual
+// Obtener citas del user actual
 router.get('/my-appointments', requireAuth, async (req, res) => {
   try {
     const userId = req.session.userId || req.session.user?.id;
@@ -474,7 +474,7 @@ router.get('/my-appointments', requireAuth, async (req, res) => {
     if (!userId) {
       return res.status(401).json({ 
         ok: false, 
-        message: 'Usuario no autenticado' 
+        message: 'user no autenticado' 
       });
     }
 
@@ -498,7 +498,7 @@ router.get('/my-appointments', requireAuth, async (req, res) => {
   }
 });
 
-// Crear cita desde el usuario
+// Crear cita desde el user
 router.post('/user-create', requireAuth, async (req, res) => {
   try {
     const userId = req.session.userId || req.session.user?.id;
@@ -506,7 +506,7 @@ router.post('/user-create', requireAuth, async (req, res) => {
     if (!userId) {
       return res.status(401).json({ 
         ok: false, 
-        message: 'Usuario no autenticado' 
+        message: 'user no autenticado' 
       });
     }
 
@@ -599,7 +599,7 @@ router.post('/user-create', requireAuth, async (req, res) => {
   }
 });
 
-// Obtener citas del usuario actual
+// Obtener citas del user actual
 router.get('/my-appointments', requireAuth, async (req, res) => {
   try {
     // Obtener el person_id desde la sesión
@@ -620,7 +620,7 @@ router.get('/my-appointments', requireAuth, async (req, res) => {
     if (!customerId) {
       return res.status(401).json({ 
         ok: false, 
-        message: 'Usuario no autenticado correctamente' 
+        message: 'user no autenticado correctamente' 
       });
     }
 
@@ -637,7 +637,7 @@ router.get('/my-appointments', requireAuth, async (req, res) => {
     console.log('Citas encontradas:', rows.length);
     res.json({ ok: true, appointments: rows });
   } catch (err) {
-    console.error('Error al obtener citas del usuario:', err);
+    console.error('Error al obtener citas del user:', err);
     res.status(500).json({ 
       ok: false, 
       message: 'Error al obtener citas' 
@@ -645,7 +645,7 @@ router.get('/my-appointments', requireAuth, async (req, res) => {
   }
 });
 
-// Crear cita desde el usuario
+// Crear cita desde el user
 router.post('/user-create', requireAuth, async (req, res) => {
   try {
     // Obtener el person_id desde la sesión
@@ -664,7 +664,7 @@ router.post('/user-create', requireAuth, async (req, res) => {
     if (!customerId) {
       return res.status(401).json({ 
         ok: false, 
-        message: 'Usuario no autenticado' 
+        message: 'user no autenticado' 
       });
     }
 

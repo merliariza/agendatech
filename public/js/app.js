@@ -24,6 +24,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/productos", require("./routes/products"));
+app.use("/api/products", require("./routes/products"));
 
 app.listen(3000, () => console.log("API corriendo en http://localhost:3000"));

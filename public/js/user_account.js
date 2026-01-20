@@ -1,11 +1,11 @@
-console.log('📍 URL actual:', window.location.href);
-console.log('📍 Cookies:', document.cookie);
+console.log('URL actual:', window.location.href);
+console.log('Cookies:', document.cookie);
 
 async function verificarSesion() {
-    const seccionCuenta = document.getElementById('seccionCuenta');
+    const sectionaccount = document.getElementById('sectionaccount');
 
-    if (!seccionCuenta || seccionCuenta.classList.contains('hidden')) {
-        console.log('📝 No estamos en Mi Cuenta, no verificar sesión');
+    if (!sectionaccount || sectionaccount.classList.contains('hidden')) {
+        console.log('No estamos en Mi Cuenta, no verificar sesión');
         return;
     }
 
@@ -15,12 +15,12 @@ async function verificarSesion() {
         });
 
         const data = await res.json();
-        console.log('🔐 Estado de sesión:', data);
+        console.log('Estado de sesión:', data);
 
         if (!data.authenticated) {
             console.warn('⚠️ No hay sesión activa');
             alert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.');
-            localStorage.removeItem('usuario');
+            localStorage.removeItem('user');
             window.location.href = '/';
         }
 
@@ -55,7 +55,7 @@ if (formCambiarPass) {
         }
 
         try {
-            const res = await fetch('http://localhost:3000/api/cambiar-password', {
+            const res = await fetch('http://localhost:3000/api/change-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -63,12 +63,12 @@ if (formCambiarPass) {
             });
 
             const data = await res.json();
-            console.log('📥 Respuesta:', res.status, data);
+            console.log('Respuesta:', res.status, data);
 
             if (!res.ok) {
                 if (res.status === 401) {
                     alert('Tu sesión ha expirado.');
-                    localStorage.removeItem('usuario');
+                    localStorage.removeItem('user');
                     window.location.href = '/';
                     return;
                 }
@@ -86,9 +86,9 @@ if (formCambiarPass) {
     });
 }
 
-const cuentaContent = document.querySelector('.cuenta-content');
+const accountContent = document.querySelector('.account-content');
 
-if (cuentaContent && !document.getElementById('formDatos')) {
+if (accountContent && !document.getElementById('formDatos')) {
     const formDatos = document.createElement('form');
     formDatos.id = 'formDatos';
 
@@ -113,7 +113,7 @@ if (cuentaContent && !document.getElementById('formDatos')) {
         <button type="submit" class="btn-actualizar">Actualizar Datos</button>
     `;
 
-    cuentaContent.appendChild(formDatos);
+    accountContent.appendChild(formDatos);
 
     formDatos.addEventListener('submit', async e => {
         e.preventDefault();
@@ -130,7 +130,7 @@ if (cuentaContent && !document.getElementById('formDatos')) {
         }
 
         try {
-            const res = await fetch('http://localhost:3000/api/actualizar-datos', {
+            const res = await fetch('http://localhost:3000/api/update-data', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -138,12 +138,12 @@ if (cuentaContent && !document.getElementById('formDatos')) {
             });
 
             const data = await res.json();
-            console.log('📥 Respuesta:', res.status, data);
+            console.log('Respuesta:', res.status, data);
 
             if (!res.ok) {
                 if (res.status === 401) {
                     alert('Sesión expirada.');
-                    localStorage.removeItem('usuario');
+                    localStorage.removeItem('user');
                     window.location.href = '/';
                     return;
                 }
@@ -162,18 +162,18 @@ if (cuentaContent && !document.getElementById('formDatos')) {
     });
 }
 
-async function cargarDatosUsuario() {
+async function cargarDatosuser() {
     const formDatos = document.getElementById('formDatos');
     if (!formDatos) return;
 
     try {
-        const res = await fetch('http://localhost:3000/api/usuarios/perfil', {
+        const res = await fetch('http://localhost:3000/api/users/perfil', {
             credentials: 'include'
         });
 
         if (res.ok) {
             const data = await res.json();
-            console.log('👤 Datos del usuario:', data);
+            console.log('Datos del user:', data);
 
             if (data.phone) document.getElementById('phone').value = data.phone;
             if (data.address) document.getElementById('address').value = data.address;
@@ -181,37 +181,37 @@ async function cargarDatosUsuario() {
             if (data.region) document.getElementById('region').value = data.region;
             if (data.country) document.getElementById('country').value = data.country;
 
-            const nombreUsuario = document.getElementById('nombre-usuario');
-            if (nombreUsuario && data.name) {
-                nombreUsuario.textContent = `¡Hola, ${data.name}!`;
+            const nombreuser = document.getElementById('nombre-user');
+            if (nombreuser && data.name) {
+                nombreuser.textContent = `¡Hola, ${data.name}!`;
             }
         }
 
     } catch (err) {
-        console.error('❌ Error cargando datos del usuario:', err);
+        console.error('❌ Error cargando datos del user:', err);
     }
 }
 
 const observer = new MutationObserver(() => {
     const formDatos = document.getElementById('formDatos');
     if (formDatos) {
-        cargarDatosUsuario();
+        cargarDatosuser();
         observer.disconnect();
     }
 });
 
-if (cuentaContent) {
-    observer.observe(cuentaContent, { childList: true, subtree: true });
+if (accountContent) {
+    observer.observe(accountContent, { childList: true, subtree: true });
 }
 
-const cerrarSesionBtn = document.getElementById('cerrarSesionBtn');
+const logoutBtn = document.getElementById('logoutBtn');
 
-if (cerrarSesionBtn) {
-    cerrarSesionBtn.addEventListener('click', async () => {
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
         if (!confirm('¿Estás seguro de que deseas cerrar sesión?')) return;
 
         try {
-            await fetch('http://localhost:3000/api/usuarios/logout', {
+            await fetch('http://localhost:3000/api/users/logout', {
                 method: 'POST',
                 credentials: 'include'
             });
@@ -219,7 +219,7 @@ if (cerrarSesionBtn) {
             console.error('Error cerrando sesión:', err);
         }
 
-        localStorage.removeItem('usuario');
+        localStorage.removeItem('user');
         alert('Sesión cerrada correctamente');
         window.location.href = '/';
     });
@@ -227,16 +227,16 @@ if (cerrarSesionBtn) {
 
 window.addEventListener('DOMContentLoaded', () => {
 
-    const usuario = JSON.parse(localStorage.getItem('usuario'));
-    const nombreUsuario = document.getElementById('nombre-usuario');
+    const user = JSON.parse(localStorage.getItem('user'));
+    const nombreuser = document.getElementById('nombre-user');
 
-    if (nombreUsuario && usuario) {
-        nombreUsuario.textContent = `¡Hola, ${usuario.username}!`;
+    if (nombreuser && user) {
+        nombreuser.textContent = `¡Hola, ${user.username}!`;
     }
 
-    const btnCuenta = document.getElementById('btnCuenta');
-    if (btnCuenta) {
-        btnCuenta.addEventListener('click', () => {
+    const btnaccount = document.getElementById('btnaccount');
+    if (btnaccount) {
+        btnaccount.addEventListener('click', () => {
             setTimeout(verificarSesion, 300);
         });
     }

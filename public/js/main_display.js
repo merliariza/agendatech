@@ -1,45 +1,45 @@
-const seccionPrincipal = document.getElementById("seccionPrincipal");
-const seccionProductos = document.getElementById("seccionProductos");
-const seccionCuenta = document.getElementById("seccionCuenta");
+const sectionPrincipal = document.getElementById("sectionPrincipal");
+const sectionProductos = document.getElementById("sectionProductos");
+const sectionaccount = document.getElementById("sectionaccount");
 const detalleProducto = document.getElementById("detalleProducto");
-const seccionCarrito = document.getElementById("seccionCarrito");
+const sectioncart = document.getElementById("sectioncart");
 
 const btnAgendate = document.getElementById("btnAgendate"); 
 const btnProductos = document.getElementById("btnProductos");
-const btnCuenta = document.getElementById("btnCuenta");
+const btnaccount = document.getElementById("btnaccount");
 const btnLogo = document.querySelector(".site-logo");
-const btnCarrito = document.getElementById("btnCarrito");
+const btncart = document.getElementById("btncart");
 
 function ocultarTodo() {
-    if (seccionPrincipal) seccionPrincipal.classList.add("hidden");
-    if (seccionProductos) seccionProductos.classList.add("hidden");
-    if (seccionCuenta) seccionCuenta.classList.add("hidden");
+    if (sectionPrincipal) sectionPrincipal.classList.add("hidden");
+    if (sectionProductos) sectionProductos.classList.add("hidden");
+    if (sectionaccount) sectionaccount.classList.add("hidden");
     if (detalleProducto) detalleProducto.classList.add("hidden");
-    if (seccionCarrito) seccionCarrito.classList.add("hidden");
+    if (sectioncart) sectioncart.classList.add("hidden");
 }
 
 
 export function mostrarPrincipal() {
     ocultarTodo();
-    if (seccionPrincipal) seccionPrincipal.classList.remove("hidden");
+    if (sectionPrincipal) sectionPrincipal.classList.remove("hidden");
     window.scrollTo(0, 0);
 }
 
 export function mostrarProductos() {
     ocultarTodo();
-    if (seccionProductos) seccionProductos.classList.remove("hidden");
+    if (sectionProductos) sectionProductos.classList.remove("hidden");
     window.scrollTo(0, 0);
 }
 
-export function mostrarCuenta() {
+export function mostraraccount() {
     ocultarTodo();
-    if (seccionCuenta) seccionCuenta.classList.remove("hidden");
+    if (sectionaccount) sectionaccount.classList.remove("hidden");
     window.scrollTo(0, 0);
 }
 
-export function mostrarCarrito() {
+export function mostrarcart() {
     ocultarTodo();
-    if (seccionCarrito) seccionCarrito.classList.remove("hidden");
+    if (sectioncart) sectioncart.classList.remove("hidden");
     window.scrollTo(0, 0);
 }
 
@@ -65,17 +65,17 @@ if (btnProductos) {
     });
 }
 
-if (btnCuenta) {
-    btnCuenta.addEventListener("click", (e) => {
+if (btnaccount) {
+    btnaccount.addEventListener("click", (e) => {
         e.preventDefault();
-        mostrarCuenta();
+        mostraraccount();
     });
 }
 
-if (btnCarrito) {
-    btnCarrito.addEventListener("click", (e) => {
+if (btncart) {
+    btncart.addEventListener("click", (e) => {
         e.preventDefault();
-        mostrarCarrito();
+        mostrarcart();
     });
 }
 

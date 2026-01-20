@@ -13,7 +13,7 @@
     defer
   ></script>
   <script type="module" src="js/app.js"></script>
-  <script type="module" src="js/login.js"></script>
+  <script type="module" src="js/user_login.js"></script>
   <title>Agendatech</title>
   <link rel="icon" href="src/img/favicon.ico" type="image/x-icon" />
 
@@ -33,16 +33,16 @@
     <nav id="menu" class="menu">
       <ul class="list-unstyled d-flex gap-3 mb-0 align-items-center">
         <!--<li><a href="#" id="btnMisCitas" class="text-decoration-none">Agéndate</a></li>-->
-        <li><a href="#" id="btnProductos"class="text-decoration-none">Productos</a></li>
-        <li><a href="#" id="btnCuenta" class="text-decoration-none">Mi cuenta</a></li>
-        <li><a href="#" id="btnCarrito"><img src="src/img/shoppingCart.png" class="icono-carrito" alt="Carrito" style="height:24px;" /></a></li>
+        <li><a href="#" class="text-decoration-none">Productos</a></li>
+<li><a href="#" id="btnaccount" class="text-decoration-none">Mi cuenta</a></li>
+        <li><a href="#" id="btncart"><img src="src/img/shoppingCart.png" class="icono-cart" alt="cart" style="height:24px;" /></a></li>
 
         <li><button id="openLoginBtn" class="btn login-btn-header">Iniciar sesión</button></li>
       </ul>
     </nav>
   </header>
 
-<section id="seccionPrincipal" class="mt-5">
+<section id="sectionPrincipal" class="mt-5">
   <!-- CARRUSEL -->
   <div class="custom-carousel-container my-4 container">
     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
@@ -56,9 +56,9 @@
     </div>
   </div>
 
-  <!-- SERVICIOS DESTACADOS -->
+  <!-- services DESTACADOS -->
   <div class="container my-5">
-    <h2 class="text-center mb-4 fw-bold">Servicios más solicitados</h2>
+    <h2 class="text-center mb-4 fw-bold">services más solicitados</h2>
     <div class="row g-4">
       <div class="col-md-3 col-6">
         <div class="card shadow-sm text-center p-3 h-100 servicio-card">
@@ -169,7 +169,7 @@
   </div>
 
 <!-- MIS CITAS  
-<section id="seccionCitas" class="hidden pagina-section container my-5">
+<section id="sectionCitas" class="hidden page-section container my-5">
   
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold m-0">Mis Citas</h2>
@@ -238,14 +238,14 @@
 </section>-->
 
 <!--PRODUCTOS -->
-<section id="seccionProductos" class="pagina-section hidden productos-container">
+<section id="sectionProductos" class="page-section hidden productos-container">
 
     <div class="search-bar">
         <input type="text" id="buscarProducto" placeholder="Busca un producto...">
         <button id="btnBuscar">🔍</button>
     </div>
 
-    <div class="categorias-bar">
+    <div class="categorys-bar">
         <button class="cat-btn active" data-cat="Todos">Todos</button>
         <button class="cat-btn" data-cat="Cabello">Cabello</button>
         <button class="cat-btn" data-cat="SkinCare">SkinCare</button>
@@ -259,15 +259,15 @@
 </section>
 <section id="detalleProducto" class="hidden detalle-producto-container"></section>
 
-<!-- MI CUENTA -->
-<section id="seccionCuenta" class="hidden pagina-section hidden">
+<!-- MI account -->
+<section id="sectionaccount" class="hidden page-section hidden">
 
-    <div class="cuenta-container">
+    <div class="account-container">
 
-        <div class="cuenta-sidebar">
-            <h3 id="nombre-usuario">Bienvenido!</h3>
+        <div class="account-sidebar">
+            <h3 id="nombre-user">Bienvenido!</h3>
 
-            <ul class="cuenta-menu">
+            <ul class="account-menu">
                 <li class="activo">
                     <i class="icon-lock"></i>
                     <span>Actualizar información</span>
@@ -276,7 +276,7 @@
             </ul>
         </div>
 
-        <div class="cuenta-content">
+        <div class="account-content">
             <h2>Cambiar Contraseña</h2>
 
             <form id="formCambiarPass">
@@ -297,42 +297,42 @@
 
 </section>
 
-<section id="seccionCarrito" class="pagina-section hidden container my-5">
+<section id="sectioncart" class="page-section hidden container my-5">
 
   <div class="d-flex align-items-center gap-2 mb-4">
     <button id="volverProductos" class="btn btn-link p-0 fs-4">←</button>
     <h2 class="m-0 fw-bold">Carrito</h2>
   </div>
 
-  <div id="carritoLista" class="cart-items-container">
+  <div id="cartlist" class="cart-items-container">
 
   </div>
 
-  <div class="pago-resumen shadow-sm rounded p-4 mt-4">
+  <div class="payment-resumen shadow-sm rounded p-4 mt-4">
 
     <div class="d-flex justify-content-between mb-2">
       <span class="text-muted">Subtotal</span>
-      <strong id="subtotalCarrito">$0</strong>
+      <strong id="subtotalcart">$0</strong>
     </div>
 
     <div class="d-flex justify-content-between mb-2">
       <span class="text-muted">Envío</span>
-      <strong id="envioCarrito">$0</strong>
+      <strong id="enviocart">$0</strong>
     </div>
 
     <div class="d-flex justify-content-between mb-2">
       <span class="text-muted">Impuestos</span>
-      <strong id="impuestosCarrito">$0</strong>
+      <strong id="impuestoscart">$0</strong>
     </div>
 
     <hr>
 
     <div class="d-flex justify-content-between fs-5 fw-bold mb-3">
       <span>Total</span>
-      <span id="totalCarrito">$0</span>
+      <span id="totalcart">$0</span>
     </div>
 
-    <button id="btnPagar" class="btn btn-lg w-100 pagar-btn">Pagar</button>
+    <button id="btnpay" class="btn btn-lg w-100 pay-btn">pagar</button>
 
   </div>
 
@@ -345,9 +345,9 @@
 
 
 </body>
-<script type="module" src="js/user_productos.js"></script>
-<script type="module" src="js/carrito.js"></script>
-<script type="module" src="js/cuenta.js"></script>
-<script type="module" src="js/mostrar_principal.js"></script>
-<script type="module" src="js/citas.js"></script>
+<script type="module" src="js/user_products.js"></script>
+<script type="module" src="js/user_cart.js"></script>
+<script type="module" src="js/user_account.js"></script>
+<script type="module" src="js/main_display.js"></script>
+<script type="module" src="js/user_appointments.js"></script>
 </html>

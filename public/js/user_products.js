@@ -1,23 +1,23 @@
-import { agregarAlCarrito } from "./carrito.js";
+import { agregarAlcart } from "./user_cart.js";
 
-const API_URL = "http://localhost:3000/api/productos";
+const API_URL = "http://localhost:3000/api/products";
 
 const productosGrid = document.getElementById("productosGrid");
 const buscarInput = document.getElementById("buscarProducto");
-const seccionProductos = document.getElementById("seccionProductos");
+const sectionProductos = document.getElementById("sectionProductos");
 const detalleProducto = document.getElementById("detalleProducto");
 
 let productosPublic = [];
-let categoriaActual = "Todos";
+let categoryActual = "Todos";
 
 async function cargarProductosPublic() {
     try {
         const res = await fetch(API_URL);
         productosPublic = await res.json();
-        console.log("✅ Productos cargados:", productosPublic.length);
+        console.log("Productos cargados:", productosPublic.length);
         pintarTarjetas();
     } catch (err) {
-        console.error("❌ Error cargando productos:", err);
+        console.error("Error cargando productos:", err);
         if (productosGrid) {
             productosGrid.innerHTML = "<p class='text-danger text-center py-5'>Error cargando productos</p>";
         }
@@ -29,8 +29,8 @@ function pintarTarjetas() {
 
     let filtrados = productosPublic.filter(p => p.active === 1 || p.active === true);
 
-    if (categoriaActual !== "Todos") {
-        filtrados = filtrados.filter(p => p.category === categoriaActual);
+    if (categoryActual !== "Todos") {
+        filtrados = filtrados.filter(p => p.category === categoryActual);
     }
 
     const text = buscarInput?.value.toLowerCase() || "";
@@ -68,8 +68,8 @@ function pintarTarjetas() {
         const btnAgregar = card.querySelector(".add-cart-btn");
         btnAgregar.addEventListener("click", (e) => {
             e.stopPropagation();
-            console.log("🛒 Agregando al carrito:", p.name);
-            agregarAlCarrito({
+            console.log("Agregando al cart:", p.name);
+            agregarAlcart({
                 id: p.id,
                 nombre: p.name,
                 imagen: p.image,
@@ -90,7 +90,7 @@ function mostrarDetalleProducto(id) {
 
     if (!detalleProducto) return;
 
-    seccionProductos.classList.add("hidden");
+    sectionProductos.classList.add("hidden");
     detalleProducto.classList.remove("hidden");
 
     let cantidadActual = 1;
@@ -106,7 +106,7 @@ function mostrarDetalleProducto(id) {
                 </div>
 
                 <div class="detalle-info">
-                    <h2 class="detalle-titulo">${p.name}</h2>
+                    <h2 class="detalle-title">${p.name}</h2>
                     <h3 class="detalle-precio">$${parseFloat(p.price).toLocaleString('es-CO')}</h3>
 
                     <p class="detalle-desc">${p.description || "Sin descripción disponible"}</p>
@@ -117,7 +117,7 @@ function mostrarDetalleProducto(id) {
                         <button class="cont-btn" id="btnSumar">+</button>
                     </div>
 
-                    <button class="btn-add" id="btnAgregarDetalle">🛒 Agregar al carrito</button>
+                    <button class="btn-add" id="btnAgregarDetalle">🛒 Agregar al cart</button>
                 </div>
 
             </div>
@@ -133,7 +133,7 @@ function mostrarDetalleProducto(id) {
     if (btnVolver) {
         btnVolver.addEventListener("click", () => {
             detalleProducto.classList.add("hidden");
-            seccionProductos.classList.remove("hidden");
+            sectionProductos.classList.remove("hidden");
         });
     }
 
@@ -142,7 +142,7 @@ function mostrarDetalleProducto(id) {
             if (cantidadActual > 1) {
                 cantidadActual--;
                 if (cantidadSpan) cantidadSpan.textContent = cantidadActual;
-                console.log("➖ Cantidad:", cantidadActual);
+                console.log("Cantidad:", cantidadActual);
             }
         });
     }
@@ -151,16 +151,16 @@ function mostrarDetalleProducto(id) {
         btnSumar.addEventListener("click", () => {
             cantidadActual++;
             if (cantidadSpan) cantidadSpan.textContent = cantidadActual;
-            console.log("➕ Cantidad:", cantidadActual);
+            console.log("Cantidad:", cantidadActual);
         });
     }
 
     if (btnAgregarDetalle) {
         btnAgregarDetalle.addEventListener("click", () => {
-            console.log(`🛒 Agregando ${cantidadActual} unidad(es) de ${p.name}`);
+            console.log(`Agregando ${cantidadActual} unidad(es) de ${p.name}`);
             
             for (let i = 0; i < cantidadActual; i++) {
-                agregarAlCarrito({
+                agregarAlcart({
                     id: p.id,
                     nombre: p.name,
                     imagen: p.image,
@@ -170,7 +170,7 @@ function mostrarDetalleProducto(id) {
             
             setTimeout(() => {
                 detalleProducto.classList.add("hidden");
-                seccionProductos.classList.remove("hidden");
+                sectionProductos.classList.remove("hidden");
             }, 800);
         });
     }
@@ -178,7 +178,7 @@ function mostrarDetalleProducto(id) {
 
 if (buscarInput) {
     buscarInput.addEventListener("input", () => {
-        console.log("🔍 Buscando:", buscarInput.value);
+        console.log("Buscando:", buscarInput.value);
         pintarTarjetas();
     });
 }
@@ -187,25 +187,25 @@ document.querySelectorAll(".cat-btn").forEach(btn => {
     btn.addEventListener("click", () => {
         document.querySelector(".cat-btn.active")?.classList.remove("active");
         btn.classList.add("active");
-        categoriaActual = btn.dataset.cat;
-        console.log("📂 Categoría:", categoriaActual);
+        categoryActual = btn.dataset.cat;
+        console.log("Categoría:", categoryActual);
         pintarTarjetas();
     });
 });
 
 function mostrarProductos() {
-    console.log("📦 Mostrando sección productos");
+    console.log("Mostrando sección productos");
     
-    const seccionPrincipal = document.getElementById("seccionPrincipal");
-    const seccionCuenta = document.getElementById("seccionCuenta");
-    const seccionCarrito = document.getElementById("seccionCarrito");
+    const sectionPrincipal = document.getElementById("sectionPrincipal");
+    const sectionaccount = document.getElementById("sectionaccount");
+    const sectioncart = document.getElementById("sectioncart");
     
-    if (seccionPrincipal) seccionPrincipal.classList.add("hidden");
-    if (seccionCuenta) seccionCuenta.classList.add("hidden");
-    if (seccionCarrito) seccionCarrito.classList.add("hidden");
+    if (sectionPrincipal) sectionPrincipal.classList.add("hidden");
+    if (sectionaccount) sectionaccount.classList.add("hidden");
+    if (sectioncart) sectioncart.classList.add("hidden");
     if (detalleProducto) detalleProducto.classList.add("hidden");
 
-    if (seccionProductos) seccionProductos.classList.remove("hidden");
+    if (sectionProductos) sectionProductos.classList.remove("hidden");
     
     pintarTarjetas();
 }
@@ -225,5 +225,5 @@ linksMenu.forEach(link => {
 window.mostrarProductos = mostrarProductos;
 window.mostrarDetalleProducto = mostrarDetalleProducto;
 
-console.log("🚀 Módulo user_productos.js cargado");
+console.log("Módulo user_products.js cargado");
 cargarProductosPublic();

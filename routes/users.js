@@ -71,7 +71,7 @@ router.post("/", async (req, res) => {
               if (err) return res.json({ error: err });
 
               res.json({
-                message: "Usuario registrado",
+                message: "user registrado",
                 username,
                 role: "cliente",
               });
@@ -97,7 +97,7 @@ router.post("/login", (req, res) => {
 
   db.query(sql, [email], async (err, data) => {
     if (data.length === 0)
-      return res.json({ error: "Usuario no encontrado" });
+      return res.json({ error: "user no encontrado" });
 
     const user = data[0];
 

@@ -34,7 +34,7 @@ router.patch("/rol/:id", auth, (req, res) => {
   const userId = req.params.id;
   const { role } = req.body;
 
-  const rolesValidos = ["administrador", "cliente"];
+  const rolesValidos = ["administrador", "cliente", "empleado"];
 
   if (!role || !rolesValidos.includes(role))
     return res.status(400).json({ message: "Rol inválido" });
@@ -60,7 +60,7 @@ router.delete("/:id", auth, (req, res) => {
   db.query(buscar, [userId], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!rows.length)
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(404).json({ message: "user no encontrado" });
 
     const personId = rows[0].person_id;
 
@@ -72,7 +72,7 @@ router.delete("/:id", auth, (req, res) => {
       const deletePerson = "DELETE FROM Person WHERE id = ?";
 
       db.query(deletePerson, [personId], () => {
-        res.json({ message: "Usuario eliminado correctamente" });
+        res.json({ message: "user eliminado correctamente" });
       });
     });
   });

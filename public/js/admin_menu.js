@@ -1,64 +1,64 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // --- SECCIONES ---
-    const seccionAgendamientos = document.getElementById("seccionAgendamientos");
-    const seccionInventario = document.getElementById("seccionInventario");
-    const seccionVentas = document.getElementById("seccionVentas");
-    const seccionUsuarios = document.getElementById("seccionUsuarios");
-    const seccionCitasCliente = document.getElementById("seccionCitasCliente"); // NUEVA
+    // --- section ---
+    const sectionAppointments = document.getElementById("sectionAppointments");
+    const sectioninventory = document.getElementById("sectioninventory");
+    const sectionsales = document.getElementById("sectionsales");
+    const sectionusers = document.getElementById("sectionusers");
+    const sectionCitasCliente = document.getElementById("sectionCitasCliente"); // NUEVA
 
     // --- OCULTAR TODO ---
     function ocultarTodo() {
         console.log("Ocultando todas las secciones");
-        seccionAgendamientos?.classList.add("hidden");
-        seccionInventario?.classList.add("hidden");
-        seccionVentas?.classList.add("hidden");
-        seccionUsuarios?.classList.add("hidden");
-        seccionCitasCliente?.classList.add("hidden"); // NUEVA
+        sectionAppointments?.classList.add("hidden");
+        sectioninventory?.classList.add("hidden");
+        sectionsales?.classList.add("hidden");
+        sectionusers?.classList.add("hidden");
+        sectionCitasCliente?.classList.add("hidden"); // NUEVA
     }
 
     // --- BOTONES DEL MENÚ ---
-    const btnAgendamientos = document.getElementById("btnAgendamientos");
-    const btnInventario = document.getElementById("btnInventario");
-    const btnVentas = document.getElementById("btnVentas");
-    const btnUsuarios = document.getElementById("btnUsuarios");
-    const btnCitasCliente = document.getElementById("btnCitasCliente"); // NUEVO
+    const btnAppointments = document.getElementById("btnAppointments");
+    const btninventory = document.getElementById("btninventory");
+    const btnsales = document.getElementById("btnsales");
+    const btnusers = document.getElementById("btnusers");
+    const btnCitasCliente = document.getElementById("btnCitasCliente"); 
 
     // AGENAMIENTOS
-    btnAgendamientos?.addEventListener("click", () => {
+    btnAppointments?.addEventListener("click", () => {
         ocultarTodo();
-        console.log("Mostrando Agendamientos");
-        seccionAgendamientos.classList.remove("hidden");
+        console.log("Mostrando appointments");
+        sectionAppointments.classList.remove("hidden");
     });
 
-    // INVENTARIO
-    btnInventario?.addEventListener("click", () => {
+    // inventory
+    btninventory?.addEventListener("click", () => {
         ocultarTodo();
-        console.log("Mostrando Inventario");
-        seccionInventario.classList.remove("hidden");
+        console.log("Mostrando inventory");
+        sectioninventory.classList.remove("hidden");
     });
 
-    // VENTAS
-    btnVentas?.addEventListener("click", () => {
+    // sales
+    btnsales?.addEventListener("click", () => {
         ocultarTodo();
-        console.log("Mostrando Ventas");
-        seccionVentas.classList.remove("hidden");
+        console.log("Mostrando sales");
+        sectionsales.classList.remove("hidden");
     });
 
-    // USUARIOS
-    btnUsuarios?.addEventListener("click", () => {
+    // user
+    btnusers?.addEventListener("click", () => {
         ocultarTodo();
-        console.log("Mostrando Usuarios");
-        seccionUsuarios.classList.remove("hidden");
-        cargarUsuarios();
+        console.log("Mostrando users");
+        sectionusers.classList.remove("hidden");
+        cargarusers();
     });
 
-    // 👉 **CITAS DEL CLIENTE**
+    // **CITAS DEL CLIENTE**
     btnCitasCliente?.addEventListener("click", () => {
         ocultarTodo();
         console.log("Mostrando Citas del Cliente");
-        seccionCitasCliente.classList.remove("hidden");
-        cargarCitasCliente(); // Función que tú ya tienes
+        sectionCitasCliente.classList.remove("hidden");
+        cargarCitasCliente(); 
     });
 
     // --- MENÚ MÓVIL ---

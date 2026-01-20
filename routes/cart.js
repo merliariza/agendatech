@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db/connection");
-const mercadopago = require("mercadopago");
+const mercadopayment = require("mercadopayment");
 require("dotenv").config();
 
-mercadopago.configure({
-  access_token: process.env.MERCADO_PAGO_ACCESS_TOKEN || ""
+mercadopayment.configure({
+  access_token: process.env.MERCADO_payment_ACCESS_TOKEN || ""
 });
 
 function getCartItems(customer_id) {
@@ -41,7 +41,7 @@ router.get("/:customer_id", async (req, res) => {
     res.json(mapped);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error listando carrito" });
+    res.status(500).json({ error: "Error listando cart" });
   }
 });
 
@@ -57,7 +57,7 @@ router.post("/add", (req, res) => {
   db.query(sql, [customer_id, product_id, unit_price, quantity], (err, r) => {
     if (err) {
       console.error(err);
-      return res.status(500).json({ error: "Error añadiendo carrito" });
+      return res.status(500).json({ error: "Error añadiendo cart" });
     }
     return res.json({ message: "Producto añadido" });
   });
@@ -84,8 +84,8 @@ router.delete("/item/:id", (req, res) => {
 router.delete("/clear/:customer_id", (req, res) => {
   const customer_id = req.params.customer_id;
   db.query("DELETE FROM ShoppingCart WHERE customer_id = ?", [customer_id], (err) => {
-    if (err) return res.status(500).json({ error: "Error vaciando carrito" });
-    res.json({ message: "Carrito vaciado" });
+    if (err) return res.status(500).json({ error: "Error vaciando cart" });
+    res.json({ message: "cart vaciado" });
   });
 });
 
@@ -95,7 +95,7 @@ router.post("/checkout", async (req, res) => {
 
   try {
     const items = await getCartItems(customer_id);
-    if (!items || items.length === 0) return res.status(400).json({ error: "Carrito vacío" });
+    if (!items || items.length === 0) return res.status(400).json({ error: "carrito vacío" });
 
     const mpItems = items.map(it => ({
       id: String(it.product_id),
@@ -126,11 +126,11 @@ router.post("/checkout", async (req, res) => {
       metadata: { customer_id: String(customer_id) }
     };
 
-    const response = await mercadopago.preferences.create(pref);
+    const response = await mercadopayment.preferences.create(pref);
     res.json({ init_point: response.body.init_point, preference_id: response.body.id });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error creando preferencia Mercado Pago" });
+    res.status(500).json({ error: "Error creando preferencia Mercado payment" });
   }
 });
 

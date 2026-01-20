@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles.css">
+    <title>Agendatech - Panel</title>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="site-header">
+        <a href="#" class="site-logo">
+            <img src="../src/img/womanLogo.png" class="logo-img" />
+            <img src="../src/img/bellezaLogo.png" class="slogan-img" />
+        </a>
+        <button id="menu-toggle">☰</button>
+        <nav id="menu" class="menu">
+            <ul>
+                <li><a href="#" id="btnAppointments">Agendamiento</a></li>
+                <!--<li><a href="#" id="btnsales">sales</a></li>-->
+                <button id="logoutBtn" class="btn-secondary">Cerrar sesión</button>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- appointments -->
+<section id="sectionAppointments" class="page-section">
+    <div class="appointments-grid">
+
+        <div class="calendar-card card">
+            <div class="calendar-header">
+                <button id="prevMonth" class="nav-month">&lt;</button>
+                <div class="month-year" id="monthYear"></div>
+                <button id="nextMonth" class="nav-month">&gt;</button>
+            </div>
+
+            <div class="weekdays">
+                <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
+            </div>
+
+            <div id="calendarDays" class="calendar-days"></div>
+        </div>
+        <div class="appointments-list card">
+            <h3>Mis Citas</h3>
+            <div id="appointmentsContainer"></div>
+        </div>
+        
+        <aside class="details-card card">
+
+            <div class="appointment-details">
+                <div class="detail-row">
+                    <i class="icon-clock">🕒</i>
+                    <div id="selectedDateText">Ninguna fecha seleccionada</div>
+                </div>
+                
+                <div class="detail-row">
+                    <i class="icon-place">📍</i>
+                    <div>Calle 20 #27-51<br>San Alonso, Bucaramanga</div>
+                </div>
+            </div>
+
+            <hr>
+
+            <form id="bookingForm" class="booking-form">
+                <label>Cliente (email)</label>
+                <input id="customerEmail" type="email" placeholder="tu@correo.com" required>
+
+                <label>Nombre</label>
+                <input id="customerName" type="text" placeholder="Nombre completo" required>
+
+                <label>Empleado</label>
+                <select id="employeeSelect" required></select>
+
+                <label>Hora</label>
+                <select id="timeSelect" required></select>
+
+                <label>Método de pago</label>
+                <select id="paymentMethod">
+                    <option value="efectivo">Efectivo</option>
+                    <option value="tarjeta">Tarjeta</option>
+                    <option value="transferencia">Transferencia</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="otro">Otro</option>
+                </select>
+
+                <label>Notas</label>
+                <textarea id="notes" placeholder="Detalles, alergias, etc."></textarea>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Confirmar Cita</button>
+                    <button type="button" id="resetBooking" class="btn-secondary">Limpiar</button>
+                </div>
+            </form>
+            
+            <div id="bookingFeedback" class="booking-feedback"></div>
+        </aside>
+
+    </div>
+</section>
+
+
+ 
+<!-- Scripts -->
+<script src="../js/admin_appointments.js"></script>
+<script src="../js/employee_menu.js"></script>
+</body>
+</html>

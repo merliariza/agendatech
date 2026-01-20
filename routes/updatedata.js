@@ -10,7 +10,7 @@ const authMiddleware = (req, res, next) => {
 };
 
 router.post("/", authMiddleware, (req, res) => {
-    console.log("📥 Body recibido:", req.body);
+    console.log("Body recibido:", req.body);
 
     const { phone, address, city, region, country } = req.body;
     const userId = req.session.userId;
@@ -25,12 +25,12 @@ router.post("/", authMiddleware, (req, res) => {
 
     db.query(queryUser, [userId], (err, userRows) => {
         if (err) {
-            console.error("❌ Error obteniendo usuario:", err);
+            console.error("❌ Error obteniendo user:", err);
             return res.status(500).json({ error: err.message });
         }
 
         if (!userRows.length) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
+            return res.status(404).json({ message: "user no encontrado" });
         }
 
         const personId = userRows[0].person_id;

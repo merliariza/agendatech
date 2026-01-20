@@ -1,4 +1,3 @@
-// js/citas.js
 console.log('=== Módulo de citas cargado ===');
 
 const API_BASE = "http://localhost:3000/api";
@@ -30,7 +29,7 @@ const userNotes = document.getElementById('userNotes');
 
 // Inicializar cuando se muestra la sección
 export function initUserAppointments() {
-    console.log('Inicializando módulo de citas de usuario');
+    console.log('Inicializando módulo de citas de user');
     loadEmployees();
     loadUserAppointments();
     initCalendar();
@@ -84,7 +83,7 @@ function setupEventListeners() {
 
 async function loadEmployees() {
     try {
-        const res = await fetch(`${API_BASE}/citas/employees`, {
+        const res = await fetch(`${API_BASE}/appointments/employees`, {
             credentials: 'include'
         });
         const data = await res.json();
@@ -108,16 +107,16 @@ function populateEmployeeSelect() {
 }
 
 async function loadUserAppointments() {
-    console.log('Cargando citas del usuario...');
+    console.log('Cargando citas del user...');
     try {
-        const res = await fetch(`${API_BASE}/citas/my-appointments`, {
+        const res = await fetch(`${API_BASE}/appointments/my-appointments`, {
             credentials: 'include'
         });
         
         console.log('Respuesta del servidor:', res.status);
         
         if (res.status === 401) {
-            console.error('Usuario no autenticado');
+            console.error('user no autenticado');
             userAppointmentsList.innerHTML = `
                 <div class="text-center py-5">
                     <p class="text-danger fs-5">Debes iniciar sesión para ver tus citas</p>
@@ -232,7 +231,7 @@ window.cancelUserAppointment = async function(appointmentId) {
     if (!confirm('¿Estás seguro de que deseas cancelar esta cita?')) return;
 
     try {
-        const res = await fetch(`${API_BASE}/citas/${appointmentId}/cancel`, {
+        const res = await fetch(`${API_BASE}/appointments/${appointmentId}/cancel`, {
             method: 'PATCH',
             credentials: 'include'
         });
@@ -319,7 +318,7 @@ async function populateTimeOptions(dateStr) {
     }
 
     try {
-        const res = await fetch(`${API_BASE}/citas/by-date?date=${dateStr}`, {
+        const res = await fetch(`${API_BASE}/appointments/by-date?date=${dateStr}`, {
             credentials: 'include'
         });
         const data = await res.json();
@@ -365,7 +364,7 @@ async function handleCreateAppointment(e) {
     }
 
     try {
-        const res = await fetch(`${API_BASE}/citas/user-create`, {
+        const res = await fetch(`${API_BASE}/appointments/user-create`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -438,7 +437,7 @@ function showFeedback(message, type) {
 // Función para verificar si hay sesión activa
 async function checkUserSession() {
     try {
-        const res = await fetch(`${API_BASE}/citas/check-session`, {
+        const res = await fetch(`${API_BASE}/appointments/check-session`, {
             credentials: 'include'
         });
         
@@ -472,17 +471,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Ocultar todas las secciones
-        document.querySelectorAll('.pagina-section, section').forEach(section => {
-            if (section.id !== 'seccionCitas') {
+        document.querySelectorAll('.page-section, section').forEach(section => {
+            if (section.id !== 'sectionCitas') {
                 section.classList.add('hidden');
             }
         });
         
         // Mostrar sección de citas
-        const seccionCitas = document.getElementById('seccionCitas');
-        if (seccionCitas) {
-            seccionCitas.classList.remove('hidden');
+        const sectionCitas = document.getElementById('sectionCitas');
+        if (sectionCitas) {
+            sectionCitas.classList.remove('hidden');
             initUserAppointments();
         }
     });

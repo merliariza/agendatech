@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         try {
             showFeedback("Cargando datos...", "info");
            
-            const employeesRes = await fetch(`${API_BASE}/citas/employees`, {
+            const employeesRes = await fetch(`${API_BASE}/appointments/employees`, {
                 credentials: 'include'
             });
             
@@ -62,8 +62,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function loadAppointments(date = null) {
         try {
             const url = date 
-                ? `${API_BASE}/citas/by-date?date=${date}`
-                : `${API_BASE}/citas`;
+                ? `${API_BASE}/appointments/by-date?date=${date}`
+                : `${API_BASE}/appointments`;
             
             const res = await fetch(url, { credentials: 'include' });
             const data = await res.json();
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     
     async function loadAllCustomers() {
         try {
-            const res = await fetch(`${API_BASE}/citas/customers`, {
+            const res = await fetch(`${API_BASE}/appointments/customers`, {
                 credentials: 'include'
             });
             const data = await res.json();
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (query.length < 2) return;
 
         try {
-            const res = await fetch(`${API_BASE}/citas/customers?q=${encodeURIComponent(query)}`, {
+            const res = await fetch(`${API_BASE}/appointments/employees?q=${encodeURIComponent(query)}`, {
                 credentials: 'include'
             });
             const data = await res.json();
@@ -306,7 +306,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const editingId = bookingForm.dataset.editingId;
 
         try {
-            const url = editingId ? `${API_BASE}/citas/${editingId}` : `${API_BASE}/citas`;
+            const url = editingId ? `${API_BASE}/appointments/${editingId}` : `${API_BASE}/appointments`;
             const method = editingId ? 'PUT' : 'POST';
             
             console.log('Enviando solicitud:', method, url);
@@ -445,7 +445,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 
                 try {
                     console.log('Cancelando cita:', a.id);
-                    const res = await fetch(`${API_BASE}/citas/${a.id}/cancel`, {
+                    const res = await fetch(`${API_BASE}/appointments/${a.id}/cancel`, {
                         method: 'PATCH',
                         credentials: 'include'
                     });
@@ -476,7 +476,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 
                 try {
                     console.log('Eliminando cita:', a.id);
-                    const res = await fetch(`${API_BASE}/citas/${a.id}`, {
+                    const res = await fetch(`${API_BASE}/appointments/${a.id}`, {
                         method: 'DELETE',
                         credentials: 'include'
                     });

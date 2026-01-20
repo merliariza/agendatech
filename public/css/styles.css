@@ -263,16 +263,16 @@ body.menu-active::before {
         color:#9e9c9b
     }
 
-.pagina-section {
+.page-section {
     padding: 30px;
     margin-top: 10px;
 }
 
-.inventario-container {
+.inventory-container {
     padding: 30px;
 }
 
-.titulo {
+.title {
     color: #b88647;
     font-weight: bold;
     margin-bottom: 20px;
@@ -375,7 +375,7 @@ body.menu-active::before {
     display: none !important;
 }
 
-.agendamiento-grid {
+.appointments-grid {
     display: grid;
     grid-template-columns: 2fr 1fr; 
     grid-template-rows: auto auto; 
@@ -463,7 +463,7 @@ body.menu-active::before {
 .btn-secondary { background: #999; border: none; padding: 10px 12px; border-radius:8px; color: white; cursor: pointer; }
 
 @media (max-width: 1000px) {
-    .agendamiento-grid { grid-template-columns: 1fr; }
+    .appointments-grid { grid-template-columns: 1fr; }
 }
 
 
@@ -490,14 +490,14 @@ body.menu-active::before {
     aspect-ratio: 1;
 }
 
-.cuenta-container {
+.account-container {
     display: flex;
     gap: 25px;
     padding: 40px;
     flex-wrap: wrap;
 }
 
-.cuenta-sidebar {
+.account-sidebar {
     background: #fff;
     width: 280px;
     padding: 30px 20px;
@@ -506,25 +506,25 @@ body.menu-active::before {
     text-align: center;
 }
 
-.cuenta-avatar img {
+.account-avatar img {
     width: 120px;
     filter: grayscale(30%);
 }
 
-#nombre-usuario {
+#nombre-user {
     margin-top: 15px;
     font-size: 18px;
     color: #555;
     font-weight: bold;
 }
 
-.cuenta-menu {
+.account-menu {
     margin-top: 25px;
     list-style: none;
     padding: 0;
 }
 
-.cuenta-menu li {
+.account-menu li {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -535,18 +535,18 @@ body.menu-active::before {
     border: 2px solid transparent;
 }
 
-.cuenta-menu li:hover,
-.cuenta-menu li.activo {
+.account-menu li:hover,
+.account-menu li.activo {
     border-color: #b88647;
     background: #fff7ef;
 }
 
-.cuenta-menu i {
+.account-menu i {
     font-size: 20px;
     color: #b88647;
 }
 
-.cuenta-content {
+.account-content {
     flex: 1;
     min-width: 350px;
     background: #fff;
@@ -555,19 +555,19 @@ body.menu-active::before {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.cuenta-content h2 {
+.account-content h2 {
     color: #555;
     margin-bottom: 20px;
 }
 
-.cuenta-content label {
+.account-content label {
     display: block;
     margin-top: 15px;
     margin-bottom: 5px;
     color: #333;
 }
 
-.cuenta-content input {
+.account-content input {
     width: 100%;
     padding: 12px;
     border-radius: 12px;
@@ -575,7 +575,7 @@ body.menu-active::before {
     outline: none;
 }
 
-.cuenta-content input:focus {
+.account-content input:focus {
     border-color: #b88647;
 }
 
@@ -596,16 +596,16 @@ body.menu-active::before {
 }
 
 @media (max-width: 768px) {
-    .cuenta-container {
+    .account-container {
         padding: 15px;
         flex-direction: column;
     }
 
-    .cuenta-sidebar {
+    .account-sidebar {
         width: 100%;
     }
 
-    .cuenta-content {
+    .account-content {
         width: 100%;
     }
 }
@@ -627,7 +627,7 @@ body.menu-active::before {
     border: 1px solid #ccc;
 }
 
-.categorias-bar {
+.categorys-bar {
     display: flex;
     gap: 10px;
     overflow-x: auto;
@@ -718,7 +718,7 @@ body.menu-active::before {
     border-radius: 20px;
 }
 
-.detalle-titulo {
+.detalle-title {
     font-size: 32px;
     font-weight: 700;
     color: #d3aa63;
@@ -792,7 +792,7 @@ body.menu-active::before {
         grid-template-columns: 1fr;
     }
 
-    .detalle-titulo {
+    .detalle-title {
         font-size: 26px;
     }
 
@@ -867,18 +867,18 @@ body.menu-active::before {
   background: #e0e0e0;
 }
 
-.pago-resumen {
+.payment-resumen {
   background: #f9f7f5;
   border-radius: 15px;
 }
 
-.pagar-btn {
+.pay-btn {
   background: #b98a54;
   color: white;
   border-radius: 10px;
 }
 
-.pagar-btn:hover {
+.pay-btn:hover {
   background: #a57a48;
 }
 
@@ -914,7 +914,7 @@ body.menu-active::before {
     border-color: #d4a373;
 }
 
-.pagar-btn {
+.pay-btn {
     background: linear-gradient(135deg, #ea7166 0%, #d4a373 100%);
     color: white;
     border: none;
@@ -922,21 +922,21 @@ body.menu-active::before {
     transition: transform 0.2s;
 }
 
-.pagar-btn:hover {
+.pay-btn:hover {
     transform: scale(1.02);
 }
 
-.pagar-btn:disabled {
+.pay-btn:disabled {
     background: #ccc;
     cursor: not-allowed;
 }
 
-.pago-resumen {
+.payment-resumen {
     background: #f8f9fa;
     border: 1px solid #dee2e6;
 }
 
-#seccionUsuarios .container {
+#sectionusers .container {
   background: white;
   padding: 25px;
   border-radius: 18px;
@@ -946,7 +946,7 @@ body.menu-active::before {
   margin: 30px auto;
 }
 
-#seccionUsuarios h2 {
+#sectionusers h2 {
   color: #c58f4d;
   font-size: 26px;
   margin-bottom: 15px;
@@ -954,7 +954,7 @@ body.menu-active::before {
   text-align: center;
 }
 
-#tablaUsuarios {
+#tablausers {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
@@ -962,11 +962,11 @@ body.menu-active::before {
   border-radius: 14px;
 }
 
-#tablaUsuarios thead {
+#tablausers thead {
   background: #c58f4d;
 }
 
-#tablaUsuarios thead th {
+#tablausers thead th {
   color: white;
   padding: 14px;
   font-size: 15px;
@@ -974,23 +974,23 @@ body.menu-active::before {
   text-align: left;
 }
 
-#tablaUsuarios tbody tr {
+#tablausers tbody tr {
   background: #ffffff;
   border-bottom: 1px solid #e8d6bd;
   transition: background 0.2s ease;
 }
 
-#tablaUsuarios tbody tr:hover {
+#tablausers tbody tr:hover {
   background: #fff7ec;
 }
 
-#tablaUsuarios td {
+#tablausers td {
   padding: 14px 12px;
   color: #444;
   font-size: 14px;
 }
 
-#tablaUsuarios select {
+#tablausers select {
   padding: 6px 10px;
   border: 1.5px solid #c58f4d;
   border-radius: 8px;
@@ -1016,11 +1016,11 @@ body.menu-active::before {
   transform: scale(1.05);
 }
 @media (max-width: 768px) {
-  #tablaUsuarios thead {
+  #tablausers thead {
     display: none;
   }
 
-  #tablaUsuarios tbody tr {
+  #tablausers tbody tr {
     display: block;
     margin-bottom: 16px;
     padding: 14px;
@@ -1028,14 +1028,14 @@ body.menu-active::before {
     border-radius: 12px;
   }
 
-  #tablaUsuarios tbody td {
+  #tablausers tbody td {
     display: flex;
     justify-content: space-between;
     padding: 10px 6px;
     font-size: 14px;
   }
 
-  #tablaUsuarios tbody td::before {
+  #tablausers tbody td::before {
     content: attr(data-label);
     font-weight: bold;
     color: #c58f4d;
@@ -1045,5 +1045,41 @@ body.menu-active::before {
     width: 100%;
     text-align: center;
     margin-top: 8px;
+  }
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.products-table-wrapper {
+    overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+    .inventory-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.appointments-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .appointments-grid {
+    grid-template-columns: 1fr;
   }
 }
