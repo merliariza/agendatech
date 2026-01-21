@@ -10,14 +10,14 @@ function cargarusers() {
     .then(users => {
 
       if (!Array.isArray(users)) {
-        console.error("⚠ Error del servidor:", users);
+        console.error("Error del servidor:", users);
         return;
       }
 
       const tabla = document.querySelector("#tablausers tbody");
 
       if (!tabla) {
-        console.error("⚠ No existe la tabla en el DOM");
+        console.error("No existe la tabla en el DOM");
         return;
       }
 

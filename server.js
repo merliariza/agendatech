@@ -42,6 +42,8 @@ app.use("/api/update-data", require("./routes/updatedata.js"));
 app.use("/api/change-password", require("./routes/changepassword.js"));
 app.use("/api/admin-users", require("./routes/adminusers.js"));
 app.use("/api/appointments", require("./routes/appointments.js"));
+app.use("/api/cart", require("./routes/cart.js"));
+app.use("/api/orders", require("./routes/orders.js"));
 
 app.get("/api/check-session", (req, res) => {
   res.json({

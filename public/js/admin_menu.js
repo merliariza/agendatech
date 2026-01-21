@@ -1,73 +1,83 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // --- section ---
     const sectionAppointments = document.getElementById("sectionAppointments");
     const sectioninventory = document.getElementById("sectioninventory");
     const sectionsales = document.getElementById("sectionsales");
     const sectionusers = document.getElementById("sectionusers");
-    const sectionCitasCliente = document.getElementById("sectionCitasCliente"); // NUEVA
+    const sectionOrders = document.getElementById("sectionOrders"); 
+    const sectionCitasCliente = document.getElementById("sectionCitasCliente");
 
-    // --- OCULTAR TODO ---
     function ocultarTodo() {
-        console.log("Ocultando todas las secciones");
-        sectionAppointments?.classList.add("hidden");
-        sectioninventory?.classList.add("hidden");
-        sectionsales?.classList.add("hidden");
-        sectionusers?.classList.add("hidden");
-        sectionCitasCliente?.classList.add("hidden"); // NUEVA
+        console.log("Limpiando pantalla...");
+        const secciones = [
+            sectionAppointments, 
+            sectioninventory, 
+            sectionsales, 
+            sectionusers, 
+            sectionOrders, 
+            sectionCitasCliente
+        ];
+        
+        secciones.forEach(sec => {
+            if (sec) sec.classList.add("hidden");
+        });
     }
 
-    // --- BOTONES DEL MENÚ ---
     const btnAppointments = document.getElementById("btnAppointments");
     const btninventory = document.getElementById("btninventory");
     const btnsales = document.getElementById("btnsales");
     const btnusers = document.getElementById("btnusers");
-    const btnCitasCliente = document.getElementById("btnCitasCliente"); 
+    const btnOrders = document.getElementById("btnOrders"); 
+    const btnCitasCliente = document.getElementById("btnCitasCliente");
 
-    // AGENAMIENTOS
-    btnAppointments?.addEventListener("click", () => {
+    btnAppointments?.addEventListener("click", (e) => {
+        e.preventDefault();
         ocultarTodo();
-        console.log("Mostrando appointments");
-        sectionAppointments.classList.remove("hidden");
+        sectionAppointments?.classList.remove("hidden");
     });
 
-    // inventory
-    btninventory?.addEventListener("click", () => {
+    btninventory?.addEventListener("click", (e) => {
+        e.preventDefault();
         ocultarTodo();
-        console.log("Mostrando inventory");
-        sectioninventory.classList.remove("hidden");
+        sectioninventory?.classList.remove("hidden");
     });
 
-    // sales
-    btnsales?.addEventListener("click", () => {
+    btnsales?.addEventListener("click", (e) => {
+        e.preventDefault();
         ocultarTodo();
-        console.log("Mostrando sales");
-        sectionsales.classList.remove("hidden");
+        sectionsales?.classList.remove("hidden");
     });
 
-    // user
-    btnusers?.addEventListener("click", () => {
+    btnusers?.addEventListener("click", (e) => {
+        e.preventDefault();
         ocultarTodo();
-        console.log("Mostrando users");
-        sectionusers.classList.remove("hidden");
-        cargarusers();
+        sectionusers?.classList.remove("hidden");
+        if (typeof cargarusers === 'function') cargarusers();
     });
 
-    // **CITAS DEL CLIENTE**
-    btnCitasCliente?.addEventListener("click", () => {
+    btnOrders?.addEventListener("click", (e) => {
+        e.preventDefault();
         ocultarTodo();
-        console.log("Mostrando Citas del Cliente");
-        sectionCitasCliente.classList.remove("hidden");
-        cargarCitasCliente(); 
+        console.log("Mostrando Pedidos");
+        sectionOrders?.classList.remove("hidden");
+        if (typeof loadOrders === 'function') {
+            loadOrders();
+        } else {
+            console.warn("La función loadOrders() no está definida.");
+        }
     });
 
-    // --- MENÚ MÓVIL ---
+    btnCitasCliente?.addEventListener("click", (e) => {
+        e.preventDefault();
+        ocultarTodo();
+        sectionCitasCliente?.classList.remove("hidden");
+        if (typeof cargarCitasCliente === 'function') cargarCitasCliente();
+    });
+
     const menuToggle = document.getElementById("menu-toggle");
     const menu = document.getElementById("menu");
 
     menuToggle?.addEventListener("click", function () {
-        console.log("Toggling menú");
-        menu.classList.toggle("active");
+        menu?.classList.toggle("active");
     });
-
 });

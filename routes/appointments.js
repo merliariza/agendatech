@@ -18,7 +18,6 @@ function query(sql, params) {
   });
 }
 
-// Obtener empleados
 router.get('/employees', requireAuth, async (req, res) => {
   try {
     const rows = await query(`
@@ -34,14 +33,12 @@ router.get('/employees', requireAuth, async (req, res) => {
   }
 });
 
-// Buscar clientes
 router.get('/customers', requireAuth, async (req, res) => {
   const queryParam = req.query.q;
   
   try {
     let rows;
     if (!queryParam) {
-      // Si no hay query, devolver todos los clientes
       rows = await query(`
         SELECT id, name, surname, email 
         FROM Person 
@@ -50,7 +47,6 @@ router.get('/customers', requireAuth, async (req, res) => {
         LIMIT 100
       `);
     } else {
-      // Si hay query, buscar por coincidencia
       rows = await query(`
         SELECT id, name, surname, email 
         FROM Person 
@@ -68,7 +64,6 @@ router.get('/customers', requireAuth, async (req, res) => {
   }
 });
 
-// Obtener todas las citas
 router.get('/', requireAuth, async (req, res) => {
   try {
     const rows = await query(`
@@ -90,7 +85,6 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
-// Obtener citas por fecha
 router.get('/by-date', requireAuth, async (req, res) => {
   const date = req.query.date;
   if (!date) {
@@ -122,7 +116,6 @@ router.get('/by-date', requireAuth, async (req, res) => {
   }
 });
 
-// Crear nueva cita
 router.post('/', requireAuth, async (req, res) => {
   try {
     const {
@@ -245,7 +238,6 @@ router.post('/', requireAuth, async (req, res) => {
   }
 });
 
-// Actualizar cita completa (PUT)
 router.put('/:id', requireAuth, async (req, res) => {
   const id = req.params.id;
   const { 
@@ -272,7 +264,6 @@ router.put('/:id', requireAuth, async (req, res) => {
       ? `${appointment_time}:00` 
       : appointment_time;
 
-    // Verificar si existe la cita
     const existingAppointment = await query(
       'SELECT * FROM Appointment WHERE id = ?', 
       [id]
@@ -285,7 +276,6 @@ router.put('/:id', requireAuth, async (req, res) => {
       });
     }
 
-    // Actualizar o crear cliente
     let customerId = existingAppointment[0].customer_id;
 
     if (customer_email && customer_name) {
@@ -318,7 +308,6 @@ router.put('/:id', requireAuth, async (req, res) => {
       }
     }
 
-    // Verificar conflictos de horario
     if (employee_id && formattedDate && timeNormalized) {
       const conflict = await query(
         `SELECT id FROM Appointment 
@@ -338,7 +327,6 @@ router.put('/:id', requireAuth, async (req, res) => {
       }
     }
 
-    // Actualizar la cita
     await query(
       `UPDATE Appointment 
        SET customer_id = ?,
@@ -359,7 +347,6 @@ router.put('/:id', requireAuth, async (req, res) => {
       ]
     );
 
-    // Obtener la cita actualizada con todos los datos
     const updatedAppointment = await query(`
       SELECT 
         a.*,
@@ -388,12 +375,10 @@ router.put('/:id', requireAuth, async (req, res) => {
   }
 });
 
-// Eliminar cita (DELETE)
 router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     
-    // Verificar si la cita existe
     const existing = await query(
       'SELECT id FROM Appointment WHERE id = ?', 
       [id]
@@ -406,7 +391,6 @@ router.delete('/:id', requireAuth, async (req, res) => {
       });
     }
     
-    // Eliminar la cita
     await query('DELETE FROM Appointment WHERE id = ?', [id]);
     
     res.json({ 
@@ -422,12 +406,10 @@ router.delete('/:id', requireAuth, async (req, res) => {
   }
 });
 
-// Cancelar cita (PATCH)
 router.patch('/:id/cancel', requireAuth, async (req, res) => {
   const id = req.params.id;
   
   try {
-    // Verificar si la cita existe
     const existing = await query(
       'SELECT id, status FROM Appointment WHERE id = ?', 
       [id]
@@ -447,7 +429,6 @@ router.patch('/:id/cancel', requireAuth, async (req, res) => {
       });
     }
     
-    // Cancelar la cita
     await query(
       'UPDATE Appointment SET status = ? WHERE id = ?', 
       ['cancelada', id]
@@ -466,7 +447,6 @@ router.patch('/:id/cancel', requireAuth, async (req, res) => {
   }
 });
 
-// Obtener citas del user actual
 router.get('/my-appointments', requireAuth, async (req, res) => {
   try {
     const userId = req.session.userId || req.session.user?.id;
@@ -498,7 +478,6 @@ router.get('/my-appointments', requireAuth, async (req, res) => {
   }
 });
 
-// Crear cita desde el user
 router.post('/user-create', requireAuth, async (req, res) => {
   try {
     const userId = req.session.userId || req.session.user?.id;
@@ -525,7 +504,6 @@ router.post('/user-create', requireAuth, async (req, res) => {
       });
     }
 
-    // Normalizar fecha
     let formattedDate = appointment_date;
     if (appointment_date.includes('T')) {
       formattedDate = appointment_date.split('T')[0];
@@ -535,7 +513,6 @@ router.post('/user-create', requireAuth, async (req, res) => {
       ? `${appointment_time}:00` 
       : appointment_time;
 
-    // Verificar conflictos
     const conflict = await query(
       `SELECT id FROM Appointment 
        WHERE employee_id = ? 
@@ -552,7 +529,6 @@ router.post('/user-create', requireAuth, async (req, res) => {
       });
     }
 
-    // Crear la cita
     const insertAppointment = await query(
       `INSERT INTO Appointment (
         customer_id, employee_id, 
@@ -599,13 +575,10 @@ router.post('/user-create', requireAuth, async (req, res) => {
   }
 });
 
-// Obtener citas del user actual
 router.get('/my-appointments', requireAuth, async (req, res) => {
   try {
-    // Obtener el person_id desde la sesión
     let customerId = null;
     
-    // Verificar diferentes formas en que puede estar guardado
     if (req.session.userId) {
       customerId = req.session.userId;
     } else if (req.session.user && req.session.user.id) {
@@ -645,10 +618,8 @@ router.get('/my-appointments', requireAuth, async (req, res) => {
   }
 });
 
-// Crear cita desde el user
 router.post('/user-create', requireAuth, async (req, res) => {
   try {
-    // Obtener el person_id desde la sesión
     let customerId = null;
     
     if (req.session.userId) {
@@ -682,7 +653,6 @@ router.post('/user-create', requireAuth, async (req, res) => {
       });
     }
 
-    // Normalizar fecha
     let formattedDate = appointment_date;
     if (appointment_date.includes('T')) {
       formattedDate = appointment_date.split('T')[0];
@@ -692,7 +662,6 @@ router.post('/user-create', requireAuth, async (req, res) => {
       ? `${appointment_time}:00` 
       : appointment_time;
 
-    // Verificar conflictos
     const conflict = await query(
       `SELECT id FROM Appointment 
        WHERE employee_id = ? 
@@ -709,7 +678,6 @@ router.post('/user-create', requireAuth, async (req, res) => {
       });
     }
 
-    // Crear la cita
     const insertAppointment = await query(
       `INSERT INTO Appointment (
         customer_id, employee_id, 

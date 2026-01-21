@@ -7,7 +7,6 @@ let userAppointments = [];
 let selectedDate = null;
 let currentYear, currentMonth;
 
-// Elementos del DOM
 const btnNuevaCita = document.getElementById('btnNuevaCita');
 const panelNuevaCita = document.getElementById('panelNuevaCita');
 const btnCancelarNuevaCita = document.getElementById('btnCancelarNuevaCita');
@@ -15,19 +14,16 @@ const formNuevaCita = document.getElementById('formNuevaCita');
 const userAppointmentsList = document.getElementById('userAppointmentsList');
 const userBookingFeedback = document.getElementById('userBookingFeedback');
 
-// Elementos del calendario
 const userMonthYear = document.getElementById('userMonthYear');
 const userCalendarDays = document.getElementById('userCalendarDays');
 const userPrevMonth = document.getElementById('userPrevMonth');
 const userNextMonth = document.getElementById('userNextMonth');
 const userSelectedDateText = document.getElementById('userSelectedDateText');
 
-// Selectores del formulario
 const userEmployeeSelect = document.getElementById('userEmployeeSelect');
 const userTimeSelect = document.getElementById('userTimeSelect');
 const userNotes = document.getElementById('userNotes');
 
-// Inicializar cuando se muestra la sección
 export function initUserAppointments() {
     console.log('Inicializando módulo de citas de user');
     loadEmployees();
@@ -434,7 +430,6 @@ function showFeedback(message, type) {
     }
 }
 
-// Función para verificar si hay sesión activa
 async function checkUserSession() {
     try {
         const res = await fetch(`${API_BASE}/appointments/check-session`, {
@@ -453,7 +448,6 @@ async function checkUserSession() {
     }
 }
 
-// Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
     const btnMisCitas = document.getElementById('btnMisCitas');
     
@@ -462,7 +456,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         console.log('Click en Mis Citas');
         
-        // Verificar sesión con el servidor
         const isAuthenticated = await checkUserSession();
         
         if (!isAuthenticated) {
@@ -477,7 +470,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        // Mostrar sección de citas
         const sectionCitas = document.getElementById('sectionCitas');
         if (sectionCitas) {
             sectionCitas.classList.remove('hidden');

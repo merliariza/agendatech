@@ -160,7 +160,7 @@ export async function agregarAlcart(producto) {
 
     rendercart();
     
-    mostrarNotificacion("✅ Producto agregado al cart");
+    mostrarNotificacion("✅ Producto agregado al carrito");
 }
 
 async function agregarAcartDB(product_id, unit_price) {
@@ -222,7 +222,7 @@ async function actualizarCantidadDB(cart_item_id, quantity) {
 window.eliminarProducto = async function(index) {
     if (index < 0 || index >= cart.length) return;
     
-    if (!confirm("¿Eliminar este producto del cart?")) return;
+    if (!confirm("¿Eliminar este producto del carrito?")) return;
     
     const producto = cart[index];
     
@@ -253,7 +253,7 @@ async function eliminarDeDB(cart_item_id) {
 export async function vaciarcart() {
     if (cart.length === 0) return;
     
-    if (!confirm("¿Vaciar todo el cart?")) return;
+    if (!confirm("¿Vaciar todo el carrito?")) return;
     
     if (userLogueado?.id) {
         await vaciarcartDB();
@@ -263,7 +263,7 @@ export async function vaciarcart() {
     guardarcart();
     rendercart();
     
-    mostrarNotificacion("🗑️ cart vaciado");
+    mostrarNotificacion("🗑️ Carrito vaciado");
 }
 
 async function vaciarcartDB() {
@@ -284,7 +284,7 @@ if (btnpay) {
         }
 
         if (!userLogueado?.id) {
-            alert("⚠️ Debes iniciar sesión para continuar con el payment");
+            alert("⚠️ Debes iniciar sesión para continuar con el pago");
             return;
         }
 
@@ -293,11 +293,16 @@ if (btnpay) {
 }
 
 async function procesarCheckout() {
-    const subtotal = cart.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
+    const subtotal = cart.reduce((sum, p) => sum + (parseFloat(p.precio) * parseInt(p.cantidad)), 0);
     const impuestos = subtotal * IVA_PERCENT;
     const total = subtotal + impuestos + ENVIO;
 
-    console.log("Procesando payment por:", total);
+    console.log("Procesando pago por:", total);
+
+    if (btnpay) {
+        btnpay.disabled = true;
+        btnpay.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
+    }
 
     try {
         const res = await fetch(`${API_CART}/checkout`, {
@@ -307,24 +312,32 @@ async function procesarCheckout() {
                 customer_id: userLogueado.id,
                 success_url: `${window.location.origin}/checkout-success.html`,
                 failure_url: `${window.location.origin}/checkout-failure.html`,
-                shipping: ENVIO,
-                tax_percent: IVA_PERCENT
+                shipping: parseFloat(ENVIO),
+                tax_percent: parseFloat(IVA_PERCENT)
             })
         });
 
-        if (!res.ok) throw new Error("Error en checkout");
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || "Error en checkout");
+        }
 
         const data = await res.json();
         
         if (data.init_point) {
             window.location.href = data.init_point;
         } else {
-            throw new Error("No se recibió URL de payment");
+            throw new Error("No se recibió URL de pago");
         }
 
     } catch (err) {
         console.error("Error en checkout:", err);
-        alert("❌ Error procesando el pago. Intenta nuevamente.");
+        alert(`❌ Error procesando el pago: ${err.message}`);
+        
+        if (btnpay) {
+            btnpay.disabled = false;
+            btnpay.innerHTML = '💳 Pagar Ahora';
+        }
     }
 }
 
@@ -348,7 +361,7 @@ export async function migrarcartAlLogin(user) {
     userLogueado = user;
     await cargarcartDB();
     
-    mostrarNotificacion("cart sincronizado");
+    mostrarNotificacion("Carrito sincronizado");
 }
 
 export function logoutcart() {

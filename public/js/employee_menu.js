@@ -1,31 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // --- SECCIONES ---
     const sectionAppointments = document.getElementById("sectionAppointments");
 
-    // --- BOTONES DEL MENÚ ---
     const btnAppointments = document.getElementById("btnAppointments");
     const logoutBtn = document.getElementById("logoutBtn");
+    const btnOrders = document.getElementById("btnOrders"); 
     const menuToggle = document.getElementById("menu-toggle");
     const menu = document.getElementById("menu");
 
-    // --- OCULTAR TODO ---  
     function ocultarTodo() {
         console.log("Ocultando todas las secciones");
         sectionAppointments?.classList.add("hidden");
     }
-  // --- OCULTAR TODO ---
     function ocultarTodo() {
         sectionAppointments?.classList.add("hidden");
     }
-    // AGENAMIENTOS
     btnAppointments?.addEventListener("click", () => {
         ocultarTodo();
         console.log("Mostrando appointments");
         sectionAppointments.classList.remove("hidden");
     });
 
-    // CERRAR SESIÓN
     logoutBtn?.addEventListener("click", async () => {
         if (!confirm('¿Estás seguro de que deseas cerrar sesión?')) return;
 
@@ -42,9 +37,18 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = '/';
     });
 
+    btnOrders?.addEventListener("click", (e) => {
+        e.preventDefault();
+        ocultarTodo();
+        console.log("Mostrando Pedidos");
+        sectionOrders?.classList.remove("hidden");
+        if (typeof loadOrders === 'function') {
+            loadOrders();
+        } else {
+            console.warn("La función loadOrders() no está definida.");
+        }
+    });
 
-
-  // --- MENÚ MÓVIL ---
     menuToggle?.addEventListener("click", () => {
         menu.classList.toggle("active");
     });

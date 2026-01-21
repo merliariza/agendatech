@@ -2,9 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db/connection.js");
 
-// --- MIDDLEWARES ---
-
-// Solo admin
 const onlyAdmin = (req, res, next) => {
   const sql = `
     SELECT Person.role
@@ -22,7 +19,6 @@ const onlyAdmin = (req, res, next) => {
   });
 };
 
-// Solo empleado
 const onlyEmployee = (req, res, next) => {
   const sql = `
     SELECT Person.role
@@ -40,9 +36,6 @@ const onlyEmployee = (req, res, next) => {
   });
 };
 
-// --- ROUTES ---
-
-// Admin: Obtener todos los usuarios
 router.get("/users", onlyAdmin, (req, res) => {
   const sql = `
     SELECT Person.id AS person_id, Person.name, Person.surname,
@@ -56,7 +49,6 @@ router.get("/users", onlyAdmin, (req, res) => {
   });
 });
 
-// Admin: Actualizar rol de usuario
 router.put("/users/role/:person_id", onlyAdmin, (req, res) => {
   const { role } = req.body;
   const { person_id } = req.params;
@@ -70,7 +62,6 @@ router.put("/users/role/:person_id", onlyAdmin, (req, res) => {
   });
 });
 
-// Empleado: Obtener sus propias citas
 router.get("/my-appointments", onlyEmployee, (req, res) => {
   const userId = req.session.userId;
   const sql = `
@@ -86,9 +77,7 @@ router.get("/my-appointments", onlyEmployee, (req, res) => {
   });
 });
 
-// Logout
 router.post('/logout', (req, res) => {
-    // Si usas cookies o sesión, aquí se limpian
     res.status(200).json({ message: 'Sesión cerrada correctamente' });
 });
 

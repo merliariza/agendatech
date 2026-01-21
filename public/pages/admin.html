@@ -19,8 +19,8 @@
             <ul>
                 <li><a href="#" id="btnAppointments">Agendamiento</a></li>
                 <li><a href="#" id="btninventory">Inventario</a></li>
-                <!--<li><a href="#" id="btnsales">sales</a></li>-->
                 <li><a href="#" id="btnusers">Usuarios</a></li>
+                <li><a href="#" id="btnOrders">Pedidos</a></li>
                 <button id="logoutBtn"  class="btn-secondary">Cerrar sesión</button>
             </ul>
         </nav>
@@ -251,8 +251,126 @@
         </table>
     </div>
 </section>
+<!-- SECCIÓN DE PEDIDOS -->
+<section id="sectionOrders" class="page-section hidden">
+    <div class="container mt-4">
+        <h2 class="title text-center">Gestión de Pedidos</h2>
 
-<!-- Scripts -->
+        <!-- Filtros -->
+        <div class="orders-filters">
+            <select id="filterStatus">
+                <option value="">Todos los estados</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="pagado">Pagado</option>
+                <option value="procesando">Procesando</option>
+                <option value="enviado">Enviado</option>
+                <option value="entregado">Entregado</option>
+                <option value="cancelado">Cancelado</option>
+            </select>
+
+            <select id="filterPaymentStatus">
+                <option value="">Estado de pago</option>
+                <option value="pendiente">Pago Pendiente</option>
+                <option value="pagado">Pagado</option>
+                <option value="fallido">Fallido</option>
+                <option value="reembolsado">Reembolsado</option>
+            </select>
+
+            <input type="date" id="filterDate" placeholder="Fecha">
+            
+            <button id="btnClearFilters" class="btn-secondary">Limpiar Filtros</button>
+        </div>
+
+        <!-- Tabla de pedidos -->
+        <div class="orders-table-wrapper mt-4">
+            <table class="table-products">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Pago</th>
+                        <th>Método</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <tr>
+                        <td colspan="8" class="text-center">Cargando pedidos...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- Modal de Detalles del Pedido -->
+<div id="orderDetailsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Detalles del Pedido #<span id="modalOrderId">---</span></h3>
+            <button class="close-btn" onclick="closeOrderModal()">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="order-grid">
+                <div class="order-section">
+                    <h4>👤 Información del Cliente</h4>
+                    <p><strong>Nombre:</strong> <span id="modalCustomerName">Cargando...</span></p>
+                    <p><strong>Email:</strong> <span id="modalCustomerEmail">Cargando...</span></p>
+                    <p><strong>Dirección:</strong> <span id="modalShippingAddress">---</span></p>
+                </div>
+
+                <div class="order-section">
+                    <h4>📦 Datos del Pedido</h4>
+                    <p><strong>Fecha:</strong> <span id="modalOrderDate">---</span></p>
+                    <p><strong>Método de Pago:</strong> <span id="modalPaymentMethod">---</span></p>
+                    <p><strong>Notas:</strong> <span id="modalOrderNotes">---</span></p>
+                </div>
+            </div>
+
+            <hr>
+
+            <h4>🛒 Productos</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cant.</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderItemsTable">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="order-footer">
+                <div class="status-update">
+                    <label>Estado del Pedido:</label>
+                    <select id="orderStatusSelect" class="form-control">
+                        <option value="pendiente">Pendiente</option>
+                        <option value="procesando">En Proceso</option>
+                        <option value="enviado">Enviado</option>
+                        <option value="entregado">Entregado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                    <button onclick="updateOrderStatus()" class="btn btn-primary">Actualizar Estado</button>
+                </div>
+                <div class="total-display">
+                    <h3>Total: $<span id="modalOrderTotal">0</span></h3>
+                    <p>Estado de Pago: <span id="modalPaymentStatus" class="badge">---</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/admin_orders.js"></script>
 <script src="../js/admin_users.js"></script>
 <script src="../js/admin_appointments.js"></script>
 <script src="../js/admin_inventory.js"></script>

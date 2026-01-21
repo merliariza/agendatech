@@ -179,7 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
       cerrarLogin();
       actualizarBotonSesion();
 
-      // --- REDIRECCIONES SEGÚN ROL ---
       if (data.role?.toLowerCase() === "administrador") {
         window.location.href = "/pages/admin.html";
         return;
